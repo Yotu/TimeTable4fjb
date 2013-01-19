@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0" >
+
+        <TextView
+            android:id="@+id/dayNowText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="現在日付" />
+
+        <TextView
+            android:id="@+id/currentWeekDayView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0" >
+
+        <Button
+            android:id="@+id/visibleButton"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="出る" />
+
+        <Button
+            android:id="@+id/invisibleButton"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="消える" />
+
+        <Button
+            android:id="@+id/dbClearButton"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="DB洗浄" />
+
+        <Button
+            android:id="@+id/newButton"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="add" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1" >
+
+        <ExpandableListView
+            android:id="@+id/dayExpandList"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" >
+        </ExpandableListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0" >
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/monButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="top"
+                android:gravity="top|center_horizontal"
+                android:text="@string/mon" />
+
+            <TextView
+                android:id="@+id/monDay"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="0dp"
+                android:gravity="bottom|center_horizontal"
+                android:text="  1/17"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#000000" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/tueButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="top|center_horizontal"
+                android:text="@string/tue" />
+
+            <TextView
+                android:id="@+id/tueDay"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="0dp"
+                android:gravity="bottom|center_horizontal"
+                android:text="  1/17"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#000000" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/wedButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="top|center_horizontal"
+                android:text="@string/wed" />
+
+            <TextView
+                android:id="@+id/wedDay"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="0dp"
+                android:gravity="bottom|center_horizontal"
+                android:text="  1/17"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#000000" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/thuButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="top|center_horizontal"
+                android:text="@string/thu" />
+
+            <TextView
+                android:id="@+id/thuDay"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="0dp"
+                android:gravity="bottom|center_horizontal"
+                android:text="  1/17"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#000000" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/friButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="top|center_horizontal"
+                android:text="@string/fri" />
+
+            <TextView
+                android:id="@+id/friDay"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="0dp"
+                android:gravity="bottom|center_horizontal"
+                android:text="  1/17"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#000000" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/satButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="top|center_horizontal"
+                android:text="@string/sat" />
+
+            <TextView
+                android:id="@+id/satDay"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="0dp"
+                android:gravity="bottom|center_horizontal"
+                android:text="  1/17"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#000000" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/sunButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="top|center_horizontal"
+                android:text="@string/sun" />
+
+            <TextView
+                android:id="@+id/sunDay"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="0dp"
+                android:gravity="bottom|center_horizontal"
+                android:text="  1/17"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#000000" />
+        </FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>
