@@ -121,10 +121,11 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 	private static final String[] timeTrue = { "0時限目", "1時限目", "2時限目", "3時限目", "4時限目", "5時限目", "6時限目", "7時限目" };
 
 	//ExpandListに表示する用
-	private String[] title;
+	private String[] subject;
 	private String[] todo;
 	private String[] type;
-	private String[] time_table;
+	private String[] time_name;
+	private String[] place;
 
 	//現在日時取得用(util.Date)
 	private Time time;
@@ -356,8 +357,9 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 		invisibleButton.setOnClickListener(this);
 
 		dbClearButton = (Button)findViewById(R.id.dbClearButton);
-		dbClearButton.setOnClickListener(new View.OnClickListener() {
 
+
+		dbClearButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// TODO 自動生成されたメソッド・スタブ
@@ -366,7 +368,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 				dbHelper = new TimeTableSqlHelper(TimeTableActivity.this);
 				db = dbHelper.getWritableDatabase();
 				setCurrentDb();
-				createExpandList(title, todo, type, time_table);
+				createExpandList(subject, todo, type, time_name);
 			}
 		});
 
@@ -388,10 +390,10 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 					newTodo = new String[timeTrue.length],
 					newTime_table = new String[timeTrue.length];
 			for(int i=0; i<timeTrue.length; i++){
-				if(timeTrue[i].equals(time_table[itemPointer])){
-					newTitle[i] = title[itemPointer];
+				if(timeTrue[i].equals(time_name[itemPointer])){
+					newTitle[i] = subject[itemPointer];
 					newTodo[i] = todo[itemPointer];
-					newTime_table[i] = time_table[itemPointer];
+					newTime_table[i] = time_name[itemPointer];
 				}else{
 					newTitle[i] = null;
 					newTodo[i] = null;
@@ -413,7 +415,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 					" and time_table = '" + timeTrue[clickedItemNumber] + "'" +
 					";");
 			setCurrentDb();
-			createExpandList(title, todo, type, time_table);
+			createExpandList(subject, todo, type, time_name);
 		}else{
 			Log.d("debug", adbList[paramInt] + " Button is failed");
 		}
@@ -426,8 +428,8 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 		boolean existFlag = false;
 		//createExpandListメソッドで残った配列が上書きされていないことを
 		//利用して、setCurrentDb()をせずに総マッチングをかけている
-		for(int i=0; i<time_table.length; i++){
-			if(timeTrue[number].equals(time_table[i])){
+		for(int i=0; i<time_name.length; i++){
+			if(timeTrue[number].equals(time_name[i])){
 				existFlag = true;
 				break;
 			}
@@ -457,7 +459,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 		boolean[] checked = new boolean[timeTrue.length];
 		for(int i=0; i<timeTrue.length; i++){
 //			Log.d("debug", timeTrue[i] + " : " + time_table[itemsPointer]);
-			if(timeTrue[i].equals(time_table[itemsPointer])){
+			if(timeTrue[i].equals(time_name[itemsPointer])){
 				checked[i] = true;
 				itemsPointer++;
 			}else{
@@ -530,7 +532,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 			clickedWeekDay = 1;
 			monButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(title, todo, type, time_table);
+			createExpandList(subject, todo, type, time_name);
 			break;
 
 		case R.id.tueButton:
@@ -538,7 +540,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 			clickedWeekDay = 2;
 			tueButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(title, todo, type, time_table);
+			createExpandList(subject, todo, type, time_name);
 			break;
 
 		case R.id.wedButton:
@@ -546,7 +548,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 			clickedWeekDay = 3;
 			wedButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(title, todo, type, time_table);
+			createExpandList(subject, todo, type, time_name);
 			break;
 
 		case R.id.thuButton:
@@ -554,7 +556,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 			clickedWeekDay = 4;
 			thuButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(title, todo, type, time_table);
+			createExpandList(subject, todo, type, time_name);
 			break;
 
 		case R.id.friButton:
@@ -562,7 +564,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 			clickedWeekDay = 5;
 			friButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(title, todo, type, time_table);
+			createExpandList(subject, todo, type, time_name);
 			break;
 
 		case R.id.satButton:
@@ -570,7 +572,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 			clickedWeekDay = 6;
 			satButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(title, todo, type, time_table);
+			createExpandList(subject, todo, type, time_name);
 			break;
 
 		case R.id.sunButton:
@@ -578,7 +580,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 			clickedWeekDay = 0;
 			sunButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(title, todo, type, time_table);
+			createExpandList(subject, todo, type, time_name);
 			break;
 
 			//		case R.id.optButton:
@@ -600,43 +602,43 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 			case 1:
 				monButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(title, todo, type, time_table);
+				createExpandList(subject, todo, type, time_name);
 				break;
 
 			case 2:
 				tueButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(title, todo, type, time_table);
+				createExpandList(subject, todo, type, time_name);
 				break;
 
 			case 3:
 				wedButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(title, todo, type, time_table);
+				createExpandList(subject, todo, type, time_name);
 				break;
 
 			case 4:
 				thuButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(title, todo, type, time_table);
+				createExpandList(subject, todo, type, time_name);
 				break;
 
 			case 5:
 				friButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(title, todo, type, time_table);
+				createExpandList(subject, todo, type, time_name);
 				break;
 
 			case 6:
 				satButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(title, todo, type, time_table);
+				createExpandList(subject, todo, type, time_name);
 				break;
 
 			case 0:
 				sunButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(title, todo, type, time_table);
+				createExpandList(subject, todo, type, time_name);
 				break;
 
 			default:
@@ -716,7 +718,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 		//（setCurrentDbに使うため）
 
 		setCurrentDb();
-		createExpandList(title, todo, type, time_table);
+		createExpandList(subject, todo, type, time_name);
 	}
 
 	private void setCurrentDb() {
@@ -725,19 +727,27 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 		//currentWeekDayView.setText(currentWeekDay);
 
 		//title, todo, type, time_tableのクエリを発行する
-		Cursor cursor = db.rawQuery("select title, todo, type, time_table from " + TimeTableSqlHelper.TIME_TABLE +
+		/*Cursor cursor = db.rawQuery("select title, todo, type, time_table from " + TimeTableSqlHelper.TIME_TABLE +
 				" where week = '" + currentWeekDay + "'" +
-				" order by time_table ;", null);
-		title = new String[cursor.getCount()];
+				" order by time_table ;", null); */
+		Cursor cursor = db.rawQuery("SELECT time_name,subject_name,place,type,androidid " +
+				"FROM time,time_name,subject,type,creator,remarks " +
+				"WHERE time.timeid = time_name.timeid AND "+
+				"time.subjectid = subject.subjectid AND " +
+				"time.typeid = type.typeid AND " +
+				"time.creatorid = creator.creatorid;", null);
+		subject = new String[cursor.getCount()];
 		todo = new String[cursor.getCount()];
 		type = new String[cursor.getCount()];
-		time_table = new String[cursor.getCount() + 1];
+		place = new String[cursor.getCount()];
+		time_name = new String[cursor.getCount() + 1];
 		cursor.moveToFirst();
 		for(int i=0; i<cursor.getCount(); i++){
-			title[i] = cursor.getString(0);
-			todo[i] = cursor.getString(1);
-			type[i] = cursor.getString(2);
-			time_table[i] = cursor.getString(3);
+			time_name[i] = cursor.getString(0);
+			subject[i] = cursor.getString(1);
+			place[i] = cursor.getString(2);
+			type[i] = cursor.getString(3);
+
 			cursor.moveToNext();
 		}
 		//		for(int i=0; i<time_table.length-1; i++){
@@ -760,7 +770,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 //		}*/
 
 		//createExpandList最初の分岐判定での配列オーバー対策、元からnullになっているのかもしれないが、書いておく
-		time_table[time_table.length-1] = null;
+		time_name[time_name.length-1] = null;
 	}
 
 	//weekは現在0("月曜日")を考慮した状態、後で追加する
@@ -786,8 +796,8 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 			//予定の入っている（行のある）時限のみ各項目を設定する
 			if(nullJudg){
 				childArray = new String[4];
-				childArray[0] = "タイトル : " + title[itemsPointer];
-				childArray[1] = "場所 : " + "DBにまだないよ";
+				childArray[0] = "授業名 : " + title[itemsPointer];
+				childArray[1] = "場所 : " + place[itemsPointer];
 				childArray[2] = "種類 : " + type[itemsPointer];
 				childArray[3] = "備考 : " + todo[itemsPointer];		//nullでも大丈夫だった
 				//アイテムポインタは下でインクリメントするので、ここではしない

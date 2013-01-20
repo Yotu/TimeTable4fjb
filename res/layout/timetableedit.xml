@@ -64,7 +64,7 @@
                 android:text="@string/place" />
 
             <EditText
-                android:id="@+id/EditText01"
+                android:id="@+id/place"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center"

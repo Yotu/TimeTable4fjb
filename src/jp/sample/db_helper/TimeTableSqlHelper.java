@@ -10,8 +10,8 @@ import android.util.Log;
 
 public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	private final String TAG = "TimeTableSqlHelper";
-	private static final int DB_VERSION = 1;
-	
+	private static final int DB_VERSION = 4;
+
 	/** データベース名 */
 	private static final String DB = "time_table.db";
 
@@ -69,28 +69,28 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			+ "upremarks timestamp not null,"
 			+ "primary key(date, timeid)"
 			+ ");";
-	
+
 	public TimeTableSqlHelper(Context context) {
 		super(context, DB, null, DB_VERSION);
 		Log.d(TAG, "timeTable");
 	}
-	
+
 	/** 新規追加
 	 * table_name: テーブル名
 	 * ct: 追加データ
-	 * @return 
+	 * @return
 	 */
 	public long insert(String table_name, ContentValues ct) {
 		Log.d(TAG, "insert");
-		
+
 		SQLiteDatabase db = getWritableDatabase();
 		long rec = db.insert(table_name, null, ct);
 		db.close();
-		
+
 		return rec;
 	}
-	
-	/** 更新 
+
+	/** 更新
 	 * table_name: 更新テーブル名
 	 * ct: 更新する項目と値をもったContentValuesオブジェクト
 	 * whereCode: 条件式。"id = ? and name != ?"のような書き方をしたら、whereParam[]も設定。
@@ -99,14 +99,14 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	 */
 	public long update(String table_name, ContentValues ct, String whereCode, String[] whereParam) {
 		Log.d(TAG, "update");
-		
+
 		SQLiteDatabase db = getWritableDatabase();
 		long rec = db.update(table_name, ct, whereCode, whereParam);
 		db.close();
-		
+
 		return rec;
 	}
-	
+
 	/** 削除
 	 * table_name: 削除テーブル名
 	 * whereCode: 条件式。"id = ? and name != ?"のような書き方をしたら、whereParam[]も設定。
@@ -121,7 +121,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			db = getWritableDatabase();
 			ret = db.delete(table_name, where, whereParam);
 		} catch (SQLException e) {
-			
+
 		} finally {
 			if (db != null) {
 				db.close();
@@ -159,7 +159,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void defaultTimeNameTable() {
 		Log.d(TAG, "defaultTimeNameTable");
 		getWritableDatabase().rawQuery("delete from " + TIMENAME_TABLE, null);
@@ -179,7 +179,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		Log.d(TAG, "onCreate");

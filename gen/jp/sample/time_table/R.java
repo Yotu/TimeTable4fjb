@@ -29,7 +29,6 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int EditText01=0x7f060020;
         public static final int TextView01=0x7f06001f;
         public static final int addVarietyButton=0x7f060027;
         public static final int addVarietyEdit=0x7f060032;
@@ -53,6 +52,7 @@ public final class R {
         public static final int monButton=0x7f06000d;
         public static final int monDay=0x7f06000f;
         public static final int newButton=0x7f060005;
+        public static final int place=0x7f060020;
         public static final int returnButton=0x7f060017;
         public static final int satButton=0x7f06000b;
         public static final int satDay=0x7f060014;

@@ -9,7 +9,7 @@ import android.util.Log;
 public class MyDbHelper extends SQLiteOpenHelper {
 	private static final String DB_NAME = "lists.sqlite";
 	public static final String TABLE = "type_table";
-	private static final int DB_VERSION = 1;
+	private static final int DB_VERSION = 4;
 	private static final String CREATE_TABLE =
 			"create table " + TABLE + "("
 			+ "id integer primary key autoincrement ,"

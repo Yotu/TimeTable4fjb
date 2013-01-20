@@ -27,9 +27,9 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	/** デバッグ用タグ*/
 	private static final String TAG = "TimeTableActivity";
 
-	/** EditText タイトル */
+	/** EditText 授業名 */
 	private EditText titleEdt;
-	/** EditText Todo */
+	/** EditText 備考 */
 	private EditText todoEdt;
 	/** Spinner 曜日 */
 	private Spinner weekSpr;
@@ -39,47 +39,52 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private Spinner typeSpr;
 	/** Button 登録用ボタン*/
 	private Button addBtn;
+	/** Button キャンセル用ボタン*/
+	private Button cancelBtn;
+	/** Button 種類追加用ボタン*/
+	private Button addVarietyButton;
 	/** int timeTableId */
 	private int timeTableId;
-	/** シェアボタン */
-	private CheckBox shareCb;
+	/** シェア */
+	private CheckBox shareCb; //時間割のシェア
+	private CheckBox bikoShare;
+	/** 場所  */
+	private EditText placeEdt;
 	/** ユニークID */
 	private static String UID = "test user";
-
-	//種類追加用ボタン
-	private Button addVarietyButton;
 
 	private MyDbHelper dbHelper;
 	private SQLiteDatabase db;
 
 	//アクティビティの開始時にボタンを登録する
 	public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.timetableedit);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.timetableedit);
 
-        //タイトル(ToDo)のインスタンス取得
-        titleEdt = (EditText) findViewById(R.id.title);
-
-        //曜日のインスタンス取得
-        weekSpr = (Spinner) findViewById(R.id.week);
-
-        //曜日のインスタンス取得
-        timeTableSpr = (Spinner) findViewById(R.id.time_table);
-        //登録用ボタンのインスタンス取得
-        addBtn = (Button) findViewById(R.id.edit);
-        addBtn.setOnClickListener(this);
-
-        //todoのインスタンス取得
-        todoEdt = (EditText) findViewById(R.id.todo);
-
-        //予定の種類のインスタンス取得
-        typeSpr = (Spinner) findViewById(R.id.type);
-
-        //シェアボタンのインスタンス取得
-        shareCb = (CheckBox) findViewById(R.id.share);
-
-        addVarietyButton = (Button)findViewById(R.id.addVarietyButton);
-        addVarietyButton.setOnClickListener(new View.OnClickListener() {
+		//授業名のインスタンス取得
+		titleEdt = (EditText) findViewById(R.id.title);
+		//曜日のインスタンス取得
+		weekSpr = (Spinner) findViewById(R.id.week);
+		//時間割のインスタンス取得
+		timeTableSpr = (Spinner) findViewById(R.id.time_table);
+		//場所のインスタンス取得
+		placeEdt = (EditText) findViewById(R.id.place);
+		//登録用ボタンのインスタンス取得
+		addBtn = (Button) findViewById(R.id.edit);
+		addBtn.setOnClickListener(this);
+		//キャンセル用ボタンのインスタンス取得
+		cancelBtn = (Button) findViewById(R.id.cancel);
+		cancelBtn.setOnClickListener(this);
+		//todoのインスタンス取得
+		todoEdt = (EditText) findViewById(R.id.todo);
+		//予定の種類のインスタンス取得
+		typeSpr = (Spinner) findViewById(R.id.type);
+		//シェアボタンのインスタンス取得
+		shareCb = (CheckBox) findViewById(R.id.share); //時間割のシェア
+		bikoShare = (CheckBox) findViewById(R.id.bikoShare); //備考情報のシェア
+		//種類追加用ボタンのインスタンスを取得
+		addVarietyButton = (Button)findViewById(R.id.addVarietyButton);
+		addVarietyButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// TODO 自動生成されたメソッド・スタブ
@@ -89,9 +94,9 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			}
 		});
 
-        dbHelper = new MyDbHelper(this);
-        db = dbHelper.getWritableDatabase();
-    }
+		dbHelper = new MyDbHelper(this);
+		db = dbHelper.getWritableDatabase();
+	}
 
 	//フォアグラウンドになった際に処理が実行
 	public void onResume(){
@@ -112,8 +117,8 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		/**
 		 * 予定の種類
 		 */
-//		ArrayAdapter<String> typeTableAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,TimeTableInfo.types);
-//		typeSpr.setAdapter(typeTableAdapter);
+		//		ArrayAdapter<String> typeTableAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,TimeTableInfo.types);
+		//		typeSpr.setAdapter(typeTableAdapter);
 
 		ArrayAdapter<String> typeTableAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 		typeTableAdapter.add("学科");
@@ -130,58 +135,55 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		cursor.close();
 		typeSpr.setAdapter(typeTableAdapter);
 
-
-
-
 		Intent intent = getIntent();
-
-    	String id = intent.getStringExtra("jp.sample.time_table.TimeTableIdString");//値がなければNull
+		String id = intent.getStringExtra("jp.sample.time_table.TimeTableIdString");//値がなければNull
 
 		weekSpr.setSelection(intent.getIntExtra("weekDay", 0));
 		timeTableSpr.setSelection(intent.getIntExtra("num", 3));
 
 
-    	//idが存在する場合は更新処理
-    	if(id != null){
-    		timeTableId = Integer.parseInt(id);//更新データのためIdを保持
+		//idが存在する場合は更新処理
+		if(id != null){
+			timeTableId = Integer.parseInt(id);//更新データのためIdを保持
 
-    		//データベースからデータを取得する
-    		TimeTableSqlHelper h = new TimeTableSqlHelper(this);
-    		TimeTableInfo info = h.fetchOne(id);
+			//データベースからデータを取得する
+			TimeTableSqlHelper h = new TimeTableSqlHelper(this);
+			SQLiteDatabase db = h.getReadableDatabase();
 
-    		titleEdt.setText(info.getTitle());
+			//titleEdt.setText(info.getTitle());
 
-    		//dayOfWeeks
-//    		for(int i=0; i < TimeTableInfo.dayOfWeeks.length; i++){
-//    			if(info.getDayOfWeek().equals(TimeTableInfo.dayOfWeeks[i])) {
-//    	    		weekSpr.setSelection(i);
-//    				break;
-//    			}
-//    		}
+			/*dayOfWeeks
+			    		for(int i=0; i < TimeTableInfo.dayOfWeeks.length; i++){
+			    			if(info.getDayOfWeek().equals(TimeTableInfo.dayOfWeeks[i])) {
+			   	    		weekSpr.setSelection(i);
+			    				break;
+			    			}
+			   		}
+			*/
 
-    		//timeTables
-//    		for(int i=0; i < TimeTableInfo.timeTables.length; i++){
-//    			if(info.getTimeTable().equals(TimeTableInfo.timeTables[i])) {
-//    				timeTableSpr.setSelection(i);
-//    				break;
-//    			}
-//    		}
+			/*timeTables
+			    		for(int i=0; i < TimeTableInfo.timeTables.length; i++){
+			    			if(info.getTimeTable().equals(TimeTableInfo.timeTables[i])) {
+			    				timeTableSpr.setSelection(i);
+			    				break;
+			    			}
+			    		}
+			*/
+			//Todo
+			//todoEdt.setText(info.getTodo());
 
-    		//Todo
-    		todoEdt.setText(info.getTodo());
+			//type
+			//for(int i=0; i < TimeTableInfo.types.length; i++){
+			//	if(info.getType().equals(TimeTableInfo.types[i])) {
+			//		typeSpr.setSelection(i);
+			//	}
+			//}
 
-    		//type
-    		for(int i=0; i < TimeTableInfo.types.length; i++){
-    			if(info.getType().equals(TimeTableInfo.types[i])) {
-    				typeSpr.setSelection(i);
-    			}
-    		}
-
-			shareCb.setChecked(info.getIsShare());
+			//shareCb.setChecked(info.getIsShare());
 			h.close();
-    	}
+		}
 
-    	//強制終了用処理
+		//強制終了用処理
 		if(TimeTableActivity.endFlag == true){
 			finish();
 		}
@@ -202,9 +204,9 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		TimeTableSqlHelper h = new TimeTableSqlHelper(this);
 		try {
 			if(timeTableId != 0){
-				h.update(info,String.valueOf(timeTableId));
+				h.update(null, null, null, null);
 			}else{
-				h.insert(info);
+				h.insert(null, null);
 			}
 		}catch(SQLiteException e){
 			e.printStackTrace();
@@ -238,16 +240,16 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 		switch (requestCode) {
 		case 100:
-//			Log.d("debug", "onActResult");
+			//			Log.d("debug", "onActResult");
 			if(resultCode == RESULT_OK){
 				Bundle bundle = data.getExtras();	//Extraがないときにこれするとエラー出る（落ちる）みたいなので注意
 				String value = bundle.getString("varietyWord");
 				Log.d("debug", "adding value is " + value);
 				MyDbHelper.insert(db, value);
 			}else if(resultCode == RESULT_CANCELED){
-//				Log.d("debug", "adding canceled");
+				//				Log.d("debug", "adding canceled");
 			}
-//			Log.d("debug", "exit onActResult");
+			//			Log.d("debug", "exit onActResult");
 			break;
 
 		default:
@@ -261,10 +263,10 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	public boolean onKeyLongPress(int keyCode, KeyEvent event) {
 		// TODO 自動生成されたメソッド・スタブ
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-	        TimeTableActivity.endFlag = true;
-	        finish();
-	        return true;
-	    }
+			TimeTableActivity.endFlag = true;
+			finish();
+			return true;
+		}
 		return super.onKeyLongPress(keyCode, event);
 	}
 }
