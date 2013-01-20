@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.sample.db_helper.TimeTableSqlHelper;
 import jp.sample.time_table_info.TimeTableInfo;
 
 import org.apache.http.HttpResponse;
@@ -17,14 +18,23 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 
 public class SnsReceiver {
 
 	/** 受信用用URL*/
 	private String RECEIVE_URL = "http://203.138.125.240/api/httpdocs/s01_rcv.php";
 
+	private int timeId;
+	private int subjectId;
+	private int typeId;
+	private int creatorId;
+
+
 	/***
-	 * 
+	 *
 	 * @param userName ご自分のユーザ名を指定して下さい。
 	 * @return
 	 */
@@ -44,7 +54,7 @@ public class SnsReceiver {
 
 			HttpResponse objResponse = objHttp.execute(objPost);
 
-			
+
 			//リクエストのステータスを取得し、通信が成功しているか確認
 			//400以上のステータスコードはエラーなので終了する。
 			if (objResponse.getStatusLine().getStatusCode() >= 400) {
@@ -68,12 +78,16 @@ public class SnsReceiver {
 				for(String item:items){
 					//フィールド名と値は#container#で区切られている為
 					//#container#でフィールドと値を分割
-					// 例) title#container#test	
+					// 例) title#container#test
+					TimeTableSqlHelper h = new TimeTableSqlHelper(null);
+
 					String[] column = item.split("#container#");
 
 					String value = (column.length == 2)?column[1]:"";
 					if ("title".equals(column[0])) {
 						info.setTitle(value);
+						SQLiteDatabase db = getReadableDatabase();
+						Cursor c = db.rawQuery("select～", null);
 					} else if ("type".equals(column[0])) {
 						info.setType(value);
 					} else if ("week".equals(column[0])) {
@@ -85,6 +99,7 @@ public class SnsReceiver {
 					} else if ("uid".equals(column[0])) {
 						info.setUid(value);
 					}
+					//Time_Tableに格納するために、それぞれのＩＤとテキストを比較
 
 				}
 				list.add(info);

@@ -673,12 +673,13 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 				return false;
 			}
 
-			//受信したデータを１レコードごとデータベースに追加
+			/*受信したデータを１レコードごとデータベースに追加
 			TimeTableSqlHelper h = new TimeTableSqlHelper(this);
 			for (TimeTableInfo info : list) {
 				h.insert(info);
 			}
 			h.close();
+			*/
 			Toast.makeText(this, "データを受信しました。", Toast.LENGTH_LONG).show();
 			return true;
 		}
