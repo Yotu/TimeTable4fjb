@@ -155,19 +155,19 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		Cursor c = null;
 		try {
 				ct.put("time_name",  "講義");
-				c = select("select * from " + TIMENAME_TABLE + " where time_name like '講義'", null);
+				c = select("select * from " + TYPE_TABLE + " where time_name like '講義'", null);
 				if (c.getCount() <= 0) {
-					insert(TIMENAME_TABLE, ct);
+					insert(TYPE_TABLE, ct);
 				}
 				ct.put("time_name",  "演習");
-				c = select("select * from " + TIMENAME_TABLE + " where time_name like '演習'", null);
+				c = select("select * from " + TYPE_TABLE + " where time_name like '演習'", null);
 				if (c.getCount() <= 0) {
-					insert(TIMENAME_TABLE, ct);
+					insert(TYPE_TABLE, ct);
 				}
 				ct.put("time_name",  "プライベート");
-				c = select("select * from " + TIMENAME_TABLE + " where time_name like 'プライベート'", null);
+				c = select("select * from " + TYPE_TABLE + " where time_name like 'プライベート'", null);
 				if (c.getCount() <= 0) {
-					insert(TIMENAME_TABLE, ct);
+					insert(TYPE_TABLE, ct);
 				}
 		} catch (SQLException e) {
 			Log.d(TAG, "SQLException");
