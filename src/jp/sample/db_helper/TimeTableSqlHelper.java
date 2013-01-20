@@ -74,25 +74,6 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		super(context, DB, null, DB_VERSION);
 		Log.d(TAG, "timeTable");
 	}
-		
-	
-	/**
-	 * データの取得
-	 * sqlにはselect文を、paramにはnullまたは?に入る値の配列を
-	 * select * from table where id=?;
-	 * @return
-	 */
-	public Cursor select(String sql, String[] param) {
-		Log.d(TAG, "select");
-		
-		SQLiteDatabase db = getReadableDatabase();
-		
-		Cursor cursor = db.rawQuery(sql, param);
-
-		db.close();
-
-		return cursor;
-	}
 	
 	/** 新規追加
 	 * table_name: テーブル名
@@ -151,37 +132,47 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 
 	public void defaultTypeTable() {
 		Log.d(TAG, "defaultTypeTable");
+		getWritableDatabase().rawQuery("delete from " + TYPE_TABLE, null);
 		ContentValues ct = new ContentValues();
 		Cursor c = null;
 		try {
-				ct.put("time_name",  "講義");
-				c = select("select * from " + TYPE_TABLE + " where time_name like '講義'", null);
+				c = getReadableDatabase().rawQuery("select * from " + TYPE_TABLE + " where type like '講義';", null);
 				if (c.getCount() <= 0) {
+					ct.put("type",  "講義");
 					insert(TYPE_TABLE, ct);
+					ct.clear();
 				}
-				ct.put("time_name",  "演習");
-				c = select("select * from " + TYPE_TABLE + " where time_name like '演習'", null);
+				c = getReadableDatabase().rawQuery("select * from " + TYPE_TABLE + " where type like '演習';", null);
 				if (c.getCount() <= 0) {
+					ct.put("type",  "演習");
 					insert(TYPE_TABLE, ct);
+					ct.clear();
 				}
-				ct.put("time_name",  "プライベート");
-				c = select("select * from " + TYPE_TABLE + " where time_name like 'プライベート'", null);
+				c = getReadableDatabase().rawQuery("select * from " + TYPE_TABLE + " where type like 'プライベート';", null);
 				if (c.getCount() <= 0) {
+					ct.put("type",  "プライベート");
 					insert(TYPE_TABLE, ct);
+					ct.clear();
 				}
 		} catch (SQLException e) {
 			Log.d(TAG, "SQLException");
 			e.printStackTrace();
-		}		
+		}
 	}
 	
 	public void defaultTimeNameTable() {
 		Log.d(TAG, "defaultTimeNameTable");
+		getWritableDatabase().rawQuery("delete from " + TIMENAME_TABLE, null);
 		ContentValues ct = new ContentValues();
+		Cursor c = null;
 		try {
 			for (int i = 0; i < 6; i++) {
-				ct.put("time_name",  (i + 1) + "限目");
-				insert(TIMENAME_TABLE, ct);
+				c = getReadableDatabase().rawQuery("select * from " + TIMENAME_TABLE + " where time_name like '" + ((i + 1) + "限目") + "';", null);
+				if (c.getCount() <= 0) {
+					ct.put("time_name",  (i + 1) + "限目");
+					insert(TIMENAME_TABLE, ct);
+					ct.clear();
+				}
 			}
 		} catch (SQLException e) {
 			Log.d(TAG, "SQLException");
