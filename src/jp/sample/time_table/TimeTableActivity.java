@@ -1,14 +1,16 @@
 package jp.sample.time_table;
 
-//byきりんさん
-
 /*-----------------------ここでのおやくそく-----------------------*/
 //																  //
 //						weekDay  =  曜日						  //
 //						monthDay = 日にち						  //
 //																  //
-//				setCurrentDb()を実行すると各変数が				  //
+//					weekDayの日曜日は7でなく0。					  //
+//																  //
+//				setCurrentDb()を実行すると各配列変数が			  //
 //				現在曜日のDbの内容に上書きされる。				  //
+//				各配列変数 = title, todo, type, time_table		  //
+//																  //
 //				例：0限目,1限目,3限目の予定が発見された場合		  //
 //				    ・title[0] = 0限目のタイトル				  //
 //				    ・title[1] = 1限目のタイトル				  //
@@ -22,11 +24,16 @@ package jp.sample.time_table;
 //			なおsetCurrentDb()では配列オーバー対策として		  //
 //			１つ余分にスペースを作成し最後にnullを挿入している。  //
 //																  //
+//			clickedWeekDayは曜日ボタンを押したときに設定される	  //
+//			clickedItemNuberは親項目を長押ししたときに設定される  //
+//																  //
 //----------------------------------------------------------------//
 //										  						  //
 //				某軍師の助言によりメソッドの仕様は				  //
 //				極力控えています。（処理効率の問題）			  //
 //				見にくいと思いますがごめんなさい。	  			  //
+//				ただし控え方は私の独断と偏見で決めていますので、  //
+//				軍師に罪はありません。							  //
 //																  //
 /*----------------------------------------------------------------*/
 
@@ -88,6 +95,8 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 	//曜日ボタンと日付テキストと押した曜日番号
 	private Button monButton, tueButton, wedButton, thuButton, friButton, satButton, sunButton;
 	private TextView monD, tueD, wedD, thuD, friD, satD, sunD;
+
+	//曜日ボタンを押したときに設定される現在曜日の数字
 	private int clickedWeekDay;
 
 	//	private Button optButton;
@@ -108,7 +117,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 	//ExpandList用
 	private String currentWeekDay;
 	private int limit;
-	private static final String[] weekDayTrue = {"月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日", "日曜日"};
+	private static final String[] weekDayTrue = {"日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"};
 	private static final String[] timeTrue = { "0時限目", "1時限目", "2時限目", "3時限目", "4時限目", "5時限目", "6時限目", "7時限目" };
 
 	//ExpandListに表示する用
@@ -167,10 +176,10 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 		nowDate = time.year + "/" +
 				(time.month + 1) + "/" +
 				time.monthDay + "(" +
-				weekDayTrue[time.weekDay-1].substring(0,1) + ")";	//配列にあわせるために-1
+				weekDayTrue[time.weekDay].substring(0,1) + ")";
 		dayNowTextView.setText(nowDate);
 
-		currentWeekDay = weekDayTrue[time.weekDay-1];
+		currentWeekDay = weekDayTrue[time.weekDay];
 
 		String[] weekDays = new String[7];
 		switch (time.weekDay) {
@@ -277,7 +286,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 					(time.monthDay+1);
 			break;
 
-		case 7:
+		case 0:
 			weekDays[0] = (time.month + 1) + "/" +
 					(time.monthDay-6);
 			weekDays[1] = (time.month + 1) + "/" +
@@ -373,8 +382,29 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 	public void onClick(DialogInterface paramDialogInterface, int paramInt) {
 		// TODO 自動生成されたメソッド・スタブ
 		if(adbList[paramInt].equals("編集")){
-			//			Log.d("debug", adbList[paramInt].toString() + "\n" + paramInt);
-			//			intent.putExtra("title", title[])
+			intent = new Intent(this, TimeTableEditActivity.class);
+			int itemPointer = 0;
+			String[] newTitle = new String[timeTrue.length],
+					newTodo = new String[timeTrue.length],
+					newTime_table = new String[timeTrue.length];
+			for(int i=0; i<timeTrue.length; i++){
+				if(timeTrue[i].equals(time_table[itemPointer])){
+					newTitle[i] = title[itemPointer];
+					newTodo[i] = todo[itemPointer];
+					newTime_table[i] = time_table[itemPointer];
+				}else{
+					newTitle[i] = null;
+					newTodo[i] = null;
+					newTime_table[i] = null;
+				}
+			}
+			intent.putExtra("editMode", true);
+			intent.putExtra("weekDay", clickedWeekDay);
+			intent.putExtra("num", clickedItemNumber);
+			intent.putExtra("title", newTitle[clickedItemNumber]);
+			intent.putExtra("todo", newTodo[clickedItemNumber]);
+			intent.putExtra("time_table", newTime_table[clickedItemNumber]);
+			startActivity(intent);
 		}else if(adbList[paramInt].equals("削除")){
 			//選択した場所の予定をDBから削除
 			//ifExist文もつけたい
@@ -395,7 +425,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 		// TODO 自動生成されたメソッド・スタブ
 		boolean existFlag = false;
 		//createExpandListメソッドで残った配列が上書きされていないことを
-		//利用して、総マッチングをかける
+		//利用して、setCurrentDb()をせずに総マッチングをかけている
 		for(int i=0; i<time_table.length; i++){
 			if(timeTrue[number].equals(time_table[i])){
 				existFlag = true;
@@ -403,8 +433,9 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 			}
 		}
 		if(!existFlag){
-			//			Log.d("debug", "matching is suceed");
+			//Log.d("debug", "matching is suceed");
 			intent = new Intent(this, TimeTableEditActivity.class);
+			intent.putExtra("editMode", false);
 			intent.putExtra("weekDay", clickedWeekDay);
 			intent.putExtra("num", number);
 			startActivity(intent);
@@ -435,7 +466,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 //			Log.d("debug", i + " : " + checked[i]);
 		}
 
-		Log.d("debug", "clicked number is " + paramInt + " = " + checked[paramInt]);
+//		Log.d("debug", "clicked number is " + paramInt + " = " + checked[paramInt]);
 		if(checked[paramInt]){
 			clickedItemNumber = paramInt;
 			AlertDialog.Builder adbuilder = new AlertDialog.Builder(this);
@@ -565,44 +596,44 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 
 			//おそらく初期値が-1なので、どのボタンでもないとここに入る、
 		case -1:						//それを利用してnew View(this)での強制イベントをここに分岐させている（本来は特別なIDを発行したほうがバグには強いかもしれない）
-			switch (time.weekDay - 1) {		//他でも配列用に-1しているのでわかりやすく-1している
-			case 0:
+			switch (time.weekDay) {
+			case 1:
 				monButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
 				createExpandList(title, todo, type, time_table);
 				break;
 
-			case 1:
+			case 2:
 				tueButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
 				createExpandList(title, todo, type, time_table);
 				break;
 
-			case 2:
+			case 3:
 				wedButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
 				createExpandList(title, todo, type, time_table);
 				break;
 
-			case 3:
+			case 4:
 				thuButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
 				createExpandList(title, todo, type, time_table);
 				break;
 
-			case 4:
+			case 5:
 				friButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
 				createExpandList(title, todo, type, time_table);
 				break;
 
-			case 5:
+			case 6:
 				satButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
 				createExpandList(title, todo, type, time_table);
 				break;
 
-			case 6:
+			case 0:
 				sunButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
 				createExpandList(title, todo, type, time_table);
