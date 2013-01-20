@@ -6,6 +6,7 @@ import jp.sample.sns_sdk.SendException;
 import jp.sample.sns_sdk.SnsSender;
 import jp.sample.time_table_info.TimeTableInfo;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -52,9 +53,13 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private EditText placeEdt;
 	/** ユニークID */
 	private static String UID = "test user";
+	private static String androidid = android.provider.Settings.Secure.ANDROID_ID;
 
 	private MyDbHelper dbHelper;
 	private SQLiteDatabase db;
+	private Cursor c;
+	private String table;
+	private	int index;
 
 	//アクティビティの開始時にボタンを登録する
 	public void onCreate(Bundle savedInstanceState) {
@@ -197,11 +202,49 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		info.setTimeTable(timeTableSpr.getSelectedItem().toString());
 		info.setTodo(todoEdt.getText().toString());
 		info.setType(typeSpr.getSelectedItem().toString());
+		info.setPlace(placeEdt.getText().toString());
 		info.setIsShare(shareCb.isChecked());
+		info.setBikoShare(bikoShare.isChecked());
 		info.setUid(UID);
 
-		//データベースにデータを保存
 		TimeTableSqlHelper h = new TimeTableSqlHelper(this);
+		SQLiteDatabase db = h.getReadableDatabase();
+		ContentValues values = new ContentValues();
+
+		//入力された情報を元に、関連のあるデータを検索　無ければ格納する
+		String sql = "SELECT * FROM subject WHERE subject_name = '" + info.getTitle() +
+												"' AND place = '" + info.getPlace() + "';";
+
+		c = db.rawQuery(sql, null);
+		if(c.getCount() == 0){
+			//検索結果ゼロ
+			table = "subject";
+			ContentValues ct = new ContentValues();
+			ct.put("subject_name",info.getTitle());
+			ct.put("place", info.getPlace());
+			h.insert(table, ct);
+			Log.d("logloglog","追加完了");
+		}
+
+		///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+		//					要確認箇所				//
+		///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+		sql = "SELECT * FROM creator WHERE androidid = '"+ androidid + "';";
+		c = db.rawQuery(sql,null);
+		if(c.getCount() == 0){
+			//検索結果ゼロ
+			table = "creator";
+			ContentValues ct = new ContentValues();
+			ct.put("androidid", androidid);
+			h.insert(table, ct);
+		}
+		///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+		//					ここに備考検索入れる　	//
+		///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
+		//データベースにデータを保存
+		index = weekSpr.getSelectedItemPosition();
+		Log.d("spinner",index+":weekSpr");
 		try {
 			if(timeTableId != 0){
 				h.update(null, null, null, null);

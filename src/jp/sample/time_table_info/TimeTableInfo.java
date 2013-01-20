@@ -5,17 +5,20 @@ public class TimeTableInfo {
 	/** タイムテーブルID */
 	int _id;
 	/** タイムテーブル */
-	String title;
+	String subject;
 	/** 曜日*/
 	String day_of_week;
 	/** 時間割 */
 	String time_table;
-	/** Todoメモ */
+	/** 備考メモ */
 	String todo;
+	/**　場所 */
+	String place;
 	/** 予定の種類 */
 	String type;
 	/** シェアする */
 	boolean isShare = false;
+	boolean bikoShare = false;
 	/** ユーザー名 */
 	String uid;
 
@@ -49,11 +52,12 @@ public class TimeTableInfo {
 	};
 
 	public TimeTableInfo() {
-		title = "";
+		subject = "";
 		day_of_week = "";
 		time_table = "";
 		todo = "";
 		type = "";
+		place ="";
 		uid = "";
 	}
 
@@ -66,11 +70,11 @@ public class TimeTableInfo {
 	}
 
 	public String getTitle(){
-		return title;
+		return subject;
 	}
 
 	public void setTitle(String title){
-		this.title = title;
+		this.subject = title;
 	}
 
 	public String getDayOfWeek(){
@@ -117,6 +121,22 @@ public class TimeTableInfo {
 	}
 	public void setUid(String uid)  {
 		this.uid = uid;
+	}
+
+	public String getPlace() {
+		return place;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
+
+	public boolean getBikoShare(){
+		return bikoShare;
+	}
+
+	public void setBikoShare(boolean bikoShare){
+		this.bikoShare = bikoShare;
 	}
 
 }

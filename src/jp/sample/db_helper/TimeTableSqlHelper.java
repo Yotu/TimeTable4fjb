@@ -82,7 +82,6 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	 */
 	public long insert(String table_name, ContentValues ct) {
 		Log.d(TAG, "insert");
-
 		SQLiteDatabase db = getWritableDatabase();
 		long rec = db.insert(table_name, null, ct);
 		db.close();
