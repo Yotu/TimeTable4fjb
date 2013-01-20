@@ -1,152 +1,214 @@
 package jp.sample.db_helper;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jp.sample.time_table_info.TimeTableInfo;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class TimeTableSqlHelper extends SQLiteOpenHelper {
-	private final String TAG = "timeTableSqlHelper";
-	/** データベースバージョン */
-	static final int DB_VERSION = 4;
-	/** データベース ファイル名 */
-	static final String DB = "time_table.db";
+	private final String TAG = "TimeTableSqlHelper";
+	private static final int DB_VERSION = 1;
+	
+	/** データベース名 */
+	private static final String DB = "time_table.db";
 
-	public static final String TIME_TABLE = "time_table";
+	/** テーブル名 */
+	public static final String TIME_TABLE = "time";
+	public static final String TIMENAME_TABLE = "time_name";
+	public static final String SUBJECT_TABLE = "subject";
+	public static final String TYPE_TABLE = "type";
+	public static final String CREATOR_TABLE = "creator";
+	public static final String REMARKS_TABLE = "remarks";
 
-	/** テーブル作成 */
-	private static final String CREATE_TABLE_SQL = "" +
-			" create table " +
-			TIME_TABLE +
-			" (" +
-//			" _id integer primary key autoincrement," +
-			" _id integer," +
-			" title varchar(255) null," +
-			" week varchar(255) not null," +
-			" time_table varchar(255) not null," +
-			" todo varchar(255) not null," +
-			" type varchar(255) not null," +
-			" is_share integer," +
-			" uid varchar(255) not null," +
-//			" uid varchar(255) not null" +
-			" primary key(week, time_table) " +
-			" );" +
-			"";
-	private static String[] ITEMS = {"_id","title","week","time_table","todo","type","is_share","uid"};
-	/** テーブル削除 */
-	private static final String DROP_TABLE = "drop table " + TIME_TABLE+";";
-
+	/** CREATEテーブル */
+	private static final String CREATE_TIME = "create table "
+			+ TIME_TABLE + "("
+			+ "week integer not null,"
+			+ "timeid integer not null,"
+			+ "subjectid integer not null,"
+			+ "typeid integer not null default 0,"
+			+ "share integer not null default 0,"
+			+ "creatorid integer not null,"
+			+ "uptime timestamp not null,"
+			+ "primary key(week, timeid)"
+			+ ");";
+	private static final String CREATE_TIMENAME = "create table "
+			+ TIMENAME_TABLE + "("
+			+ "timeid integer primary key autoincrement,"
+			+ "time_name varchar(15) not null"
+			+ ");";
+	private static final String CREATE_SUBJECT = "create table "
+			+ SUBJECT_TABLE + "("
+			+ "subjectid integer primary key autoincrement,"
+			+ "subject_name varchar(12) not null,"
+			+ "place varchar(12) not null,"
+			+ "charge varchar(10) default null"
+			+ ");";
+	private static final String CREATE_TYPE = "create table "
+			+ TYPE_TABLE + "("
+			+ "typeid integer primary key autoincrement,"
+			+ "type varchar(15) not null"
+			+ ");";
+	private static final String CREATE_CREATOR = "create table "
+			+ CREATOR_TABLE + "("
+			+ "creatorid integer primary key autoincrement,"
+			+ "androidid varchar(15) not null,"
+			+ "userid varchar(20),"
+			+ "password varchar(20)"
+			+ ");";
+	private static final String CREATE_REMARKS = "create table "
+			+ REMARKS_TABLE + "("
+			+ "date timestamp not null,"
+			+ "timeid integer default null,"
+			+ "remarks text,"
+			+ "share numeric not null,"
+			+ "creatorid integer not null,"
+			+ "upremarks timestamp not null,"
+			+ "primary key(date, timeid)"
+			+ ");";
+	
 	public TimeTableSqlHelper(Context context) {
-		super(context, DB, null , DB_VERSION);
-		Log.d(TAG,"timeTableSqlHelper");
+		super(context, DB, null, DB_VERSION);
+		Log.d(TAG, "timeTable");
+	}
+		
+	
+	/**
+	 * データの取得
+	 * sqlにはselect文を、paramにはnullまたは?に入る値の配列を
+	 * select * from table where id=?;
+	 * @return
+	 */
+	public Cursor select(String sql, String[] param) {
+		Log.d(TAG, "select");
+		
+		SQLiteDatabase db = getReadableDatabase();
+		
+		Cursor cursor = db.rawQuery(sql, param);
+
+		db.close();
+
+		return cursor;
+	}
+	
+	/** 新規追加
+	 * table_name: テーブル名
+	 * ct: 追加データ
+	 * @return 
+	 */
+	public long insert(String table_name, ContentValues ct) {
+		Log.d(TAG, "insert");
+		
+		SQLiteDatabase db = getWritableDatabase();
+		long rec = db.insert(table_name, null, ct);
+		db.close();
+		
+		return rec;
+	}
+	
+	/** 更新 
+	 * table_name: 更新テーブル名
+	 * ct: 更新する項目と値をもったContentValuesオブジェクト
+	 * whereCode: 条件式。"id = ? and name != ?"のような書き方をしたら、whereParam[]も設定。
+	 *                    "id = 1"のような書き方をした場合は、whereParam[]はnullにする。
+	 * whereParam: 条件の値。whereCodeの内容に応じて設定。
+	 */
+	public long update(String table_name, ContentValues ct, String whereCode, String[] whereParam) {
+		Log.d(TAG, "update");
+		
+		SQLiteDatabase db = getWritableDatabase();
+		long rec = db.update(table_name, ct, whereCode, whereParam);
+		db.close();
+		
+		return rec;
+	}
+	
+	/** 削除
+	 * table_name: 削除テーブル名
+	 * whereCode: 条件式。"id = ? and name != ?"のような書き方をしたら、whereParam[]も設定。
+	 *                    "id = 1"のような書き方をした場合は、whereParam[]はnullにする。
+	 * whereParam: 条件の値。whereCodeの内容に応じて設定。
+	 */
+	public long delete(String table_name, String where, String[] whereParam) {
+		Log.v(TAG, String.format("delete: where=%s whereParam=%s", where, whereParam));
+		SQLiteDatabase db = null;
+		long ret = -1;
+		try {
+			db = getWritableDatabase();
+			ret = db.delete(table_name, where, whereParam);
+		} catch (SQLException e) {
+			
+		} finally {
+			if (db != null) {
+				db.close();
+			}
+		}
+		return ret;
 	}
 
-	/** テーブルを作成する */
+	public void defaultTypeTable() {
+		Log.d(TAG, "defaultTypeTable");
+		ContentValues ct = new ContentValues();
+		Cursor c = null;
+		try {
+				ct.put("time_name",  "講義");
+				c = select("select * from " + TIMENAME_TABLE + " where time_name like '講義'", null);
+				if (c.getCount() <= 0) {
+					insert(TIMENAME_TABLE, ct);
+				}
+				ct.put("time_name",  "演習");
+				c = select("select * from " + TIMENAME_TABLE + " where time_name like '演習'", null);
+				if (c.getCount() <= 0) {
+					insert(TIMENAME_TABLE, ct);
+				}
+				ct.put("time_name",  "プライベート");
+				c = select("select * from " + TIMENAME_TABLE + " where time_name like 'プライベート'", null);
+				if (c.getCount() <= 0) {
+					insert(TIMENAME_TABLE, ct);
+				}
+		} catch (SQLException e) {
+			Log.d(TAG, "SQLException");
+			e.printStackTrace();
+		}		
+	}
+	
+	public void defaultTimeNameTable() {
+		Log.d(TAG, "defaultTimeNameTable");
+		ContentValues ct = new ContentValues();
+		try {
+			for (int i = 0; i < 6; i++) {
+				ct.put("time_name",  (i + 1) + "限目");
+				insert(TIMENAME_TABLE, ct);
+			}
+		} catch (SQLException e) {
+			Log.d(TAG, "SQLException");
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
 	public void onCreate(SQLiteDatabase db) {
-		Log.d(TAG,"onCreate");
-		db.execSQL(CREATE_TABLE_SQL);
+		Log.d(TAG, "onCreate");
+		db.execSQL(CREATE_TIMENAME);
+		db.execSQL(CREATE_SUBJECT);
+		db.execSQL(CREATE_TYPE);
+		db.execSQL(CREATE_TIME);
+		db.execSQL(CREATE_CREATOR);
+		db.execSQL(CREATE_REMARKS);
 	}
 
-	/** テーブル内のデータの変換を行う */
+	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.d(TAG,"onUpgrade");
-		db.execSQL(DROP_TABLE);
+		Log.v(TAG, String.format("onUpgrade: oldVersion=%dformat, newVersion=%d", oldVersion, newVersion));
+		db.execSQL("drop table " + TIME_TABLE);
+		db.execSQL("drop table " + TIMENAME_TABLE);
+		db.execSQL("drop table " + SUBJECT_TABLE);
+		db.execSQL("drop table " + TYPE_TABLE);
+		db.execSQL("drop table " + CREATE_CREATOR);
+		db.execSQL("drop table " + REMARKS_TABLE);
 		onCreate(db);
 	}
-
-	/** 新規レコード追加 */
-	public long insert(TimeTableInfo info){
-		ContentValues values = convertToContentValues(info);
-		SQLiteDatabase db = getWritableDatabase();
-		long rec = db.insert(TIME_TABLE, null, values);
-		db.close();
-		return rec;
-	}
-
-
-	/**  idからレコードを1件取得 */
-	public TimeTableInfo fetchOne(String id){
-		SQLiteDatabase db = this.getReadableDatabase();
-		Cursor cursor = db.query(TIME_TABLE, ITEMS, "_id = ?", new String[] { id }, null, null, null, null);
-		cursor.moveToNext();
-		TimeTableInfo info = convertToTimeTableInfo(cursor);
-		cursor.close();
-		db.close();
-		return info;
-	}
-
-	/** idで指定したレコードを削除 */
-	public void delete(String id){
-		SQLiteDatabase db = getWritableDatabase();
-		db.delete(TIME_TABLE, "_id = ?", new String[] { id });
-		db.close();
-	}
-
-	/** idで指定したレコードを更新 */
-	public long update(TimeTableInfo info ,String id){
-		ContentValues values = convertToContentValues(info);
-		SQLiteDatabase db = getWritableDatabase();
-		long rec =db.update(TIME_TABLE, values, "_id = ?", new String[] { id });
-		db.close();
-		return rec;
-	}
-
-	/** レコードを取得 */
-	public List<TimeTableInfo> dayOfWeekAndTimeRead(String week, String time){
-		List<TimeTableInfo> list = new ArrayList<TimeTableInfo>();
-		SQLiteDatabase db = this.getReadableDatabase();
-		Cursor cursor = db.query(TIME_TABLE, ITEMS, "week = ? AND time_table = ?" , new String[] {week,time}, null, null, "time_table",null);
-		while(cursor.moveToNext()){
-			list.add(convertToTimeTableInfo(cursor));
-	   	}
-		cursor.close();
-		db.close();
-		return list;
-	}
-
-	/**
-	 * Cursor ー＞ TimeTableInfo
-	 */
-	private TimeTableInfo convertToTimeTableInfo(Cursor cursor) {
-		TimeTableInfo info = new TimeTableInfo();
-		info.setId(cursor.getInt(cursor.getColumnIndex("_id")));
-		info.setTitle(cursor.getString(cursor.getColumnIndex("title")));
-		info.setDayOfWeek(cursor.getString(cursor.getColumnIndex("week")));
-		info.setTimeTable(cursor.getString(cursor.getColumnIndex("time_table")));
-		info.setTodo(cursor.getString(cursor.getColumnIndex("todo")));
-		info.setType(cursor.getString(cursor.getColumnIndex("type")));
-		info.setUid(cursor.getString(cursor.getColumnIndex("uid")));
-		if (cursor.getInt(cursor.getColumnIndex("is_share")) == 0) {
-			info.setIsShare(false);
-		} else {
-			info.setIsShare(true);
-		}
-		return info;
-	}
-
-	/** TimeTableInfo ー＞ ContentValues */
-	private ContentValues convertToContentValues(TimeTableInfo info) {
-		ContentValues values = new ContentValues();
-		values.put("title", info.getTitle());
-		values.put("week", info.getDayOfWeek());
-		values.put("time_table",info.getTimeTable());
-		values.put("todo", info.getTodo());
-		values.put("type", info.getType());
-		values.put("uid",info.getUid());
-		values.put("is_share",info.getIsShare());
-		return values;
-	}
-
-	/*--------ここからあいやさんエリア--------*/
-
-//	public static void weekDaySelectAndView(SQLiteDatabase db, String selectedWeekDay){
-//		String sql
-//		Cursor cursor = db.rawQuery(sql, null);
-//	}
 }
