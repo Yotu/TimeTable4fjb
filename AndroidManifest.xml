@@ -20,11 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:label="@string/app_name" android:name="TimeTableEditActivity"></activity>
-        <activity android:name="TimeTableListActivity" android:label="@string/app_name"></activity>
-        <activity android:name="TimeTableDayOfWeekActivity" android:label="@string/app_name"></activity>
-        <activity android:name="TimeTableDetaileActivity" android:label="@string/app_name"></activity>
-        <activity android:name="TimeTableList" android:label="@string/app_name"></activity>
-        <activity android:name="AddVarietyActivity"></activity>
+       <activity android:name="AddVarietyActivity"></activity>
         <activity android:name="PrefsActivity"></activity>
     </application>
 

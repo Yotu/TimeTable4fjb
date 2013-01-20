@@ -5,7 +5,7 @@
     <string name="app_name">タイムテーブル</string>
     <string name="new_add">新規登録</string>
     <string name="list_show">時間割確認</string>
-    <string name="title">タイトル</string>
+    <string name="title">授業名</string>
     <string name="type">種類</string>
     <string name="department">学科</string>
     <string name="practical">実技</string>
@@ -46,9 +46,9 @@
     </string-array>
         <string name="taimetable">時間割</string>
         <string name="choice_week">曜日を選択してください。</string>
-        <string name="todo">Todo：</string>
-        <string name="share">シェアする</string>
-        <string name="title_label">タイトル：</string>
+        <string name="todo">備考：</string>
+        <string name="share">時間割をシェアする</string>
+        <string name="title_label">授業科目名：</string>
         <string name="edit">編集</string>
         <string name="delBtn">削除</string>
         <string name="types">予定の種類：</string>
@@ -135,4 +135,7 @@
         <string name="fri">金</string>
         <string name="sat">土</string>
         <string name="sun">日</string>
+        <string name="place">場所</string>
+        <string name="Cancel">キャンセル</string>
+        <string name="bikoShare">備考情報を共有する</string>
 </resources>

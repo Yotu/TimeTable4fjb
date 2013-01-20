@@ -4,215 +4,219 @@
     android:layout_height="fill_parent"
     android:orientation="horizontal" >
 
-    <ScrollView
-        android:id="@+id/scrollView1"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.92" >
-
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
 
         <LinearLayout
-            android:id="@+id/linearLayout1"
+            android:id="@+id/titleLine"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-
-            <LinearLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:orientation="vertical" >
-
-                <LinearLayout
-                    android:id="@+id/linearLayout3"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
-
-
-                    <TextView
-                        android:id="@+id/textView1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/title" />
-
-
-
-                    <EditText
-                        android:id="@+id/title"
-                        android:layout_width="262dp"
-                        android:layout_height="wrap_content" android:inputType="textMultiLine">
-
-                        <requestFocus />
-                    </EditText>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearLayout8"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
-
-
-
-                    <TextView
-                        android:id="@+id/textView5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.09"
-                        android:text="@string/todo" />
-
-
-
-
-
-                    <EditText
-                        android:id="@+id/todo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="187dp"
-                        android:layout_weight="0.89" android:inputType="textMultiLine"/>
-
-                </LinearLayout>
-
-
-
-                <LinearLayout
-                    android:id="@+id/linearLayout4"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
-
-
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.02"
-                        android:text="@string/type" />
-
-                    <Button
-                        android:id="@+id/addVarietyButton"
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.02"
-                        android:text="@string/addVariety" />
-
-                    <Spinner
-                        android:id="@+id/type"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.12"
-                        android:entries="@array/types" />
-
-                </LinearLayout>
-
-
-
-
-
-
-                <LinearLayout
-                    android:id="@+id/linearLayout5"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
-
-
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.05"
-                        android:text="@string/week" />
-
-
-
-                    <LinearLayout
-                        android:id="@+id/linearLayout6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.01"
-                        android:orientation="vertical" >
-
-
-
-
-
-
-                        <Spinner
-                            android:id="@+id/week"
-                            android:layout_width="250dp"
-                            android:layout_height="wrap_content"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearLayout7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="0.05" >
-
-
-
-
-
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="63dp"
-                        android:layout_height="fill_parent"
-                        android:text="@string/taimetable" />
-
-
-
-
-
-
-                    <Spinner
-                        android:id="@+id/time_table"
-                        android:layout_width="240dp"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-
-
-
-<!--                 <TimePicker
-                    android:id="@+id/timePicker"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
--->
-
-                <LinearLayout
-                    android:id="@+id/linearLayout9"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
-
-
-
-                    <CheckBox
-                        android:id="@+id/share"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/share" />
-
-                </LinearLayout>
-
-
-
-
-
-
-                <Button
-                    android:id="@+id/edit"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add" />
-
-            </LinearLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/title" />
+
+            <EditText
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:inputType="textMultiLine" >
+
+                <requestFocus />
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/weekLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/week" />
+
+            <Spinner
+                android:id="@+id/week"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center"
+                android:layout_weight="1.5" />
+
+            <TextView
+                android:id="@+id/TextView01"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/place" />
+
+            <EditText
+                android:id="@+id/EditText01"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center"
+                android:layout_weight="2"
+                android:ems="10"
+                android:inputType="textMultiLine" />
 
         </LinearLayout>
 
-    </ScrollView>
+        <LinearLayout
+            android:id="@+id/timeLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center"
+                android:layout_weight="4"
+                android:text="@string/taimetable" />
+
+            <Spinner
+                android:id="@+id/time_table"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/typLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="@string/type" />
+
+            <Spinner
+                android:id="@+id/type"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:entries="@array/types" />
+
+            <Button
+                android:id="@+id/addVarietyButton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="4"
+                android:text="@string/addVariety" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/shareTimeLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/share"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="@string/share" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bikoLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="@string/todo" />
+
+            <EditText
+                android:id="@+id/todo"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:inputType="textMultiLine" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/shareBikoLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/bikoShare"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="@string/bikoShare" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/kuuhaku"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2" >
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/edit"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="@string/add" />
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="@string/Cancel" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

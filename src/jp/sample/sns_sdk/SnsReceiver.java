@@ -93,8 +93,6 @@ public class SnsReceiver {
 					//#container#でフィールドと値を分割
 					// 例) title#container#test
 
-
-
 					String[] column = item.split("#container#");
 
 					String value = (column.length == 2)?column[1]:"";
@@ -124,6 +122,7 @@ public class SnsReceiver {
 						table = "creator";
 						field = "androidid";
 					}
+
 					//Time_Tableに格納するために、それぞれのＩＤとテキストを比較
 					if(!(table == null) || !(field == null)){
 						c = db.rawQuery("SELECT * FROM time,'"+ table +"' WHERE '" + column[0] + "' like '"+ table +"'.'" + field +"';",null);
