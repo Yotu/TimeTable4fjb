@@ -18,6 +18,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -83,13 +84,16 @@ public class SnsReceiver {
 				String[] items = sLine.split("\t");
 
 				TimeTableInfo info = new TimeTableInfo();
+				TimeTableSqlHelper h = new TimeTableSqlHelper(null);
+				SQLiteDatabase db = h.getReadableDatabase();
+				ContentValues values = new ContentValues();
 
 				for(String item:items){
 					//フィールド名と値は#container#で区切られている為
 					//#container#でフィールドと値を分割
 					// 例) title#container#test
-					TimeTableSqlHelper h = new TimeTableSqlHelper(null);
-					SQLiteDatabase db = h.getReadableDatabase();
+
+
 
 					String[] column = item.split("#container#");
 
@@ -128,25 +132,19 @@ public class SnsReceiver {
 					//データを検索
 					c.moveToFirst();
 					int get = c.getCount();
-
 					for (int i = 0; i < get; i++) {
 					    getData =c.getInt(0);
 					    c.moveToNext();
 					}
+					//insert用のvaluesに追加していく
+					values.put(table,getData);
 					c.close();
 
-					//検索したデータを、然るべき変数に格納
-					if(table.equals("subject")){
-						subjectId = getData;
-					}else if(table.equals("type")){
-						typeId = getData;
-					}else if(table.equals("time_table")){
-						timeId = getData;
-					}else if(table.equals("creator")){
-						creatorId = getData;
-					}
 				}
+
+
 				list.add(info);
+				h.insert("time",values);
 			}
 			objBuf.close();
 			objReader.close();
