@@ -27,10 +27,19 @@ public class SnsReceiver {
 	/** 受信用用URL*/
 	private String RECEIVE_URL = "http://203.138.125.240/api/httpdocs/s01_rcv.php";
 
+	private Cursor c;
 	private int timeId;
 	private int subjectId;
 	private int typeId;
 	private int creatorId;
+	private int week;
+	private int getData;
+	private String todo;
+	private String table;
+	private String field;
+	private String[] weekArray = {"日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","土曜日"};
+
+
 
 
 	/***
@@ -80,27 +89,62 @@ public class SnsReceiver {
 					//#container#でフィールドと値を分割
 					// 例) title#container#test
 					TimeTableSqlHelper h = new TimeTableSqlHelper(null);
+					SQLiteDatabase db = h.getReadableDatabase();
 
 					String[] column = item.split("#container#");
 
 					String value = (column.length == 2)?column[1]:"";
+
 					if ("title".equals(column[0])) {
 						info.setTitle(value);
-						SQLiteDatabase db = getReadableDatabase();
-						Cursor c = db.rawQuery("select～", null);
+						table = "subject";
+						field = "subject_name";
 					} else if ("type".equals(column[0])) {
 						info.setType(value);
+						table = "type";
+						field = "type";
 					} else if ("week".equals(column[0])) {
 						info.setDayOfWeek(value);
+						for(int i = 0;column[0].equals(weekArray);i++){
+							week = i;
+						}
 					} else if ("time_table".equals(column[0])) {
 						info.setTimeTable(value);
+						table = "time_table";
+						field = "time_name";
 					} else if ("todo".equals(column[0])) {
 						info.setTodo(value);
+						todo = column[0];
 					} else if ("uid".equals(column[0])) {
 						info.setUid(value);
+						table = "creator";
+						field = "androidid";
 					}
 					//Time_Tableに格納するために、それぞれのＩＤとテキストを比較
+					if(!(table == null) || !(field == null)){
+						c = db.rawQuery("SELECT * FROM time,'"+ table +"' WHERE '" + column[0] + "' like '"+ table +"'.'" + field +"';",null);
+					}
 
+					//データを検索
+					c.moveToFirst();
+					int get = c.getCount();
+
+					for (int i = 0; i < get; i++) {
+					    getData =c.getInt(0);
+					    c.moveToNext();
+					}
+					c.close();
+
+					//検索したデータを、然るべき変数に格納
+					if(table.equals("subject")){
+						subjectId = getData;
+					}else if(table.equals("type")){
+						typeId = getData;
+					}else if(table.equals("time_table")){
+						timeId = getData;
+					}else if(table.equals("creator")){
+						creatorId = getData;
+					}
 				}
 				list.add(info);
 			}
