@@ -48,7 +48,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private int timeTableId;
 	/** シェア */
 	private CheckBox shareCb; //時間割のシェア
-	private CheckBox bikoShare;
+	private CheckBox bikoShareCb;
 	/** 場所  */
 	private EditText placeEdt;
 	/** ユニークID */
@@ -60,6 +60,15 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private Cursor c;
 	private String table;
 	private	int index;
+
+	private int subjectid;
+	private int typeid;
+	private int week;
+	private String[] weekArray = {"月曜日","火曜日","水曜日","木曜日","金曜日","土曜日","日曜日"};
+	private int timeid;
+	private int isShare = 0;
+	private int bikoShare = 0;
+	private int creatorid;
 
 	//アクティビティの開始時にボタンを登録する
 	public void onCreate(Bundle savedInstanceState) {
@@ -86,7 +95,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		typeSpr = (Spinner) findViewById(R.id.type);
 		//シェアボタンのインスタンス取得
 		shareCb = (CheckBox) findViewById(R.id.share); //時間割のシェア
-		bikoShare = (CheckBox) findViewById(R.id.bikoShare); //備考情報のシェア
+		bikoShareCb = (CheckBox) findViewById(R.id.bikoShare); //備考情報のシェア
 		//種類追加用ボタンのインスタンスを取得
 		addVarietyButton = (Button)findViewById(R.id.addVarietyButton);
 		addVarietyButton.setOnClickListener(new View.OnClickListener() {
@@ -203,7 +212,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		info.setType(typeSpr.getSelectedItem().toString());
 		info.setPlace(placeEdt.getText().toString());
 		info.setIsShare(shareCb.isChecked());
-		info.setBikoShare(bikoShare.isChecked());
+		info.setBikoShare(bikoShareCb.isChecked());
 		info.setUid(UID);
 
 		TimeTableSqlHelper h = new TimeTableSqlHelper(this);
@@ -219,13 +228,14 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			//検索結果ゼロ
 			Log.d(TAG,"検索結果ゼロ");
 			table = "subject";
-			Log.d(TAG,info.getTitle() +"/"+ info.getPlace());
 			ContentValues ct = new ContentValues();
 			ct.put("subject_name",info.getTitle());
 			ct.put("place", info.getPlace());
-			db.insert(table, null, ct);
-			Log.d(TAG,"追加完了");
+			subjectid =(int)db.insert(table, null, ct);
+			Log.d(TAG,"追加完了" + subjectid);
+
 		}
+		values.put("subjectid", subjectid);
 
 		///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		//					要確認箇所				//
@@ -238,29 +248,41 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			ContentValues ct = new ContentValues();
 			ct.put("androidid", androidid);
 			Log.d(TAG,"androidID insert");
-			db.insert(table,null,ct);
+			creatorid =(int)db.insert(table,null,ct);
+			Log.d(TAG,"追加完了"+creatorid);
 		}
+		values.put("creatorid", creatorid);
 		///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		//					ここに備考検索入れる　	//
 		///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 		//データベースにデータを保存
-		index = weekSpr.getSelectedItemPosition();
-		Log.d(TAG,index+":weekSpr");
-		sql = "SELECT time_name,subject_name,place,type,androidid " +
-				"FROM time,time_name,subject,type,creator,remarks " +
-				"WHERE time.timeid = time_name.timeid AND "+
-				"time.subjectid = subject.subjectid AND " +
-				"time.typeid = type.typeid AND " +
-				"time.creatorid = creator.creatorid;";
-		c = db.rawQuery(sql, null);
-		
+		week = weekSpr.getSelectedItemPosition();								//曜日のインデックス
+		typeid = typeSpr.getSelectedItemPosition();								//種類のインデックス
+		if(shareCb.isChecked()){
+			isShare = 1;														//時間割シェアのチェック判定
+		}
+		if(bikoShareCb.isChecked()){
+			bikoShare = 1;														//備考シェアのチェック判定
+		}
+		// 現在のUnixタイム取得
+        long currentTimeMillis = System.currentTimeMillis();
+        // 数値から文字列に変更
+        String timestamp =String.valueOf(currentTimeMillis);
+
+
+		values.put("timeid", timeid);
+		values.put("week", week);
+		values.put("typeid", typeid);
+		values.put("share", isShare);
+		values.put("uptime",timestamp);
+
 		try {
 			if(timeTableId != 0){
 				h.update(null, null, null, null);
 			}else{
 				Log.d(TAG,"data insert");
-				db.insert(null, null,null);
+				db.insert("time", null,values);
 			}
 		}catch(SQLiteException e){
 			e.printStackTrace();
