@@ -247,6 +247,14 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		//データベースにデータを保存
 		index = weekSpr.getSelectedItemPosition();
 		Log.d(TAG,index+":weekSpr");
+		sql = "SELECT time_name,subject_name,place,type,androidid " +
+				"FROM time,time_name,subject,type,creator,remarks " +
+				"WHERE time.timeid = time_name.timeid AND "+
+				"time.subjectid = subject.subjectid AND " +
+				"time.typeid = type.typeid AND " +
+				"time.creatorid = creator.creatorid;";
+		c = db.rawQuery(sql, null);
+		
 		try {
 			if(timeTableId != 0){
 				h.update(null, null, null, null);
