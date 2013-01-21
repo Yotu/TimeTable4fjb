@@ -89,6 +89,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	 */
 	public long insert(String table_name, ContentValues ct) {
 		Log.d(TAG, "insert");
+		db = getWritableDatabase();
 		long rec = db.insert(table_name,null, ct);
 		db.close();
 		return rec;
@@ -104,6 +105,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	public long update(String table_name, ContentValues ct, String whereCode, String[] whereParam) {
 		Log.d(TAG, "update");
 
+		db = getWritableDatabase();
 		long rec = db.update(table_name, ct, whereCode, whereParam);
 		db.close();
 
@@ -118,12 +120,11 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	 */
 	public long delete(String table_name, String where, String[] whereParam) {
 		Log.v(TAG, String.format("delete: where=%s whereParam=%s", where, whereParam));
-		SQLiteDatabase db = null;
+		db = getWritableDatabase();
 		long ret = -1;
 		try {
 			ret = db.delete(table_name, where, whereParam);
 		} catch (SQLException e) {
-
 		} finally {
 			if (db != null) {
 				db.close();
@@ -134,6 +135,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 
 	public void defaultTypeTable() {
 		Log.d(TAG, "defaultTypeTable");
+		db = getWritableDatabase();
 		db.rawQuery("delete from type;", null);
 		Log.d(TAG, "delete");
 		ContentValues ct = new ContentValues();
@@ -168,6 +170,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 
 	public void defaultTimeNameTable() {
 		Log.d(TAG, "defaultTimeNameTable");
+		db = getWritableDatabase();
 		db.rawQuery("delete from " + TIMENAME_TABLE, null);
 		ContentValues ct = new ContentValues();
 		Cursor c = null;
