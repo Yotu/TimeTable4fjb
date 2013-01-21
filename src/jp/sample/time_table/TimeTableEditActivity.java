@@ -255,6 +255,8 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		//					ここに備考検索入れる　	//
 		///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+		sql = "SELECT * FROM remarks WHERE  ";
+		
 
 		//データベースにデータを保存
 		week = weekSpr.getSelectedItemPosition();								//曜日のインデックス
