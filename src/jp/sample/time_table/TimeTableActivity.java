@@ -52,7 +52,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -736,51 +735,56 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 				" order by time_table ;", null); */
 		Log.d(TAG,"setCurrentDb");
 		//スタブ
-//		subject = new String[1];
-//		todo = new String[1];
-//		type = new String[1];
-//		place = new String[1];
-//		time_name = new String[2];
-//		subject[0] = "stab1";
-//		todo[0] = "stab2";
-//		type[0] = "stab3";
-//		place[0] = "stab4";
-//		time_name[0] = "stab5";
+		subject = new String[1];
+		todo = new String[1];
+		type = new String[1];
+		place = new String[1];
+		time_name = new String[2];
+		subject[0] = "stab1";
+		todo[0] = "stab2";
+		type[0] = "stab3";
+		place[0] = "stab4";
+		time_name[0] = "stab5";
 
 		//todo以外読み込み
-		Cursor cursor = db.rawQuery("SELECT time_name, subject_name, type, place" +
-									" FROM " + TimeTableSqlHelper.TIME_TABLE + ", " + TimeTableSqlHelper.TIMENAME_TABLE + ", " +
-										TimeTableSqlHelper.SUBJECT_TABLE+ ", " + TimeTableSqlHelper.TYPE_TABLE +
-									//結合
-									" WHERE " + TimeTableSqlHelper.TIME_TABLE+".timeid" + " = " + TimeTableSqlHelper.TIMENAME_TABLE+".timeid" +
-									" AND " + TimeTableSqlHelper.TIME_TABLE+".subjectid" + " = " + TimeTableSqlHelper.SUBJECT_TABLE+".subjectid" +
-									" AND " + TimeTableSqlHelper.TIME_TABLE+".typeid" +" = " + TimeTableSqlHelper.TYPE_TABLE+".typeid" +
-									//検索条件
-									" AND week = '" + currentWeekDay + "'" +
-									" AND time_name = '" + timeTrue[clickedItemNumber] + "'" +
-									";"
-							, null);
-		time_name = new String[cursor.getCount() + 1];
-		subject = new String[cursor.getCount()];
-		type = new String[cursor.getCount()];
-		place = new String[cursor.getCount()];
-		cursor.moveToFirst();
-		for(int i=0; i<cursor.getCount(); i++){
-			time_name[i] = cursor.getString(0);
-			subject[i] = cursor.getString(1);
-			type[i] = cursor.getString(2);
-			place[i] = cursor.getString(3);
-			Log.d("debug", "selected = " + time_name[i] +
-					",\n" + subject[i] +
-					",\n" + type[i] +
-					",\n" + place[i]
-			);
+//		Cursor cursor = db.rawQuery("SELECT time_name, subject_name, type, place" +
+//									" FROM " + TimeTableSqlHelper.TIME_TABLE + ", " + TimeTableSqlHelper.TIMENAME_TABLE + ", " +
+//										TimeTableSqlHelper.SUBJECT_TABLE+ ", " + TimeTableSqlHelper.TYPE_TABLE +
+//									//結合
+//									" WHERE " + TimeTableSqlHelper.TIME_TABLE+".timeid" + " = " + TimeTableSqlHelper.TIMENAME_TABLE+".timeid" +
+//									" AND " + TimeTableSqlHelper.TIME_TABLE+".subjectid" + " = " + TimeTableSqlHelper.SUBJECT_TABLE+".subjectid" +
+//									" AND " + TimeTableSqlHelper.TIME_TABLE+".typeid" +" = " + TimeTableSqlHelper.TYPE_TABLE+".typeid" +
+//									//検索条件
+//									" AND week = '" + currentWeekDay + "'" +
+//									" AND time_name = '" + timeTrue[clickedItemNumber] + "'" +
+//									";"
+//							, null);
+//		Cursor cursor = db.rawQuery("SELECT time_name" +
+//				" FROM " + TimeTableSqlHelper.TIME_TABLE +
+//				";"
+//		, null);
+//		time_name = new String[cursor.getCount() + 1];
+//		subject = new String[cursor.getCount()];
+//		type = new String[cursor.getCount()];
+//		place = new String[cursor.getCount()];
+//		cursor.moveToFirst();
+//		for(int i=0; i<cursor.getCount(); i++){
+//			time_name[i] = cursor.getString(0);
+//			subject[i] = cursor.getString(1);
+//			type[i] = cursor.getString(2);
+//			place[i] = cursor.getString(3);
+//			Log.d("debug", "selected = " + time_name[i] +
+//					",\n" + subject[i] +
+//					",\n" + type[i] +
+//					",\n" + place[i]
+//			);
+//
+//			cursor.moveToNext();
+//		}
 
-			cursor.moveToNext();
-		}
-
+//		cursor.close();
 		//remarks(todo)読み込み
-		todo = new String[cursor.getCount()];
+//		todo = new String[cursor.getCount()];
 
 		//createExpandList最初の分岐判定での配列オーバー対策、元からnullになっているのかもしれないが、書いておく
 		time_name[time_name.length-1] = null;
