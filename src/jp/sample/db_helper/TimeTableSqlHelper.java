@@ -11,6 +11,7 @@ import android.util.Log;
 public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	private final String TAG = "TimeTableSqlHelper";
 	private static final int DB_VERSION = 4;
+	SQLiteDatabase db;
 
 	/** データベース名 */
 	private static final String DB = "time_table.db";
@@ -73,7 +74,18 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	public TimeTableSqlHelper(Context context) {
 		super(context, DB, null, DB_VERSION);
 		Log.d(TAG, "timeTable");
+		if (db == null || !db.isOpen()){
+			Log.d(TAG,"オープン");
+		}else{
+			Log.d(TAG,"クローズ");
+		}
 	}
+
+	/*private void openSql(Context context){
+		Log.d(TAG,"openSql");
+		db = getWritableDatabase();
+	}*/
+
 
 	/** 新規追加
 	 * table_name: テーブル名
@@ -82,10 +94,8 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	 */
 	public long insert(String table_name, ContentValues ct) {
 		Log.d(TAG, "insert");
-		SQLiteDatabase db = getWritableDatabase();
-		long rec = db.insert(table_name, null, ct);
+		long rec = db.insert(table_name,null, ct);
 		db.close();
-
 		return rec;
 	}
 
@@ -99,7 +109,6 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	public long update(String table_name, ContentValues ct, String whereCode, String[] whereParam) {
 		Log.d(TAG, "update");
 
-		SQLiteDatabase db = getWritableDatabase();
 		long rec = db.update(table_name, ct, whereCode, whereParam);
 		db.close();
 
@@ -117,7 +126,6 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = null;
 		long ret = -1;
 		try {
-			db = getWritableDatabase();
 			ret = db.delete(table_name, where, whereParam);
 		} catch (SQLException e) {
 
@@ -131,7 +139,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 
 	public void defaultTypeTable() {
 		Log.d(TAG, "defaultTypeTable");
-		getWritableDatabase().rawQuery("delete from " + TYPE_TABLE, null);
+		db.rawQuery("delete from " + TYPE_TABLE, null);
 		ContentValues ct = new ContentValues();
 		Cursor c = null;
 		try {
@@ -157,11 +165,12 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			Log.d(TAG, "SQLException");
 			e.printStackTrace();
 		}
+		db.close();
 	}
 
 	public void defaultTimeNameTable() {
 		Log.d(TAG, "defaultTimeNameTable");
-		getWritableDatabase().rawQuery("delete from " + TIMENAME_TABLE, null);
+		db.rawQuery("delete from " + TIMENAME_TABLE, null);
 		ContentValues ct = new ContentValues();
 		Cursor c = null;
 		try {
@@ -177,6 +186,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			Log.d(TAG, "SQLException");
 			e.printStackTrace();
 		}
+		db.close();
 	}
 
 	@Override
@@ -188,6 +198,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		db.execSQL(CREATE_TIME);
 		db.execSQL(CREATE_CREATOR);
 		db.execSQL(CREATE_REMARKS);
+
 	}
 
 	@Override

@@ -152,8 +152,6 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			timeTableId = Integer.parseInt(id);//更新データのためIdを保持
 
 			//データベースからデータを取得する
-			TimeTableSqlHelper h = new TimeTableSqlHelper(this);
-			SQLiteDatabase db = h.getReadableDatabase();
 
 			//titleEdt.setText(info.getTitle());
 
@@ -185,7 +183,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			//}
 
 			//shareCb.setChecked(info.getIsShare());
-			h.close();
+			//h.close();
 		}
 
 		//強制終了用処理
@@ -196,6 +194,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 
 	public void onClick(View v) {
+		Log.d(TAG,"TimeTableEditActivity onClick");
 		TimeTableInfo info = new TimeTableInfo();
 		info.setTitle(titleEdt.getText().toString());
 		info.setDayOfWeek(weekSpr.getSelectedItem().toString());
@@ -218,12 +217,14 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		c = db.rawQuery(sql, null);
 		if(c.getCount() == 0){
 			//検索結果ゼロ
+			Log.d(TAG,"検索結果ゼロ");
 			table = "subject";
+			Log.d(TAG,info.getTitle() +"/"+ info.getPlace());
 			ContentValues ct = new ContentValues();
 			ct.put("subject_name",info.getTitle());
 			ct.put("place", info.getPlace());
-			h.insert(table, ct);
-			Log.d("logloglog","追加完了");
+			db.insert(table, null, ct);
+			Log.d(TAG,"追加完了");
 		}
 
 		///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
@@ -236,7 +237,8 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			table = "creator";
 			ContentValues ct = new ContentValues();
 			ct.put("androidid", androidid);
-			h.insert(table, ct);
+			Log.d(TAG,"androidID insert");
+			db.insert(table,null,ct);
 		}
 		///_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 		//					ここに備考検索入れる　	//
@@ -244,19 +246,18 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 		//データベースにデータを保存
 		index = weekSpr.getSelectedItemPosition();
-		Log.d("spinner",index+":weekSpr");
+		Log.d(TAG,index+":weekSpr");
 		try {
 			if(timeTableId != 0){
 				h.update(null, null, null, null);
 			}else{
-				h.insert(null, null);
+				Log.d(TAG,"data insert");
+				db.insert(null, null,null);
 			}
 		}catch(SQLiteException e){
 			e.printStackTrace();
 			Toast.makeText(this, "データの保存に失敗しました。", Toast.LENGTH_LONG);
 			return;
-		} finally {
-			h.close();
 		}
 
 		//データを送信する
@@ -274,6 +275,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 		setResult(RESULT_OK);
 		finish();
+		h.close();
 	}
 
 	@Override
@@ -287,7 +289,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			if(resultCode == RESULT_OK){
 				Bundle bundle = data.getExtras();	//Extraがないときにこれするとエラー出る（落ちる）みたいなので注意
 				String value = bundle.getString("varietyWord");
-				Log.d("debug", "adding value is " + value);
+				Log.d(TAG, "adding value is " + value);
 				MyDbHelper.insert(db, value);
 			}else if(resultCode == RESULT_CANCELED){
 				//				Log.d("debug", "adding canceled");

@@ -730,6 +730,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 		/*Cursor cursor = db.rawQuery("select title, todo, type, time_table from " + TimeTableSqlHelper.TIME_TABLE +
 				" where week = '" + currentWeekDay + "'" +
 				" order by time_table ;", null); */
+		Log.d(TAG,"setCurrentDb");
 		Cursor cursor = db.rawQuery("SELECT time_name,subject_name,place,type,androidid " +
 				"FROM time,time_name,subject,type,creator,remarks " +
 				"WHERE time.timeid = time_name.timeid AND "+
