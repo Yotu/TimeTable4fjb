@@ -136,9 +136,14 @@ public final class R {
         public static final int third=0x7f04001d;
         public static final int thu=0x7f04002d;
         public static final int thursday=0x7f04000e;
+        /**  追加 
+         */
+        public static final int time=0x7f040034;
+        public static final int timeshare=0x7f040035;
         public static final int title=0x7f040004;
         public static final int title_label=0x7f040016;
         public static final int todo=0x7f040014;
+        public static final int todoshare=0x7f040036;
         public static final int tue=0x7f04002b;
         public static final int tuesday=0x7f04000c;
         public static final int type=0x7f040005;

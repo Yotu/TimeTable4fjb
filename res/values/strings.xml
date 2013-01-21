@@ -138,4 +138,9 @@
         <string name="place">場所</string>
         <string name="Cancel">キャンセル</string>
         <string name="bikoShare">備考情報を共有する</string>
+<!-- 追加 -->
+		<string name="time">時限</string>
+		<string name="timeshare">時間割を共有する</string>
+		<string name="todoshare">備考を共有する</string>
+        
 </resources>

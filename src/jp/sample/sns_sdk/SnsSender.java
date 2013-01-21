@@ -17,17 +17,18 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 public class SnsSender {
-	private static String SEND_URL="http://203.138.125.240/api/httpdocs/index.php";
+	private static String SEND_URL = "http://203.138.125.240/api/httpdocs/index.php";
+
 	public void send(TimeTableInfo info) throws SendException {
 		if (info.getUid() == null || info.getUid().equals("")) {
 			throw new SendException("UIDが指定されていません。");
 		}
-		
+
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 
-		params.add(new BasicNameValuePair("title",info.getTitle()));
-		params.add(new BasicNameValuePair("week",info.getDayOfWeek()));
-		params.add(new BasicNameValuePair("time_table",info.getTimeTable()));
+		params.add(new BasicNameValuePair("title", info.getTitle()));
+		params.add(new BasicNameValuePair("week", info.getDayOfWeek()));
+		params.add(new BasicNameValuePair("time_table", info.getTimeTable()));
 		params.add(new BasicNameValuePair("todo", info.getTodo()));
 		params.add(new BasicNameValuePair("type", info.getType()));
 		params.add(new BasicNameValuePair("uid", info.getUid()));
@@ -35,15 +36,15 @@ public class SnsSender {
 		HttpPost httpPost = new HttpPost(SEND_URL);
 
 		try {
-			//パラメータ設定
+			// パラメータ設定
 			httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 			DefaultHttpClient client = new DefaultHttpClient();
 			HttpResponse httpResponse;
-			
+
 			httpResponse = client.execute(httpPost);
 
-			//リクエストのステータスを取得し、通信が成功しているか確認
-			//400以上のステータスコードはエラーなので終了する。
+			// リクエストのステータスを取得し、通信が成功しているか確認
+			// 400以上のステータスコードはエラーなので終了する。
 			if (httpResponse.getStatusLine().getStatusCode() >= 400) {
 				throw new SendException();
 			}
@@ -62,8 +63,6 @@ public class SnsSender {
 		} catch (IOException e) {
 			throw new SendException(e);
 		}
-
-		
 
 	}
 }

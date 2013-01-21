@@ -22,10 +22,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-
 public class SnsReceiver {
 
-	/** 受信用用URL*/
+	/** 受信用用URL */
 	private String RECEIVE_URL = "http://203.138.125.240/api/httpdocs/s01_rcv.php";
 
 	private Cursor c;
@@ -38,14 +37,13 @@ public class SnsReceiver {
 	private String todo;
 	private String table;
 	private String field;
-	private String[] weekArray = {"日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","土曜日"};
-
-
-
+	private String[] weekArray = { "日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日",
+			"土曜日" };
 
 	/***
-	 *
-	 * @param userName ご自分のユーザ名を指定して下さい。
+	 * 
+	 * @param userName
+	 *            ご自分のユーザ名を指定して下さい。
 	 * @return
 	 */
 	public List<TimeTableInfo> receive(String userName) throws ReceiveException {
@@ -53,34 +51,33 @@ public class SnsReceiver {
 		HttpClient objHttp = new DefaultHttpClient();
 
 		try {
-			//Postリクエストの準備を行う。
+			// Postリクエストの準備を行う。
 			HttpPost objPost = new HttpPost(RECEIVE_URL);
 
-			//POSTするデータを設定
-			//自分のデータ以外のスケジュールを取得するためにuserNameを渡す。
+			// POSTするデータを設定
+			// 自分のデータ以外のスケジュールを取得するためにuserNameを渡す。
 			List<NameValuePair> objValuePairs = new ArrayList<NameValuePair>(2);
-			objValuePairs.add(new BasicNameValuePair("uid",userName));
+			objValuePairs.add(new BasicNameValuePair("uid", userName));
 			objPost.setEntity(new UrlEncodedFormEntity(objValuePairs, "UTF-8"));
 
 			HttpResponse objResponse = objHttp.execute(objPost);
 
-
-			//リクエストのステータスを取得し、通信が成功しているか確認
-			//400以上のステータスコードはエラーなので終了する。
+			// リクエストのステータスを取得し、通信が成功しているか確認
+			// 400以上のステータスコードはエラーなので終了する。
 			if (objResponse.getStatusLine().getStatusCode() >= 400) {
 				throw new ReceiveException();
 			}
 
-			//戻って来たものStreamで読み込み
+			// 戻って来たものStreamで読み込み
 			InputStream objStream = objResponse.getEntity().getContent();
 			InputStreamReader objReader = new InputStreamReader(objStream);
 			BufferedReader objBuf = new BufferedReader(objReader);
 
-			//一レコードにあたるデータを読み込み
+			// 一レコードにあたるデータを読み込み
 			String sLine;
-			while((sLine = objBuf.readLine()) != null){
-				//1つのフィールドは\tで区切られている為
-				//\tで分割
+			while ((sLine = objBuf.readLine()) != null) {
+				// 1つのフィールドは\tで区切られている為
+				// \tで分割
 				String[] items = sLine.split("\t");
 
 				TimeTableInfo info = new TimeTableInfo();
@@ -88,14 +85,14 @@ public class SnsReceiver {
 				SQLiteDatabase db = h.getReadableDatabase();
 				ContentValues values = new ContentValues();
 
-				for(String item:items){
-					//フィールド名と値は#container#で区切られている為
-					//#container#でフィールドと値を分割
+				for (String item : items) {
+					// フィールド名と値は#container#で区切られている為
+					// #container#でフィールドと値を分割
 					// 例) title#container#test
 
 					String[] column = item.split("#container#");
 
-					String value = (column.length == 2)?column[1]:"";
+					String value = (column.length == 2) ? column[1] : "";
 
 					if ("title".equals(column[0])) {
 						info.setTitle(value);
@@ -107,7 +104,7 @@ public class SnsReceiver {
 						field = "type";
 					} else if ("week".equals(column[0])) {
 						info.setDayOfWeek(value);
-						for(int i = 0;column[0].equals(weekArray);i++){
+						for (int i = 0; column[0].equals(weekArray); i++) {
 							week = i;
 						}
 					} else if ("time_table".equals(column[0])) {
@@ -123,37 +120,37 @@ public class SnsReceiver {
 						field = "androidid";
 					}
 
-					//Time_Tableに格納するために、それぞれのＩＤとテキストを比較
-					if(!(table == null) || !(field == null)){
-						c = db.rawQuery("SELECT * FROM time,'"+ table +"' WHERE '" + column[0] + "' like '"+ table +"'.'" + field +"';",null);
+					// Time_Tableに格納するために、それぞれのＩＤとテキストを比較
+					if (!(table == null) || !(field == null)) {
+						c = db.rawQuery("SELECT * FROM time,'" + table
+								+ "' WHERE '" + column[0] + "' like '" + table
+								+ "'.'" + field + "';", null);
 					}
 
-					//データを検索
+					// データを検索
 					c.moveToFirst();
 					int get = c.getCount();
 					for (int i = 0; i < get; i++) {
-					    getData =c.getInt(0);
-					    c.moveToNext();
+						getData = c.getInt(0);
+						c.moveToNext();
 					}
-					//insert用のvaluesに追加していく
-					values.put(table,getData);
+					// insert用のvaluesに追加していく
+					values.put(table, getData);
 					c.close();
 
 				}
 
-
 				list.add(info);
-				h.insert("time",values);
+				h.insert("time", values);
 			}
 			objBuf.close();
 			objReader.close();
 			objStream.close();
 
-		}catch (IOException e){
+		} catch (IOException e) {
 			throw new ReceiveException(e);
 		}
 		return list;
 	}
-
 
 }

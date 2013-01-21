@@ -10,8 +10,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
 	private static final String DB_NAME = "lists.sqlite";
 	public static final String TABLE = "type_table";
 	private static final int DB_VERSION = 4;
-	private static final String CREATE_TABLE =
-			"create table " + TABLE + "("
+	private static final String CREATE_TABLE = "create table " + TABLE + "("
 			+ "id integer primary key autoincrement ,"
 			+ "variety varchar(15) not null);";
 
@@ -32,11 +31,11 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
 	}
 
-	public static void insert(SQLiteDatabase db, String varietyValue){
+	public static void insert(SQLiteDatabase db, String varietyValue) {
 		ContentValues cv = new ContentValues();
 		cv.put("variety", varietyValue);
 		long id = db.insert(TABLE, null, cv);
-		if(id == -1){
+		if (id == -1) {
 			Log.d("debug", "DBが不正です、データが追加できませんでした");
 		}
 	}
