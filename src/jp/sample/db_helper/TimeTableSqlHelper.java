@@ -175,10 +175,10 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		ContentValues ct = new ContentValues();
 		Cursor c = null;
 		try {
-			for (int i = 0; i < 6; i++) {
-				c = getReadableDatabase().rawQuery("select * from " + TIMENAME_TABLE + " where time_name like '" + ((i + 1) + "限目") + "';", null);
+			for (int i = 0; i < 8; i++) {
+				c = getReadableDatabase().rawQuery("select * from " + TIMENAME_TABLE + " where time_name like '" + (i + "限目") + "';", null);
 				if (c.getCount() <= 0) {
-					ct.put("time_name",  (i + 1) + "限目");
+					ct.put("time_name",  i + "限目");
 					insert(TIMENAME_TABLE, ct);
 					ct.clear();
 				}
