@@ -145,7 +145,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
 		Log.d(TAG,"dbHelper on ");
 		dbHelper.defaultTypeTable();
 		Log.d(TAG,"dbHelper out");
@@ -735,51 +735,52 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 				" where week = '" + currentWeekDay + "'" +
 				" order by time_table ;", null); */
 		Log.d(TAG,"setCurrentDb");
-		int week=0;
-		while(weekDayTrue[week].equals(currentWeekDay)){
-			week++;
-		}
-		Cursor cursor = db.rawQuery("SELECT time_name,subject_name,place,type,androidid " +
-				"FROM time,time_name,subject,type,creator,remarks " +
-				"WHERE time.week =" + week +" AND "+   //主キー曜日を元に問い合わせる
-				"time.timeid = time_name.timeid AND "+
-				"time.subjectid = subject.subjectid AND " +
-				"time.typeid = type.typeid AND " +
-				"time.creatorid = creator.creatorid " +
-				"ORDER BY time.timeid ;", null);
-		Log.d(TAG,""+ cursor.getCount());
+		//スタブ
+//		subject = new String[1];
+//		todo = new String[1];
+//		type = new String[1];
+//		place = new String[1];
+//		time_name = new String[2];
+//		subject[0] = "stab1";
+//		todo[0] = "stab2";
+//		type[0] = "stab3";
+//		place[0] = "stab4";
+//		time_name[0] = "stab5";
+
+		//todo以外読み込み
+		Cursor cursor = db.rawQuery("SELECT time_name, subject_name, type, place" +
+									" FROM " + TimeTableSqlHelper.TIME_TABLE + ", " + TimeTableSqlHelper.TIMENAME_TABLE + ", " +
+										TimeTableSqlHelper.SUBJECT_TABLE+ ", " + TimeTableSqlHelper.TYPE_TABLE +
+									//結合
+									" WHERE " + TimeTableSqlHelper.TIME_TABLE+".timeid" + " = " + TimeTableSqlHelper.TIMENAME_TABLE+".timeid" +
+									" AND " + TimeTableSqlHelper.TIME_TABLE+".subjectid" + " = " + TimeTableSqlHelper.SUBJECT_TABLE+".subjectid" +
+									" AND " + TimeTableSqlHelper.TIME_TABLE+".typeid" +" = " + TimeTableSqlHelper.TYPE_TABLE+".typeid" +
+									//検索条件
+									" AND week = '" + currentWeekDay + "'" +
+									" AND time_name = '" + timeTrue[clickedItemNumber] + "'" +
+									";"
+							, null);
+		time_name = new String[cursor.getCount() + 1];
 		subject = new String[cursor.getCount()];
-		todo = new String[cursor.getCount()];
 		type = new String[cursor.getCount()];
 		place = new String[cursor.getCount()];
-		time_name = new String[cursor.getCount() + 1];
 		cursor.moveToFirst();
 		for(int i=0; i<cursor.getCount(); i++){
 			time_name[i] = cursor.getString(0);
 			subject[i] = cursor.getString(1);
-			place[i] = cursor.getString(2);
-			type[i] = cursor.getString(3);
+			type[i] = cursor.getString(2);
+			place[i] = cursor.getString(3);
+			Log.d("debug", "selected = " + time_name[i] +
+					",\n" + subject[i] +
+					",\n" + type[i] +
+					",\n" + place[i]
+			);
+
 			cursor.moveToNext();
-			Log.d(TAG, time_name[i]+" "+subject[i]);
 		}
-		//		for(int i=0; i<time_table.length-1; i++){
-		/*	以下primary key(week, time_table)を使うことで不要になった処理
-			//title   |  week  | time_table
-			//test1   | 月曜日 | 1限目
-			//test1-1 | 月曜日 | 1限目
-			//のようになっているとcreateExpandListのnulljugdがおかしくなってしまうことの対処
-//			Log.d("debug", time_table[i] + " : " + time_table[i+1] + " = " + (time_table[i].equals(time_table[i+1])));
-//			if(time_table[i].equals(time_table[i+1])){
-//				String distDeleteSql = "delete from " + TimeTableSqlHelper.TIME_TABLE +
-//								" where title = '" + title[i] + "'" +
-//								" and week = '" + currentWeekDay + "'" +
-//								" and time_table = '" + time_table[i] + "'" +
-//								" and todo = '" + todo[i] + "'" +
-//								" and type = '" + type[i] + "'" +
-//								";";
-//				db.execSQL(distDeleteSql);
-//			}
-//		}*/
+
+		//remarks(todo)読み込み
+		todo = new String[cursor.getCount()];
 
 		//createExpandList最初の分岐判定での配列オーバー対策、元からnullになっているのかもしれないが、書いておく
 		time_name[time_name.length-1] = null;
