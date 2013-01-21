@@ -73,12 +73,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 
 	public TimeTableSqlHelper(Context context) {
 		super(context, DB, null, DB_VERSION);
-		Log.d(TAG, "timeTable");
-		if (db == null || !db.isOpen()){
-			Log.d(TAG,"オープン");
-		}else{
-			Log.d(TAG,"クローズ");
-		}
+		
 	}
 
 	/*private void openSql(Context context){
@@ -139,9 +134,12 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 
 	public void defaultTypeTable() {
 		Log.d(TAG, "defaultTypeTable");
-		db.rawQuery("delete from " + TYPE_TABLE, null);
+		db.rawQuery("delete from type;", null);
+		Log.d(TAG, "delete");
 		ContentValues ct = new ContentValues();
-		Cursor c = null;
+		Cursor c;
+		db.execSQL(CREATE_TYPE);
+		Log.d(TAG,"create");
 		try {
 				c = getReadableDatabase().rawQuery("select * from " + TYPE_TABLE + " where type like '講義';", null);
 				if (c.getCount() <= 0) {

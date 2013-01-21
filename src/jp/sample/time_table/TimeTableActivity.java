@@ -110,7 +110,7 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 	private Intent intent;
 
 	//データ関連
-	private TimeTableSqlHelper dbHelper;
+	private TimeTableSqlHelper dbHelper = new TimeTableSqlHelper(this);
 	private SQLiteDatabase db;
 	private SharedPreferences getPreference;
 
@@ -145,6 +145,10 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		Log.d(TAG,"dbHelper on ");
+		dbHelper.defaultTypeTable();
+		Log.d(TAG,"dbHelper out");
 		endFlag = false;
 
 		//新規登録ボタンのインスタンス生成
@@ -731,12 +735,19 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 				" where week = '" + currentWeekDay + "'" +
 				" order by time_table ;", null); */
 		Log.d(TAG,"setCurrentDb");
+		int week=0;
+		while(weekDayTrue[week].equals(currentWeekDay)){
+			week++;
+		}
 		Cursor cursor = db.rawQuery("SELECT time_name,subject_name,place,type,androidid " +
 				"FROM time,time_name,subject,type,creator,remarks " +
-				"WHERE time.timeid = time_name.timeid AND "+
+				"WHERE time.week =" + week +" AND "+   //主キー曜日を元に問い合わせる
+				"time.timeid = time_name.timeid AND "+
 				"time.subjectid = subject.subjectid AND " +
 				"time.typeid = type.typeid AND " +
-				"time.creatorid = creator.creatorid;", null);
+				"time.creatorid = creator.creatorid " +
+				"ORDER BY time.timeid ;", null);
+		Log.d(TAG,""+ cursor.getCount());
 		subject = new String[cursor.getCount()];
 		todo = new String[cursor.getCount()];
 		type = new String[cursor.getCount()];
@@ -748,8 +759,8 @@ public class TimeTableActivity extends Activity implements OnClickListener, OnGr
 			subject[i] = cursor.getString(1);
 			place[i] = cursor.getString(2);
 			type[i] = cursor.getString(3);
-
 			cursor.moveToNext();
+			Log.d(TAG, time_name[i]+" "+subject[i]);
 		}
 		//		for(int i=0; i<time_table.length-1; i++){
 		/*	以下primary key(week, time_table)を使うことで不要になった処理
