@@ -55,6 +55,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private static String androidid = android.provider.Settings.Secure.ANDROID_ID;
 
 	private MyDbHelper dbHelper;
+	private TimeTableSqlHelper sqlHelper;
 	private SQLiteDatabase db;
 	private Cursor c;
 	private String table;
@@ -63,8 +64,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private int subjectid;
 	private int typeid;
 	private int week;
-	private String[] weekArray = { "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日",
-			"日曜日" };
+	private String[] weekArray = { "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日", "日曜日" };
 	private int timeid;
 	private int isShare = 0;
 	private int bikoShare = 0;
@@ -114,7 +114,12 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		});
 
 		dbHelper = new MyDbHelper(this);
-		db = dbHelper.getWritableDatabase();
+		sqlHelper = new TimeTableSqlHelper(this);
+		//db = dbHelper.getWritableDatabase();
+		
+		Log.d(TAG, "dummyDataInsertを実行");
+		sqlHelper.dummyDataInsert();
+		
 	}
 
 	// フォアグラウンドになった際に処理が実行

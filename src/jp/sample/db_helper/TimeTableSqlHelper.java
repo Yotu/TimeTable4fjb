@@ -127,9 +127,9 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		 * 種類
 		 * 
 		 */
-		db.rawQuery("insert into subject values(null, 'Java演習', '204');", null);
-		db.rawQuery("insert into subject vlaues(null, 'コンピュータ・システム', '303');", null);
-		db.rawQuery("insert into subject values(null, 'Office演習', '401');", null);
+		db.rawQuery("insert into subject values(null, 'Java演習', '204', '朝賀');", null);
+		db.rawQuery("insert into subject vlaues(null, 'コンピュータ・システム', '303', '大谷');", null);
+		db.rawQuery("insert into subject values(null, 'Office演習', '401', '石井');", null);
 		
 		defaultTypeTable();
 		db.rawQuery("insert into type values(null, '私リカちゃん');", null);
