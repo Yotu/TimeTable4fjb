@@ -27,8 +27,8 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	private static final String CREATE_TIME = "create table " + TIME_TABLE
 			+ "(" + "week integer not null," + "timeid integer not null,"
 			+ "subjectid integer not null,"
-			+ "typeid integer not null default 0,"
-			+ "share integer not null default 0,"
+			+ "typeid integer not null default 1,"
+			+ "share integer not null default 1,"
 			+ "creatorid integer not null," + "uptime timestamp not null,"
 			+ "primary key(week, timeid)" + ");";
 	private static final String CREATE_TIMENAME = "create table "
@@ -39,7 +39,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			+ SUBJECT_TABLE + "("
 			+ "subjectid integer primary key autoincrement,"
 			+ "subject_name varchar(12) not null,"
-			+ "place varchar(12) not null," + "charge varchar(10) default null"
+			+ "place varchar(12)"
 			+ ");";
 	private static final String CREATE_TYPE = "create table " + TYPE_TABLE
 			+ "(" + "typeid integer primary key autoincrement,"
@@ -47,8 +47,8 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	private static final String CREATE_CREATOR = "create table "
 			+ CREATOR_TABLE + "("
 			+ "creatorid integer primary key autoincrement,"
-			+ "androidid varchar(15) not null," + "userid varchar(20),"
-			+ "password varchar(20)" + ");";
+			+ "userid varchar(20),"
+			+ ");";
 	private static final String CREATE_REMARKS = "create table "
 			+ REMARKS_TABLE + "(" + "date timestamp not null,"
 			+ "timeid integer default null," + "remarks text,"
@@ -60,11 +60,6 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		super(context, DB, null, DB_VERSION);
 
 	}
-
-	/*
-	 * private void openSql(Context context){ Log.d(TAG,"openSql"); db =
-	 * getWritableDatabase(); }
-	 */
 
 	/**
 	 * 新規追加 table_name: テーブル名 ct: 追加データ
@@ -127,9 +122,9 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		 * 種類
 		 *
 		 */
-		db.rawQuery("insert into subject values(null, 'Java演習', '204', '朝賀');", null);
-		db.rawQuery("insert into subject values(null, 'コンピュータ・システム', '303', '大谷');", null);
-		db.rawQuery("insert into subject values(null, 'Office演習', '401', '石井');", null);
+		db.rawQuery("insert into subject values(null, 'Java演習', '204');", null);
+		db.rawQuery("insert into subject values(null, 'コンピュータ・システム', '303');", null);
+		db.rawQuery("insert into subject values(null, 'Office演習', '401');", null);
 		Log.d(TAG,"３つは追加した");
 		db.rawQuery("insert into type values(null, '私リカちゃん');", null);
 		Log.d(TAG,"リカちゃん");
