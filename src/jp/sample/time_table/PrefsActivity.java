@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,6 +18,7 @@ public class PrefsActivity extends Activity implements OnItemSelectedListener,
 	private Spinner intSpin;
 	private Editor edit;
 	private Button returnButton;
+	public static final int init =0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

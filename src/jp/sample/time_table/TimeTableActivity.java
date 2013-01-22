@@ -49,9 +49,11 @@ import jp.sample.sns_sdk.SnsReceiver;
 import jp.sample.time_table_info.TimeTableInfo;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -66,6 +68,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.SimpleExpandableListAdapter;
@@ -83,14 +86,12 @@ android.content.DialogInterface.OnClickListener {
 	private final static int REQUES_TTIME_TABLE_LIST = 2;
 
 	/** Button 新規登録ボタン用 */
-//	private Button addBtn;
+	//	private Button addBtn;
 	/** Button 時間割確認ボタン用 */
 	// private Button listBtn;
 
-	private static String UID = "test user";
-
+	private static String UID; //UIDは初回起動時に入力させるようにした。
 	/*-----僕らの追加要素たち-----*/
-
 	// 他の画面から戻ってきたときにフラグが正だと強制終了させる
 	public static boolean endFlag;
 
@@ -110,7 +111,7 @@ android.content.DialogInterface.OnClickListener {
 	private TextView dayNowTextView;
 	private Intent intent;
 
-	// データ関連
+	// データ関連＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 	private TimeTableSqlHelper dbHelper = new TimeTableSqlHelper(this);
 	private SQLiteDatabase db;
 	private SharedPreferences getPreference;
@@ -141,6 +142,11 @@ android.content.DialogInterface.OnClickListener {
 
 	// バックボタンを押したときの確認用(trueの状態で押すと終了)
 	boolean backButtonFirstFlag = false;
+	private int week;
+
+	//プリファレンス
+	private SharedPreferences preference;
+	private Editor editor;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -150,17 +156,40 @@ android.content.DialogInterface.OnClickListener {
 
 		endFlag = false;
 
-		// 新規登録ボタンのインスタンス生成
-//		addBtn = (Button) findViewById(R.id.newButton);
+		//プリファレンスの準備
+		preference = getSharedPreferences("Preference Name", MODE_PRIVATE);
+		editor = preference.edit();
 
-		// 新規登録ボタンをクリックリスナーに登録
-//		addBtn.setOnClickListener(this);
+		if (preference.getBoolean("Launched", false)==false) {
+			//初回起動時の処理
+			Log.d(TAG,"初回起動時の処理");
 
-		// 時間割確認ボタンのインスタンス生成
-		// listBtn = (Button) findViewById(R.id.listButton);
+			//ユーザー登録処理
+			final EditText editView = new EditText(TimeTableActivity.this);
+			new AlertDialog.Builder(TimeTableActivity.this)
+			.setIcon(android.R.drawable.ic_dialog_info)
+			.setTitle("ユーザーIDを入力してください")
+			//setViewにてビューを設定します。
+			.setView(editView)
+			.setPositiveButton("登録", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
 
-		// 時間割確認ボタンのインスタンス生成
-		// listBtn.setOnClickListener(this);
+					//入力した文字をトースト出力する
+					Toast.makeText(TimeTableActivity.this,
+							editView.getText().toString()+"で入力を受付ました！",
+							Toast.LENGTH_LONG).show();
+//					UID =editView.getText().toString();
+//					values.put("uid", UID);
+				}
+			})
+			.show();
+			//プリファレンスの書き変え
+			editor.putBoolean("Launched", true);
+			editor.commit();
+		} else {
+			//二回目以降の処理
+
+		}
 
 		/*-------------------ここからあいやのターン-------------------*/
 
@@ -673,45 +702,47 @@ android.content.DialogInterface.OnClickListener {
 		Log.d(TAG, "setCurrentDb");
 
 		// スタブ
-//				subject = new String[1];
-//				todo = new String[1];
-//				type = new String[1];
-//				place = new String[1];
-//				time_name = new String[2];
-//				subject[0] = "stab1";
-//				todo[0] = "stab2";
-//				type[0] = "stab3";
-//				place[0] = "stab4";
-//				time_name[0] = "stab5";
+		//				subject = new String[1];
+		//				todo = new String[1];
+		//				type = new String[1];
+		//				place = new String[1];
+		//				time_name = new String[2];
+		//				subject[0] = "stab1";
+		//				todo[0] = "stab2";
+		//				type[0] = "stab3";
+		//				place[0] = "stab4";
+		//				time_name[0] = "stab5";
 
 		// todo以外読み込み
-//		Cursor cursor =
-//				db.rawQuery("SELECT time_name, subject_name, type, place" +
-//						" FROM " + TimeTableSqlHelper.TIME_TABLE + ", " +
-//						TimeTableSqlHelper.TIMENAME_TABLE + ", " +
-//						TimeTableSqlHelper.SUBJECT_TABLE+ ", " +
-//						TimeTableSqlHelper.TYPE_TABLE +
-//						//結合
-//						" WHERE " + TimeTableSqlHelper.TIME_TABLE+".timeid" + " = " +
-//						TimeTableSqlHelper.TIMENAME_TABLE+".timeid" +
-//						" AND " + TimeTableSqlHelper.TIME_TABLE+".subjectid" + " = " +
-//						TimeTableSqlHelper.SUBJECT_TABLE+".subjectid" +
-//						" AND " + TimeTableSqlHelper.TIME_TABLE+".typeid" +" = " +
-//						TimeTableSqlHelper.TYPE_TABLE+".typeid" +
-//						//検索条件
-//						" AND week = '" + currentWeekDay + "'" +
-//						" AND time_name = '" + timeTrue[clickedItemNumber] + "'" +
-//						";"
-//						, null);
+		//		Cursor cursor =
+		//				db.rawQuery("SELECT time_name, subject_name, type, place" +
+		//						" FROM " + TimeTableSqlHelper.TIME_TABLE + ", " +
+		//						TimeTableSqlHelper.TIMENAME_TABLE + ", " +
+		//						TimeTableSqlHelper.SUBJECT_TABLE+ ", " +
+		//						TimeTableSqlHelper.TYPE_TABLE +
+		//						//結合
+		//						" WHERE " + TimeTableSqlHelper.TIME_TABLE+".timeid" + " = " +
+		//						TimeTableSqlHelper.TIMENAME_TABLE+".timeid" +
+		//						" AND " + TimeTableSqlHelper.TIME_TABLE+".subjectid" + " = " +
+		//						TimeTableSqlHelper.SUBJECT_TABLE+".subjectid" +
+		//						" AND " + TimeTableSqlHelper.TIME_TABLE+".typeid" +" = " +
+		//						TimeTableSqlHelper.TYPE_TABLE+".typeid" +
+		//						//検索条件
+		//						" AND week = '" + currentWeekDay + "'" +
+		//						" AND time_name = '" + timeTrue[clickedItemNumber] + "'" +
+		//						";"
+		//						, null);
 		db = dbHelper.getWritableDatabase();
+		week = clickedWeekDay + 1;
+		Log.d(TAG,"week = "+ week);
 		Cursor cursor = db.rawQuery("SELECT time_name, subject_name, type, place" +
-							" FROM time, time_name, subject, type" +
-							" WHERE time.timeid = time_name.timeid" +
-							" AND time.subjectid = subject.subjectid" +
-							" AND time.typeid = type.typeid" +
-							" AND time.week = " + clickedWeekDay +
-							";"
-							, null);
+				" FROM time, time_name, subject, type" +
+				" WHERE time.timeid = time_name.timeid" +
+				" AND time.subjectid = subject.subjectid" +
+				" AND time.typeid = type.typeid" +
+				" AND time.week = " + week +
+				";"
+				, null);
 		Log.d(TAG,"Result ="+cursor.getCount());
 		time_name = new String[cursor.getCount() + 1];
 		subject = new String[cursor.getCount()];
@@ -724,11 +755,11 @@ android.content.DialogInterface.OnClickListener {
 			subject[i] = cursor.getString(1);
 			type[i] = cursor.getString(2);
 			place[i] = cursor.getString(3);
-//			Log.d("debug", "selected = \n time_name : " + time_name[i] +
-//					",\n subject : " + subject[i] +
-//					",\n type : " + type[i] +
-//					",\n place : " + place[i]
-//					);
+			Log.d("debug", "selected = \n time_name : " + time_name[i] +
+					",\n subject : " + subject[i] +
+					",\n type : " + type[i] +
+					",\n place : " + place[i]
+					);
 			cursor.moveToNext();
 		}
 		cursor.close();
@@ -736,9 +767,9 @@ android.content.DialogInterface.OnClickListener {
 		// remarks(todo)読み込み
 		todo = new String[cursor.getCount()];
 		cursor = db.rawQuery("SELECT remarks " +
-							" FROM remarks" +
-							" WHERE (SELECT strftime('%w', date) FROM remarks) = '2'" +
-							";", null);
+				" FROM remarks" +
+				" WHERE (SELECT strftime('%w', date) FROM remarks) = '2'" +
+				";", null);
 		cursor.moveToFirst();
 		for(int i=0; i<cursor.getCount(); i++){
 			todo[i] = cursor.getString(0);
@@ -778,7 +809,7 @@ android.content.DialogInterface.OnClickListener {
 				childArray[0] = "授業名 : " + subject[itemsPointer];
 				childArray[1] = "場所 : " + place[itemsPointer];
 				childArray[2] = "種類 : " + type[itemsPointer];
-//				childArray[3] = "備考 : " + todo[itemsPointer]; // nullでも大丈夫だった
+				//				childArray[3] = "備考 : " + todo[itemsPointer]; // nullでも大丈夫だった
 				childArray[3] = "備考 : " + ( todo[itemsPointer] != null ? todo[itemsPointer] : "なし" );
 				// アイテムポインタは下でインクリメントするので、ここではしない
 			} else {

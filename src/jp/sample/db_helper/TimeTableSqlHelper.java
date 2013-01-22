@@ -207,6 +207,8 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			db.execSQL(CREATE_TIMENAME);
 			db.execSQL(CREATE_SUBJECT);
 			db.execSQL(CREATE_TYPE);
+			defaultTimeNameTable();
+			defaultTypeTable();
 			db.execSQL(CREATE_TIME);
 			db.execSQL(CREATE_CREATOR);
 			db.execSQL(CREATE_REMARKS);
