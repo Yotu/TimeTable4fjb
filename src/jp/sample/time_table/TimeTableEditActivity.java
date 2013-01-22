@@ -111,18 +111,18 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			}
 		});
 
-		dbHelper = new MyDbHelper(this);
-		sqlHelper = new TimeTableSqlHelper(this);
-		mDb = dbHelper.getWritableDatabase();
-
-		Log.d(TAG, "dummyDataInsertを実行");
-		sqlHelper.dummyDataInsert();
+//
+//		sqlHelper = new TimeTableSqlHelper(this);
+//		Log.d(TAG, "dummyDataInsertを実行");
+//		sqlHelper.dummyDataInsert();
 	}
 
 	// フォアグラウンドになった際に処理が実行
 	public void onResume() {
 		super.onResume();
 
+		dbHelper = new MyDbHelper(this);
+		mDb = dbHelper.getWritableDatabase();
 		/**
 		 * 曜日spinnerの初期設定
 		 * */
@@ -196,7 +196,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 
 		TimeTableSqlHelper h = new TimeTableSqlHelper(this);
-		SQLiteDatabase db = h.getReadableDatabase();
+		SQLiteDatabase db = h.getWritableDatabase();
 		ContentValues values = new ContentValues();
 
 		//		-----------------------------------------------------------------------
@@ -347,6 +347,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		setResult(RESULT_OK);
 		finish();
 		h.close();
+		db.close();
 	}
 
 	@Override

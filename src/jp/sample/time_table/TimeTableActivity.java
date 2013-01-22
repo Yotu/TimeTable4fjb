@@ -164,9 +164,6 @@ android.content.DialogInterface.OnClickListener {
 
 		/*-------------------ここからあいやのターン-------------------*/
 
-		// DB準備
-		dbHelper = new TimeTableSqlHelper(this);
-		db = dbHelper.getWritableDatabase();
 
 
 		// 現在日にち表示の準備
@@ -315,6 +312,7 @@ android.content.DialogInterface.OnClickListener {
 				db = dbHelper.getWritableDatabase();
 				setCurrentDb();
 				createExpandList();
+				db.close();
 			}
 		});
 
@@ -324,6 +322,7 @@ android.content.DialogInterface.OnClickListener {
 		dayList.setOnItemLongClickListener(this);
 
 		onClick(new View(this));
+		db.close();
 	}
 
 	@Override
@@ -623,6 +622,9 @@ android.content.DialogInterface.OnClickListener {
 				e.printStackTrace();
 				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
 				return false;
+			} catch (Exception e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
 			}
 
 			/*
@@ -701,6 +703,7 @@ android.content.DialogInterface.OnClickListener {
 //						" AND time_name = '" + timeTrue[clickedItemNumber] + "'" +
 //						";"
 //						, null);
+		db = dbHelper.getWritableDatabase();
 		Cursor cursor = db.rawQuery("SELECT time_name, subject_name, type, place" +
 							" FROM time, time_name, subject, type" +
 							" WHERE time.timeid = time_name.timeid" +
@@ -745,6 +748,7 @@ android.content.DialogInterface.OnClickListener {
 
 		// createExpandList最初の分岐判定での配列オーバー対策、元からnullになっているのかもしれないが、書いておく
 		time_name[time_name.length - 1] = null;
+
 	}
 
 	// weekは現在0("月曜日")を考慮した状態、後で追加する
