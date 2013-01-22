@@ -38,12 +38,16 @@ public class SnsReceiver {
 	private String table;
 	private String field;
 	private String[] weekArray = { "日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日",
-			"土曜日" };
+	"土曜日" };
+
+	private int typeid;
+
+	private int timeid;
 
 	/***
-	 * 
+	 *
 	 * @param userName
-	 *            ご自分のユーザ名を指定して下さい。
+	 * ご自分のユーザ名を指定して下さい。
 	 * @return
 	 */
 	public List<TimeTableInfo> receive(String userName) throws ReceiveException {
@@ -98,26 +102,41 @@ public class SnsReceiver {
 						info.setTitle(value);
 						table = "subject";
 						field = "subject_name";
+						ContentValues subjectValues = new ContentValues();
+						//subjectテーブルにない場合はplaceを nullにして格納する
+						c = db.rawQuery("SELECT * FROM subject WHERE subject_name ='"+ field +"' AND place is null;",null);
+						if(c.getCount() == 0){
+							subjectValues.put(table,field); //subjectテーブルに授業科目名を格納する
+
+						}
 					} else if ("type".equals(column[0])) {
 						info.setType(value);
 						table = "type";
 						field = "type";
+						c = db.rawQuery("SELECT typeid FROM type WHERE " + table+ "."+ field +" = "+ value +";",null);
+						typeid =c.getInt(0);
 					} else if ("week".equals(column[0])) {
 						info.setDayOfWeek(value);
-						for (int i = 0; column[0].equals(weekArray); i++) {
+						for (int i = 0; value.equals(weekArray); i++) {
 							week = i;
 						}
+
 					} else if ("time_table".equals(column[0])) {
 						info.setTimeTable(value);
 						table = "time_table";
 						field = "time_name";
+						c = db.rawQuery("SELECT time_table FROM timeid WHERE " + table + "."+ field +" = "+ value +";",null);
+						timeid = c.getInt(0);
 					} else if ("todo".equals(column[0])) {
 						info.setTodo(value);
 						todo = column[0];
+
+						//備考情報(要確認）
 					} else if ("uid".equals(column[0])) {
 						info.setUid(value);
 						table = "creator";
 						field = "androidid";
+						//ユーザーID(要確認）
 					}
 
 					// Time_Tableに格納するために、それぞれのＩＤとテキストを比較

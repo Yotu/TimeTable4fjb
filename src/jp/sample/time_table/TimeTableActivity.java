@@ -167,7 +167,7 @@ android.content.DialogInterface.OnClickListener {
 		// DB準備
 		dbHelper = new TimeTableSqlHelper(this);
 		db = dbHelper.getWritableDatabase();
-//		dbHelper.dummyDataInsert();
+
 
 		// 現在日にち表示の準備
 		dayNowTextView = (TextView) findViewById(R.id.dayNowText);

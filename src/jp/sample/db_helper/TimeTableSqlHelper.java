@@ -47,7 +47,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	private static final String CREATE_CREATOR = "create table "
 			+ CREATOR_TABLE + "("
 			+ "creatorid integer primary key autoincrement,"
-			+ "userid varchar(20),"
+			+ "userid varchar(20)"
 			+ ");";
 	private static final String CREATE_REMARKS = "create table "
 			+ REMARKS_TABLE + "(" + "date timestamp not null,"
