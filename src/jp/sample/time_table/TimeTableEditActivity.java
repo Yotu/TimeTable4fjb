@@ -223,13 +223,13 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		// 数値から文字列に変更
 		String timestamp = String.valueOf(currentTimeMillis);
 
-		
+
 		TimeTableSqlHelper h = new TimeTableSqlHelper(this);
 		SQLiteDatabase db = h.getReadableDatabase();
 		ContentValues values = new ContentValues();
 
 		// 入力された情報を元に、関連のあるデータを検索　無ければ格納する
-		String sql = "SELECT * FROM subject WHERE subject_name = '"
+		String sql = "SELECT subjectid FROM subject WHERE subject_name = '"
 				+ info.getTitle() + "' AND place = '" + info.getPlace() + "';";
 
 		c = db.rawQuery(sql, null);
@@ -240,9 +240,15 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			ContentValues ct = new ContentValues();
 			ct.put("subject_name", info.getTitle());
 			ct.put("place", info.getPlace());
-			subjectid = (int) db.insert(table, null, ct);
-			Log.d(TAG, "追加完了" + subjectid);
+			db.insert(table, null, ct);
+			Log.d(TAG, "Subject追加完了");
+			c = db.rawQuery(sql, null); //最新のデータを検索し直す
+			c.moveToLast();
+			subjectid = c.getInt(0);
 
+		}else{
+			c.moveToFirst();
+			subjectid = c.getInt(0);
 		}
 		values.put("subjectid", subjectid);
 
@@ -257,8 +263,14 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			ContentValues ct = new ContentValues();
 			ct.put("androidid", androidid);
 			Log.d(TAG, "androidID insert");
-			creatorid = (int) db.insert(table, null, ct);
-			Log.d(TAG, "追加完了" + creatorid);
+			db.insert(table, null, ct);
+			Log.d(TAG, "CreatorId追加完了");
+			c = db.rawQuery(sql, null);  //最新のデータを検索し直す
+			c.moveToLast();
+			creatorid = c.getInt(0);
+		} else{
+			c.moveToFirst();
+			creatorid = c.getInt(0);
 		}
 		values.put("creatorid", creatorid);
 		// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/

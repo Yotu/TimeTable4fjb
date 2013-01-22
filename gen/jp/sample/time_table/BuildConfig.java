@@ -2,5 +2,5 @@
 package jp.sample.time_table;
 
 public final class BuildConfig {
-	public final static boolean DEBUG = true;
+    public final static boolean DEBUG = true;
 }
