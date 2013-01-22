@@ -68,7 +68,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 
 	/**
 	 * 新規追加 table_name: テーブル名 ct: 追加データ
-	 * 
+	 *
 	 * @return
 	 */
 	public long insert(String table_name, ContentValues ct) {
@@ -125,21 +125,19 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		 * 科目
 		 * 時限
 		 * 種類
-		 * 
+		 *
 		 */
 		db.rawQuery("insert into subject values(null, 'Java演習', '204', '朝賀');", null);
-		db.rawQuery("insert into subject vlaues(null, 'コンピュータ・システム', '303', '大谷');", null);
+		db.rawQuery("insert into subject values(null, 'コンピュータ・システム', '303', '大谷');", null);
 		db.rawQuery("insert into subject values(null, 'Office演習', '401', '石井');", null);
-		
-		defaultTypeTable();
+		Log.d(TAG,"３つは追加した");
 		db.rawQuery("insert into type values(null, '私リカちゃん');", null);
-		
-		defaultTimeNameTable();
-		
+		Log.d(TAG,"リカちゃん");
+
 		db.close();
 	}
-	
-	
+
+
 	public void defaultTypeTable() {
 		Log.d(TAG, "defaultTypeTable");
 		SQLiteDatabase db = getWritableDatabase();

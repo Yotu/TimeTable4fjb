@@ -86,7 +86,6 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		placeEdt = (EditText) findViewById(R.id.place);
 		// 登録用ボタンのインスタンス取得
 		addBtn = (Button) findViewById(R.id.edit);
-//		addBtn = (Button) findViewById(R.id.add);
 		addBtn.setOnClickListener(this);
 		// キャンセル用ボタンのインスタンス取得
 		cancelBtn = (Button) findViewById(R.id.cancel);
@@ -98,8 +97,6 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		// シェアボタンのインスタンス取得
 		shareCb = (CheckBox) findViewById(R.id.share); //時間割のシェア
 		bikoShareCb = (CheckBox) findViewById(R.id.bikoShare); //備考情報のシェア
-//		shareCb = (CheckBox) findViewById(R.id.timeshare);
-//		bikoShareCb = (CheckBox) findViewById(R.id.todoshare);
 		// 種類追加用ボタンのインスタンスを取得
 		addVarietyButton = (Button) findViewById(R.id.addVarietyButton);
 		addVarietyButton.setOnClickListener(new View.OnClickListener() {
@@ -116,10 +113,9 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		dbHelper = new MyDbHelper(this);
 		sqlHelper = new TimeTableSqlHelper(this);
 		//db = dbHelper.getWritableDatabase();
-		
+
 		Log.d(TAG, "dummyDataInsertを実行");
 		sqlHelper.dummyDataInsert();
-		
 	}
 
 	// フォアグラウンドになった際に処理が実行
@@ -129,6 +125,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		/**
 		 * 曜日spinnerの初期設定
 		 * */
+		Log.d(TAG,"曜日spinner");
 		ArrayAdapter<String> weekAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, TimeTableInfo.dayOfWeeks);
 		weekSpr.setAdapter(weekAdapter);
@@ -136,6 +133,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		/**
 		 * 時間割spinnerの初期設定
 		 * */
+		Log.d(TAG,"時間割spinner");
 		ArrayAdapter<String> timeTableAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, TimeTableInfo.timeTables);
 		timeTableSpr.setAdapter(timeTableAdapter);
@@ -143,11 +141,12 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		/**
 		 * 予定の種類
 		 */
+
 		// ArrayAdapter<String> typeTableAdapter = new
 		// ArrayAdapter<String>(this,
 		// android.R.layout.simple_spinner_item,TimeTableInfo.types);
 		// typeSpr.setAdapter(typeTableAdapter);
-
+		Log.d(TAG,"種類spinner");
 		ArrayAdapter<String> typeTableAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item);
 		typeTableAdapter.add("学科");
@@ -170,39 +169,6 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 		weekSpr.setSelection(intent.getIntExtra("weekDay", 0));
 		timeTableSpr.setSelection(intent.getIntExtra("num", 3));
-
-		// idが存在する場合は更新処理
-		if (id != null) {
-			timeTableId = Integer.parseInt(id);// 更新データのためIdを保持
-
-			// データベースからデータを取得する
-
-			// titleEdt.setText(info.getTitle());
-
-			/*
-			 * dayOfWeeks for(int i=0; i < TimeTableInfo.dayOfWeeks.length;
-			 * i++){ if(info.getDayOfWeek().equals(TimeTableInfo.dayOfWeeks[i]))
-			 * { weekSpr.setSelection(i); break; } }
-			 */
-
-			/*
-			 * timeTables for(int i=0; i < TimeTableInfo.timeTables.length;
-			 * i++){ if(info.getTimeTable().equals(TimeTableInfo.timeTables[i]))
-			 * { timeTableSpr.setSelection(i); break; } }
-			 */
-			// Todo
-			// todoEdt.setText(info.getTodo());
-
-			// type
-			// for(int i=0; i < TimeTableInfo.types.length; i++){
-			// if(info.getType().equals(TimeTableInfo.types[i])) {
-			// typeSpr.setSelection(i);
-			// }
-			// }
-
-			// shareCb.setChecked(info.getIsShare());
-			// h.close();
-		}
 
 		// 強制終了用処理
 		if (TimeTableActivity.endFlag == true) {
@@ -319,11 +285,11 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		//備考が入ってるかチェック
 		if(info.getTodo() != null){
 			//備考欄に入力されていれば、remarksテーブルに追加する
-		values.put("timeid", timeid);
-		values.put("week", week);
-		values.put("typeid", typeid);
-		values.put("share", bikoShare);
-		values.put("uptime", timestamp);
+			values.put("timeid", timeid);
+			values.put("week", week);
+			values.put("typeid", typeid);
+			values.put("share", bikoShare);
+			values.put("uptime", timestamp);
 		}
 		try {
 			if (timeTableId != 0) {
