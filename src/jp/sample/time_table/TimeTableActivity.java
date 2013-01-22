@@ -668,8 +668,6 @@ android.content.DialogInterface.OnClickListener {
 
 	private void setCurrentDb() {
 		// TODO 自動生成されたメソッド・スタブ
-		//時限名、科目名、種類名、場所を
-		//time_name, subject, type, placeに格納
 		Log.d(TAG, "setCurrentDb");
 
 		// スタブ
@@ -711,7 +709,7 @@ android.content.DialogInterface.OnClickListener {
 							" AND time.week = " + clickedWeekDay +
 							";"
 							, null);
-
+		Log.d(TAG,"Result ="+cursor.getCount());
 		time_name = new String[cursor.getCount() + 1];
 		subject = new String[cursor.getCount()];
 		type = new String[cursor.getCount()];

@@ -52,7 +52,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private EditText placeEdt;
 	/** ユニークID */
 	private static String UID = "test user";
-	private static String androidid = android.provider.Settings.Secure.ANDROID_ID;
+	private static String userid = android.provider.Settings.Secure.ANDROID_ID;
 
 	private MyDbHelper dbHelper;
 	private TimeTableSqlHelper sqlHelper;
@@ -147,18 +147,13 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		// ArrayAdapter<String>(this,
 		// android.R.layout.simple_spinner_item,TimeTableInfo.types);
 		// typeSpr.setAdapter(typeTableAdapter);
-		Log.d(TAG,"種類spinner");
 		ArrayAdapter<String> typeTableAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item);
-		Log.d(TAG,"3つの要素を追加");
 		typeTableAdapter.add("学科");
 		typeTableAdapter.add("実技");
 		typeTableAdapter.add("プライベート");
-		Log.d(TAG,"SQL文をセット"+MyDbHelper.TABLE);
 		String sql = "select variety from " + MyDbHelper.TABLE + " ;";
-		Log.d(TAG,"SQL実行");
 		Cursor cursor = mDb.rawQuery(sql, null);
-		Log.d(TAG,"件数="+cursor.getCount());
 		// カーソルをDBの最初の行へ移動
 		cursor.moveToFirst();
 		for (int i = 0; i < cursor.getCount(); i++) {
@@ -166,8 +161,8 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			cursor.moveToNext();
 		}
 		cursor.close();
+		mDb.close();
 		typeSpr.setAdapter(typeTableAdapter);
-		Log.d(TAG,"種類spinner");
 		Intent intent = getIntent();
 		String id = intent
 				.getStringExtra("jp.sample.time_table.TimeTableIdString");// 値がなければNull
@@ -204,10 +199,28 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		SQLiteDatabase db = h.getReadableDatabase();
 		ContentValues values = new ContentValues();
 
+		//		-----------------------------------------------------------------------
+		//
+		//		チェック項目を取得&インデックスを取得
+		//
+		//		-----------------------------------------------------------------------
+		if (shareCb.isChecked()) {
+			isShare = 1; // 時間割シェアのチェック判定
+		}
+		if (bikoShareCb.isChecked()) {
+			bikoShare = 1; // 備考シェアのチェック判定
+		}
+
+		week = weekSpr.getSelectedItemPosition(); // 曜日のインデックス
+		typeid = typeSpr.getSelectedItemPosition(); // 種類のインデックス
+		//		-----------------------------------------------------------------------
+		//
+		//		授業科目IDを取得
+		//
+		//		-----------------------------------------------------------------------
 		// 入力された情報を元に、関連のあるデータを検索　無ければ格納する
 		String sql = "SELECT subjectid FROM subject WHERE subject_name = '"
 				+ info.getTitle() + "' AND place = '" + info.getPlace() + "';";
-
 		c = db.rawQuery(sql, null);
 		if (c.getCount() == 0) {
 			// 検索結果ゼロ
@@ -221,24 +234,25 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			c = db.rawQuery(sql, null); //最新のデータを検索し直す
 			c.moveToLast();
 			subjectid = c.getInt(0);
-
 		}else{
 			c.moveToFirst();
 			subjectid = c.getInt(0);
 		}
-		values.put("subjectid", subjectid);
 
-		// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-		// 要確認箇所 //
-		// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-		sql = "SELECT * FROM creator WHERE androidid = '" + androidid + "';";
+
+		//		-----------------------------------------------------------------------
+		//
+		//		ユーザーIDを取得
+		//
+		//		-----------------------------------------------------------------------
+		sql = "SELECT * FROM creator WHERE userid = '" + userid + "';";
 		c = db.rawQuery(sql, null);
 		if (c.getCount() == 0) {
 			// 検索結果ゼロ
 			table = "creator";
 			ContentValues ct = new ContentValues();
-			ct.put("androidid", androidid);
-			Log.d(TAG, "androidID insert");
+			ct.put("userid", userid);
+			Log.d(TAG, "userID insert");
 			db.insert(table, null, ct);
 			Log.d(TAG, "CreatorId追加完了");
 			c = db.rawQuery(sql, null);  //最新のデータを検索し直す
@@ -248,22 +262,27 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			c.moveToFirst();
 			creatorid = c.getInt(0);
 		}
-		values.put("creatorid", creatorid);
-		// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-		// ここに備考検索入れる　 //
-		// /_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-		// 登録するデータの準備
+
+
+		//		-----------------------------------------------------------------------
+		//
+		//		備考情報の取得＆登録
+		//
+		//		-----------------------------------------------------------------------
 		table = "remarks";
 		ContentValues ct = new ContentValues();
-		ct.put("date", timestamp);	// ※ここをトップ画面から受け取った登録したい日時の情報にする
-		ct.put("timeid", timeTableSpr.getSelectedItemPosition());
+		ct.put("date", timestamp);// ※ここをトップ画面から受け取った登録したい日時の情報にする
+		//========================================================================================================
+		//======================↑要注意箇所↑（現時点だと、下と同じtimestampが格納されるよこれ)==============================
+		//========================================================================================================
+		ct.put("timeid", timeid);
 		ct.put("remarks", info.getTodo());
-		ct.put("share", info.getBikoShare());
+		ct.put("share", bikoShare);
 		ct.put("creatorid", creatorid);
 		ct.put("upremarks", timestamp);
 
 		// timestampは、後でトップ画面から受け取った登録したい日時の情報に変更する
-		sql = "SELECT * FROM remarks WHERE date=" + timestamp + " and timeid=" + timeTableSpr.getSelectedItemPosition() + ";";
+		sql = "SELECT * FROM remarks WHERE date=" + timestamp + " and timeid=" + timeid + ";";
 		// このSQLで、～日の～時限目の備考情報があるかどうかをチェック
 		c = db.rawQuery(sql, null);
 		Log.v(TAG, String.format("c=%d件", c.getCount()));
@@ -278,27 +297,27 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			h.update(table, ct, "date=" + timestamp + " and timeid=" + info.getTimeTable(), null);
 		}
 
-		// データベースにデータを保存
-		week = weekSpr.getSelectedItemPosition(); // 曜日のインデックス
-		typeid = typeSpr.getSelectedItemPosition(); // 種類のインデックス
-		if (shareCb.isChecked()) {
-			isShare = 1; // 時間割シェアのチェック判定
-		}
-		if (bikoShareCb.isChecked()) {
-			bikoShare = 1; // 備考シェアのチェック判定
-		}
-		//備考が入ってるかチェック
-		if(info.getTodo() != null){
-			//備考欄に入力されていれば、remarksテーブルに追加する
-			values.put("timeid", timeid);
-			values.put("week", week);
-			values.put("typeid", typeid);
-			values.put("share", bikoShare);
-			values.put("uptime", timestamp);
-		}
+		//		-----------------------------------------------------------------------
+		//
+		//		===================timeデータベースにデータを保存===========================
+		//
+		//		-----------------------------------------------------------------------
+
+		//time  |曜日	|時限ID	|授業科目ID	|種類ID	|シェア（時間割)	|作成者ID		|更新日	|
+		values.put("week", week);
+		values.put("timeid", timeid);
+		values.put("subjectid", subjectid);
+		values.put("typeid", typeid);
+		values.put("share", isShare);
+		values.put("creatorid", creatorid);
+		values.put("uptime", timestamp);
+
+		//すでに登録されていないか検索
+		sql ="SELECT week,timeid FROM time WHERE week = " + week + " AND timeid =" + timeid +";";
+		c = db.rawQuery(sql,null);
 		try {
-			if (timeTableId != 0) {
-				h.update(null, null, null, null);
+			if (c.getCount() != 0) {
+				h.update("time", values,"week = ? AND timeid = ?",null);
 			} else {
 				Log.d(TAG, "data insert");
 				h.insert("time", values);
@@ -309,7 +328,11 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			return;
 		}
 
-		// データを送信する
+		//		-----------------------------------------------------------------------
+		//
+		//		データを送信する
+		//
+		//		-----------------------------------------------------------------------
 		if (shareCb.isChecked()) {// シェアする歳の処理
 			Log.d(TAG, "データを送信する");
 			SnsSender sender = new SnsSender();
