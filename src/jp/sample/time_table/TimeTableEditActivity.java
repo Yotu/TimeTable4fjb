@@ -311,13 +311,15 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		if (bikoShareCb.isChecked()) {
 			bikoShare = 1; // 備考シェアのチェック判定
 		}
-
+		//備考が入ってるかチェック
+		if(info.getTodo() != null){
+			//備考欄に入力されていれば、remarksテーブルに追加する
 		values.put("timeid", timeid);
 		values.put("week", week);
 		values.put("typeid", typeid);
-		values.put("share", isShare);
+		values.put("share", bikoShare);
 		values.put("uptime", timestamp);
-
+		}
 		try {
 			if (timeTableId != 0) {
 				h.update(null, null, null, null);
