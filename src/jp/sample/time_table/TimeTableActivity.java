@@ -314,7 +314,7 @@ android.content.DialogInterface.OnClickListener {
 				dbHelper = new TimeTableSqlHelper(TimeTableActivity.this);
 				db = dbHelper.getWritableDatabase();
 				setCurrentDb();
-				createExpandList(subject, todo, type, time_name);
+				createExpandList();
 			}
 		});
 
@@ -359,7 +359,7 @@ android.content.DialogInterface.OnClickListener {
 					+ " and time_table = '" + timeTrue[clickedItemNumber] + "'"
 					+ ";");
 			setCurrentDb();
-			createExpandList(subject, todo, type, time_name);
+			createExpandList();
 		} else {
 			Log.d("debug", adbList[paramInt] + " Button is failed");
 		}
@@ -481,7 +481,7 @@ android.content.DialogInterface.OnClickListener {
 			clickedWeekDay = 1;
 			monButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(subject, todo, type, time_name);
+			createExpandList();
 			break;
 
 		case R.id.tueButton:
@@ -489,7 +489,7 @@ android.content.DialogInterface.OnClickListener {
 			clickedWeekDay = 2;
 			tueButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(subject, todo, type, time_name);
+			createExpandList();
 			break;
 
 		case R.id.wedButton:
@@ -497,7 +497,7 @@ android.content.DialogInterface.OnClickListener {
 			clickedWeekDay = 3;
 			wedButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(subject, todo, type, time_name);
+			createExpandList();
 			break;
 
 		case R.id.thuButton:
@@ -505,7 +505,7 @@ android.content.DialogInterface.OnClickListener {
 			clickedWeekDay = 4;
 			thuButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(subject, todo, type, time_name);
+			createExpandList();
 			break;
 
 		case R.id.friButton:
@@ -513,7 +513,7 @@ android.content.DialogInterface.OnClickListener {
 			clickedWeekDay = 5;
 			friButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(subject, todo, type, time_name);
+			createExpandList();
 			break;
 
 		case R.id.satButton:
@@ -521,7 +521,7 @@ android.content.DialogInterface.OnClickListener {
 			clickedWeekDay = 6;
 			satButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(subject, todo, type, time_name);
+			createExpandList();
 			break;
 
 		case R.id.sunButton:
@@ -529,7 +529,7 @@ android.content.DialogInterface.OnClickListener {
 			clickedWeekDay = 0;
 			sunButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
-			createExpandList(subject, todo, type, time_name);
+			createExpandList();
 			break;
 
 			// case R.id.optButton:
@@ -552,43 +552,43 @@ android.content.DialogInterface.OnClickListener {
 			case 1:
 				monButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(subject, todo, type, time_name);
+				createExpandList();
 				break;
 
 			case 2:
 				tueButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(subject, todo, type, time_name);
+				createExpandList();
 				break;
 
 			case 3:
 				wedButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(subject, todo, type, time_name);
+				createExpandList();
 				break;
 
 			case 4:
 				thuButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(subject, todo, type, time_name);
+				createExpandList();
 				break;
 
 			case 5:
 				friButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(subject, todo, type, time_name);
+				createExpandList();
 				break;
 
 			case 6:
 				satButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(subject, todo, type, time_name);
+				createExpandList();
 				break;
 
 			case 0:
 				sunButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
-				createExpandList(subject, todo, type, time_name);
+				createExpandList();
 				break;
 
 			default:
@@ -663,7 +663,7 @@ android.content.DialogInterface.OnClickListener {
 		// （setCurrentDbに使うため）
 
 		setCurrentDb();
-		createExpandList(subject, todo, type, time_name);
+		createExpandList();
 	}
 
 	private void setCurrentDb() {
@@ -750,8 +750,7 @@ android.content.DialogInterface.OnClickListener {
 	}
 
 	// weekは現在0("月曜日")を考慮した状態、後で追加する
-	private void createExpandList(String[] subject, String[] todo,
-			String[] type, String[] time_table) {
+	private void createExpandList() {
 		// TODO 自動生成されたメソッド・スタブ
 
 		String[] parentArray = { "0限目", "1限目", "2限目", "3限目", "4限目", "5限目",
@@ -769,7 +768,7 @@ android.content.DialogInterface.OnClickListener {
 		for (int i = 0; i <= limit; i++) {
 			// 何回か同じ判定をするので、まとめて行う
 			// 判定内容はこの時限に予定があるかないか
-			nullJudg = timeTrue[i].equals(time_table[itemsPointer]);
+			nullJudg = timeTrue[i].equals(time_name[itemsPointer]);
 			Log.d("debug", "nullJudg = " + nullJudg);
 			// 予定の入っている（行のある）時限のみ各項目を設定する
 			if (nullJudg) {
