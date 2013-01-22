@@ -118,6 +118,28 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		return ret;
 	}
 
+	public void dummyDataInsert() {
+		Log.d(TAG, "defaultTypeTable");
+		SQLiteDatabase db = getWritableDatabase();
+		/**
+		 * 科目
+		 * 時限
+		 * 種類
+		 * 
+		 */
+		db.rawQuery("insert into subject values(null, 'Java演習', '204');", null);
+		db.rawQuery("insert into subject vlaues(null, 'コンピュータ・システム', '303');", null);
+		db.rawQuery("insert into subject values(null, 'Office演習', '401');", null);
+		
+		defaultTypeTable();
+		db.rawQuery("insert into type values(null, '私リカちゃん');", null);
+		
+		defaultTimeNameTable();
+		
+		db.close();
+	}
+	
+	
 	public void defaultTypeTable() {
 		Log.d(TAG, "defaultTypeTable");
 		SQLiteDatabase db = getWritableDatabase();
@@ -171,9 +193,9 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 						.rawQuery(
 								"select * from " + TIMENAME_TABLE
 										+ " where time_name like '"
-										+ (i + "限目") + "';", null);
+										+ (i + "時限目") + "';", null);
 				if (c.getCount() <= 0) {
-					ct.put("time_name", i + "限目");
+					ct.put("time_name", i + "時限目");
 					insert(TIMENAME_TABLE, ct);
 					ct.clear();
 				}
