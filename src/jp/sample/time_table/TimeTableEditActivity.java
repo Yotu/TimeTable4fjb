@@ -57,6 +57,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private MyDbHelper dbHelper;
 	private TimeTableSqlHelper sqlHelper;
 	private SQLiteDatabase db;
+	private SQLiteDatabase mDb;  //MyDbHelper用
 	private Cursor c;
 	private String table;
 	private int index;
@@ -112,7 +113,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 		dbHelper = new MyDbHelper(this);
 		sqlHelper = new TimeTableSqlHelper(this);
-		//db = dbHelper.getWritableDatabase();
+		mDb = dbHelper.getWritableDatabase();
 
 		Log.d(TAG, "dummyDataInsertを実行");
 		sqlHelper.dummyDataInsert();
@@ -149,11 +150,15 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		Log.d(TAG,"種類spinner");
 		ArrayAdapter<String> typeTableAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item);
+		Log.d(TAG,"3つの要素を追加");
 		typeTableAdapter.add("学科");
 		typeTableAdapter.add("実技");
 		typeTableAdapter.add("プライベート");
-		String sql = "select variety from " + MyDbHelper.TABLE;
-		Cursor cursor = db.rawQuery(sql, null);
+		Log.d(TAG,"SQL文をセット"+MyDbHelper.TABLE);
+		String sql = "select variety from " + MyDbHelper.TABLE + " ;";
+		Log.d(TAG,"SQL実行");
+		Cursor cursor = mDb.rawQuery(sql, null);
+		Log.d(TAG,"件数="+cursor.getCount());
 		// カーソルをDBの最初の行へ移動
 		cursor.moveToFirst();
 		for (int i = 0; i < cursor.getCount(); i++) {
@@ -162,7 +167,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		}
 		cursor.close();
 		typeSpr.setAdapter(typeTableAdapter);
-
+		Log.d(TAG,"種類spinner");
 		Intent intent = getIntent();
 		String id = intent
 				.getStringExtra("jp.sample.time_table.TimeTableIdString");// 値がなければNull
