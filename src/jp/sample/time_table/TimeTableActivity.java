@@ -75,15 +75,15 @@ import android.widget.Toast;
 //デバッグ用key
 
 public class TimeTableActivity extends Activity implements OnClickListener,
-		OnGroupClickListener, OnItemLongClickListener,
-		android.content.DialogInterface.OnClickListener {
+OnGroupClickListener, OnItemLongClickListener,
+android.content.DialogInterface.OnClickListener {
 	/** デバッグ用タグ */
 	private static final String TAG = "TimeTableActivity";
 	private final static int REQUES_TTIME_TABLE_EDIT = 1;
 	private final static int REQUES_TTIME_TABLE_LIST = 2;
 
 	/** Button 新規登録ボタン用 */
-	private Button addBtn;
+//	private Button addBtn;
 	/** Button 時間割確認ボタン用 */
 	// private Button listBtn;
 
@@ -96,19 +96,17 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 
 	// 曜日ボタンと日付テキストと押した曜日番号
 	private Button monButton, tueButton, wedButton, thuButton, friButton,
-			satButton, sunButton;
+	satButton, sunButton;
 	private TextView monD, tueD, wedD, thuD, friD, satD, sunD;
 
 	// 曜日ボタンを押したときに設定される現在曜日の数字
 	private int clickedWeekDay;
 
 	// private Button optButton;
-	private Button visibleButton, invisibleButton;
 	private Button dbClearButton;
 
 	// リストと現在時間とインテント
 	private ExpandableListView dayList;
-	// private TextView currentWeekDayView;
 	private TextView dayNowTextView;
 	private Intent intent;
 
@@ -121,9 +119,9 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 	private String currentWeekDay;
 	private int limit;
 	private static final String[] weekDayTrue = { "日曜日", "月曜日", "火曜日", "水曜日",
-			"木曜日", "金曜日", "土曜日" };
-	private static final String[] timeTrue = { "0時限目", "1時限目", "2時限目", "3時限目",
-			"4時限目", "5時限目", "6時限目", "7時限目" };
+		"木曜日", "金曜日", "土曜日" };
+	private static final String[] timeTrue = { "0限目", "1限目", "2限目", "3限目", "4限目", "5限目",
+		"6限目", "7限目" };
 
 	// ExpandListに表示する用
 	private String[] subject;
@@ -153,10 +151,10 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 		endFlag = false;
 
 		// 新規登録ボタンのインスタンス生成
-		addBtn = (Button) findViewById(R.id.newButton);
+//		addBtn = (Button) findViewById(R.id.newButton);
 
 		// 新規登録ボタンをクリックリスナーに登録
-		addBtn.setOnClickListener(this);
+//		addBtn.setOnClickListener(this);
 
 		// 時間割確認ボタンのインスタンス生成
 		// listBtn = (Button) findViewById(R.id.listButton);
@@ -169,6 +167,7 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 		// DB準備
 		dbHelper = new TimeTableSqlHelper(this);
 		db = dbHelper.getWritableDatabase();
+//		dbHelper.dummyDataInsert();
 
 		// 現在日にち表示の準備
 		dayNowTextView = (TextView) findViewById(R.id.dayNowText);
@@ -302,12 +301,6 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 		// オプションボタン処理
 		// optButton = (Button)findViewById(R.id.optButton);
 		// optButton.setOnClickListener(this);
-
-		// 可視化、不可視化関連
-		visibleButton = (Button) findViewById(R.id.visibleButton);
-		visibleButton.setOnClickListener(this);
-		invisibleButton = (Button) findViewById(R.id.invisibleButton);
-		invisibleButton.setOnClickListener(this);
 
 		dbClearButton = (Button) findViewById(R.id.dbClearButton);
 
@@ -475,13 +468,13 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 			startActivityForResult(intent, REQUES_TTIME_TABLE_EDIT);
 			break;
 
-		// 時間割確認のボタンをクリック
-		// case R.id.listButton:
-		// Log.d(TAG,"時間割確認ボタンがクリックされました"); //デバッグ用(LogCatに表示)
-		// intent = new
-		// Intent(TimeTableActivity.this,TimeTableListActivity.class);
-		// startActivityForResult(intent,REQUES_TTIME_TABLE_LIST);
-		// break;
+			// 時間割確認のボタンをクリック
+			// case R.id.listButton:
+			// Log.d(TAG,"時間割確認ボタンがクリックされました"); //デバッグ用(LogCatに表示)
+			// intent = new
+			// Intent(TimeTableActivity.this,TimeTableListActivity.class);
+			// startActivityForResult(intent,REQUES_TTIME_TABLE_LIST);
+			// break;
 
 		case R.id.monButton:
 			currentWeekDay = "月曜日";
@@ -539,10 +532,10 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 			createExpandList(subject, todo, type, time_name);
 			break;
 
-		// case R.id.optButton:
-		// intent = new Intent(this, PrefsActivity.class);
-		// startActivity(intent);
-		// break;
+			// case R.id.optButton:
+			// intent = new Intent(this, PrefsActivity.class);
+			// startActivity(intent);
+			// break;
 
 		case R.id.visibleButton:
 			dayList.setVisibility(View.VISIBLE);
@@ -552,9 +545,9 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 			dayList.setVisibility(View.INVISIBLE);
 			break;
 
-		// おそらく初期値が-1なので、どのボタンでもないとここに入る、
+			// おそらく初期値が-1なので、どのボタンでもないとここに入る、
 		case -1: // それを利用してnew
-					// View(this)での強制イベントをここに分岐させている（本来は特別なIDを発行したほうがバグには強いかもしれない）
+			// View(this)での強制イベントをここに分岐させている（本来は特別なIDを発行したほうがバグには強いかもしれない）
 			switch (time.weekDay) {
 			case 1:
 				monButton.setBackgroundColor(Color.BLUE);
@@ -675,84 +668,90 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 
 	private void setCurrentDb() {
 		// TODO 自動生成されたメソッド・スタブ
-		// 押された登録日付をビューに表示
-		// currentWeekDayView.setText(currentWeekDay);
-
-		// title, todo, type, time_tableのクエリを発行する
-		/*
-		 * Cursor cursor =
-		 * db.rawQuery("select title, todo, type, time_table from " +
-		 * TimeTableSqlHelper.TIME_TABLE + " where week = '" + currentWeekDay +
-		 * "'" + " order by time_table ;", null);
-		 */
+		//時限名、科目名、種類名、場所を
+		//time_name, subject, type, placeに格納
 		Log.d(TAG, "setCurrentDb");
+
 		// スタブ
-		subject = new String[1];
-		todo = new String[1];
-		type = new String[1];
-		place = new String[1];
-		time_name = new String[2];
-		subject[0] = "stab1";
-		todo[0] = "stab2";
-		type[0] = "stab3";
-		place[0] = "stab4";
-		time_name[0] = "stab5";
+//				subject = new String[1];
+//				todo = new String[1];
+//				type = new String[1];
+//				place = new String[1];
+//				time_name = new String[2];
+//				subject[0] = "stab1";
+//				todo[0] = "stab2";
+//				type[0] = "stab3";
+//				place[0] = "stab4";
+//				time_name[0] = "stab5";
 
-		//todo以外読み込み
-		 Cursor cursor =
-		 db.rawQuery("SELECT time_name, subject_name, type, place" +
-		 " FROM " + TimeTableSqlHelper.TIME_TABLE + ", " +
-		 TimeTableSqlHelper.TIMENAME_TABLE + ", " +
-		 TimeTableSqlHelper.SUBJECT_TABLE+ ", " +
-		 TimeTableSqlHelper.TYPE_TABLE +
-		 //結合
-		 " WHERE " + TimeTableSqlHelper.TIME_TABLE+".timeid" + " = " +
-		 TimeTableSqlHelper.TIMENAME_TABLE+".timeid" +
-		 " AND " + TimeTableSqlHelper.TIME_TABLE+".subjectid" + " = " +
-		 TimeTableSqlHelper.SUBJECT_TABLE+".subjectid" +
-		 " AND " + TimeTableSqlHelper.TIME_TABLE+".typeid" +" = " +
-		 TimeTableSqlHelper.TYPE_TABLE+".typeid" +
-		 //検索条件
-		 " AND week = '" + currentWeekDay + "'" +
-		 " AND time_name = '" + timeTrue[clickedItemNumber] + "'" +
-		 ";"
-		 , null);
-		 Log.d(TAG,"検索結果 = "+cursor.getCount());
+		// todo以外読み込み
+//		Cursor cursor =
+//				db.rawQuery("SELECT time_name, subject_name, type, place" +
+//						" FROM " + TimeTableSqlHelper.TIME_TABLE + ", " +
+//						TimeTableSqlHelper.TIMENAME_TABLE + ", " +
+//						TimeTableSqlHelper.SUBJECT_TABLE+ ", " +
+//						TimeTableSqlHelper.TYPE_TABLE +
+//						//結合
+//						" WHERE " + TimeTableSqlHelper.TIME_TABLE+".timeid" + " = " +
+//						TimeTableSqlHelper.TIMENAME_TABLE+".timeid" +
+//						" AND " + TimeTableSqlHelper.TIME_TABLE+".subjectid" + " = " +
+//						TimeTableSqlHelper.SUBJECT_TABLE+".subjectid" +
+//						" AND " + TimeTableSqlHelper.TIME_TABLE+".typeid" +" = " +
+//						TimeTableSqlHelper.TYPE_TABLE+".typeid" +
+//						//検索条件
+//						" AND week = '" + currentWeekDay + "'" +
+//						" AND time_name = '" + timeTrue[clickedItemNumber] + "'" +
+//						";"
+//						, null);
+		Cursor cursor = db.rawQuery("SELECT time_name, subject_name, type, place" +
+							" FROM time, time_name, subject, type" +
+							" WHERE time.timeid = time_name.timeid" +
+							" AND time.subjectid = subject.subjectid" +
+							" AND time.typeid = type.typeid" +
+							" AND time.week = " + clickedWeekDay +
+							";"
+							, null);
 
-//		 Cursor cursor = db.rawQuery("SELECT time_name" +
-//		 " FROM " + TimeTableSqlHelper.TIME_TABLE +
-//		 ";"
-//		 , null);
-		 time_name = new String[cursor.getCount() + 1];
-		 subject = new String[cursor.getCount()];
-		 type = new String[cursor.getCount()];
-		 place = new String[cursor.getCount()];
-		 cursor.moveToFirst();
-		 for(int i=0; i<cursor.getCount(); i++){
-		 time_name[i] = cursor.getString(0);
-		 subject[i] = cursor.getString(1);
-		 type[i] = cursor.getString(2);
-		 place[i] = cursor.getString(3);
-		 Log.d("debug", "selected = " + time_name[i] +
-		 ",\n" + subject[i] +
-		 ",\n" + type[i] +
-		 ",\n" + place[i]
-		 );
+		time_name = new String[cursor.getCount() + 1];
+		subject = new String[cursor.getCount()];
+		type = new String[cursor.getCount()];
+		place = new String[cursor.getCount()];
 
-		 cursor.moveToNext();
-		 }
+		cursor.moveToFirst();
+		for(int i=0; i<cursor.getCount(); i++){
+			time_name[i] = cursor.getString(0);
+			subject[i] = cursor.getString(1);
+			type[i] = cursor.getString(2);
+			place[i] = cursor.getString(3);
+//			Log.d("debug", "selected = \n time_name : " + time_name[i] +
+//					",\n subject : " + subject[i] +
+//					",\n type : " + type[i] +
+//					",\n place : " + place[i]
+//					);
+			cursor.moveToNext();
+		}
+		cursor.close();
 
-		 cursor.close();
 		// remarks(todo)読み込み
-		 todo = new String[cursor.getCount()];
+		todo = new String[cursor.getCount()];
+		cursor = db.rawQuery("SELECT remarks " +
+							" FROM remarks" +
+							" WHERE (SELECT strftime('%w', date) FROM remarks) = '2'" +
+							";", null);
+		cursor.moveToFirst();
+		for(int i=0; i<cursor.getCount(); i++){
+			todo[i] = cursor.getString(0);
+			cursor.moveToNext();
+		}
+		cursor.close();
 
 		// createExpandList最初の分岐判定での配列オーバー対策、元からnullになっているのかもしれないが、書いておく
 		time_name[time_name.length - 1] = null;
 	}
 
 	// weekは現在0("月曜日")を考慮した状態、後で追加する
-	private void createExpandList(String[] title, String[] todo, String[] type,
-			String[] time_table) {
+	private void createExpandList(String[] subject, String[] todo,
+			String[] type, String[] time_table) {
 		// TODO 自動生成されたメソッド・スタブ
 
 		String[] parentArray = { "0限目", "1限目", "2限目", "3限目", "4限目", "5限目",
@@ -771,14 +770,15 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 			// 何回か同じ判定をするので、まとめて行う
 			// 判定内容はこの時限に予定があるかないか
 			nullJudg = timeTrue[i].equals(time_table[itemsPointer]);
-
+			Log.d("debug", "nullJudg = " + nullJudg);
 			// 予定の入っている（行のある）時限のみ各項目を設定する
 			if (nullJudg) {
 				childArray = new String[4];
-				childArray[0] = "授業名 : " + title[itemsPointer];
+				childArray[0] = "授業名 : " + subject[itemsPointer];
 				childArray[1] = "場所 : " + place[itemsPointer];
 				childArray[2] = "種類 : " + type[itemsPointer];
-				childArray[3] = "備考 : " + todo[itemsPointer]; // nullでも大丈夫だった
+//				childArray[3] = "備考 : " + todo[itemsPointer]; // nullでも大丈夫だった
+				childArray[3] = "備考 : " + ( todo[itemsPointer] != null ? todo[itemsPointer] : "なし" );
 				// アイテムポインタは下でインクリメントするので、ここではしない
 			} else {
 				childArray = new String[0];
@@ -794,8 +794,8 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 
 			// i限目 != titleの中のi限目のタイトルであることに注意
 			if (nullJudg) {
-				group.put("PTag", item + "  " + title[itemsPointer]);
-				group.put("appendInfo", "[場所]   " + "まだないよ！");
+				group.put("PTag", item + "  " + subject[itemsPointer]);
+				group.put("appendInfo", "[場所]   " + place[itemsPointer]);
 				itemsPointer++;
 			} else {
 				group.put("PTag", item + "   +");
@@ -820,7 +820,7 @@ public class TimeTableActivity extends Activity implements OnClickListener,
 				android.R.layout.simple_expandable_list_item_2, new String[] {
 						"PTag", "appendInfo" }, new int[] { android.R.id.text1,
 						android.R.id.text2 }, childData, R.layout.raw,
-				new String[] { "CTag" }, new int[] { R.id.child_text });
+						new String[] { "CTag" }, new int[] { R.id.child_text });
 		// セット
 		dayList.setAdapter(adapter);
 	}
