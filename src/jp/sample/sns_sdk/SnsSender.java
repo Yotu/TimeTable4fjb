@@ -16,13 +16,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.util.Log;
-
 public class SnsSender {
 	private static String SEND_URL = "http://203.138.125.240/api/httpdocs/index.php";
 
 	public void send(TimeTableInfo info) throws SendException {
-		Log.d("SnsSender", String.format("UID=%s", info.getUid()));
 		if (info.getUid() == null || info.getUid().equals("")) {
 			throw new SendException("UIDが指定されていません。");
 		}
