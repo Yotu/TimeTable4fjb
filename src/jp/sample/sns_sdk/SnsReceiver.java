@@ -147,13 +147,13 @@ public class SnsReceiver{
 						//		種類
 						//
 						//		-----------------------------------------------------------------------
+						db = sqlHelper.getReadableDatabase();
 						info.setType(value);
 						table = "type";
 						field = "type";
-						c = db.rawQuery("SELECT typeid FROM type WHERE " + table+ "."+ field +" = "+ value +";",null);
+						c = db.rawQuery("SELECT typeid FROM type WHERE " + table+ "."+ field +" = '"+ value +"';",null);
 						typeId =c.getInt(0);
-
-
+						db.close();
 
 					} else if ("week".equals(column[0])) {
 						Log.d(TAG,"曜日");
@@ -176,10 +176,12 @@ public class SnsReceiver{
 						//
 						//		-----------------------------------------------------------------------
 						info.setTimeTable(value);
+						db = sqlHelper.getReadableDatabase();
 						table = "time_table";
 						field = "time_name";
-						c = db.rawQuery("SELECT time_table FROM timeid WHERE " + table + "."+ field +" = "+ value +";",null);
+						c = db.rawQuery("SELECT time_table FROM timeid WHERE " + table + "."+ field +" = '"+ value +"';",null);
 						timeId = c.getInt(0);
+						db.close();
 
 
 					} else if ("todo".equals(column[0])) {
