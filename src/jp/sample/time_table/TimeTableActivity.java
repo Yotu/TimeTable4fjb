@@ -192,7 +192,7 @@ android.content.DialogInterface.OnClickListener {
 			Log.d(TAG,"初回起動時の処理");
 
 			//ユーザー登録処理
-			final EditText editView = new EditText(TimeTableActivity.this);
+			editView = new EditText(TimeTableActivity.this);
 			editView.setLines(1);
 			editView.setFilters(new InputFilter[]{
 					new MinuteFilter()
@@ -233,7 +233,7 @@ android.content.DialogInterface.OnClickListener {
 					init(UID);
 				}
 			});
-			/*disD = */adb.show();
+			disD = adb.show();
 
 			//プリファレンスの書き変え
 			editor.putBoolean("Launched", true);
@@ -770,24 +770,6 @@ android.content.DialogInterface.OnClickListener {
 		//				time_name[0] = "stab5";
 
 		// todo以外読み込み
-		//		Cursor cursor =
-		//				db.rawQuery("SELECT time_name, subject_name, type, place" +
-		//						" FROM " + TimeTableSqlHelper.TIME_TABLE + ", " +
-		//						TimeTableSqlHelper.TIMENAME_TABLE + ", " +
-		//						TimeTableSqlHelper.SUBJECT_TABLE+ ", " +
-		//						TimeTableSqlHelper.TYPE_TABLE +
-		//						//結合
-		//						" WHERE " + TimeTableSqlHelper.TIME_TABLE+".timeid" + " = " +
-		//						TimeTableSqlHelper.TIMENAME_TABLE+".timeid" +
-		//						" AND " + TimeTableSqlHelper.TIME_TABLE+".subjectid" + " = " +
-		//						TimeTableSqlHelper.SUBJECT_TABLE+".subjectid" +
-		//						" AND " + TimeTableSqlHelper.TIME_TABLE+".typeid" +" = " +
-		//						TimeTableSqlHelper.TYPE_TABLE+".typeid" +
-		//						//検索条件
-		//						" AND week = '" + currentWeekDay + "'" +
-		//						" AND time_name = '" + timeTrue[clickedItemNumber] + "'" +
-		//						";"
-		//						, null);
 		db = dbHelper.getWritableDatabase();
 		week = clickedWeekDay;
 		Log.d(TAG,"week = "+ week);
@@ -797,11 +779,11 @@ android.content.DialogInterface.OnClickListener {
 				" AND time.subjectid = subject.subjectid" +
 				" AND time.typeid = type.typeid" +
 				" AND time.week = " + week +
-				" order by time.timeid" +
+				" ORDER by time.timeid" +
 				";"
 				, null);
 		Log.d(TAG,"Result = "+cursor.getCount());
-		Log.d("debug","Result = "+cursor.getCount());
+//		Log.d("debug","SelectedResult = "+cursor.getCount());
 		time_name = new String[cursor.getCount() + 1];
 		subject = new String[cursor.getCount()];
 		type = new String[cursor.getCount()];
@@ -813,11 +795,11 @@ android.content.DialogInterface.OnClickListener {
 			subject[i] = cursor.getString(1);
 			type[i] = cursor.getString(2);
 			place[i] = cursor.getString(3);
-			Log.d("debug", "selected = \n time_name : " + time_name[i] +
-					",\n subject : " + subject[i] +
-					",\n type : " + type[i] +
-					",\n place : " + place[i]
-					);
+//			Log.d("debug", "selected = \n time_name : " + time_name[i] +
+//					",\n subject : " + subject[i] +
+//					",\n type : " + type[i] +
+//					",\n place : " + place[i]
+//					);
 			cursor.moveToNext();
 		}
 		cursor.close();
@@ -826,11 +808,16 @@ android.content.DialogInterface.OnClickListener {
 		todo = new String[cursor.getCount()];
 		cursor = db.rawQuery("SELECT remarks " +
 				" FROM remarks" +
-				" WHERE (SELECT strftime('%w', date) FROM remarks) = '2'" +
+				" WHERE (SELECT strftime('%w', date) FROM remarks) = '1'" +
 				";", null);
-		cursor.moveToFirst();
+//		Cursor c = db.rawQuery("SELECT strftime('%w', date) FROM remarks", null);
+//		c.moveToFirst();
+//		Log.d("debug", c.getString(0));
+//		cursor.moveToFirst();
+//		Log.d("debug", "SelectResult(remarks) = " + cursor.getCount());
 		for(int i=0; i<cursor.getCount(); i++){
 			todo[i] = cursor.getString(0);
+			Log.d("debug", "select = " + todo[i]);
 			cursor.moveToNext();
 		}
 		cursor.close();
