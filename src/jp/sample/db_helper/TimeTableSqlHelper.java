@@ -140,7 +140,6 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		Log.d(TAG, "delete");
 		ContentValues ct = new ContentValues();
 		Cursor c;
-		db.execSQL(CREATE_TYPE);
 		Log.d(TAG, "create");
 		try {
 			c = getReadableDatabase().rawQuery(

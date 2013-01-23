@@ -51,8 +51,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	/** 場所 */
 	private EditText placeEdt;
 	/** ユニークID */
-	private static String UID = "test user";
-	private static String userid = android.provider.Settings.Secure.ANDROID_ID;
+
 
 	private MyDbHelper dbHelper;
 	private TimeTableSqlHelper sqlHelper;
@@ -121,8 +120,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	public void onResume() {
 		super.onResume();
 
-		dbHelper = new MyDbHelper(this);
-		mDb = dbHelper.getWritableDatabase();
+
 		/**
 		 * 曜日spinnerの初期設定
 		 * */
@@ -147,6 +145,9 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		// ArrayAdapter<String>(this,
 		// android.R.layout.simple_spinner_item,TimeTableInfo.types);
 		// typeSpr.setAdapter(typeTableAdapter);
+
+		dbHelper = new MyDbHelper(this);
+		mDb = dbHelper.getWritableDatabase();
 		ArrayAdapter<String> typeTableAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item);
 		typeTableAdapter.add("学科");
@@ -187,7 +188,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		info.setPlace(placeEdt.getText().toString());
 		info.setIsShare(shareCb.isChecked());
 		info.setBikoShare(bikoShareCb.isChecked());
-		info.setUid(UID);
+
 
 		// 現在のUnixタイム取得
 		long currentTimeMillis = System.currentTimeMillis();
@@ -245,13 +246,14 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		//		ユーザーIDを取得
 		//
 		//		-----------------------------------------------------------------------
-		sql = "SELECT * FROM creator WHERE userid = '" + userid + "';";
+		//自分のUIDを検索
+		sql = "SELECT * FROM creator WHERE userid = '" + info.getUid() + "';";
 		c = db.rawQuery(sql, null);
 		if (c.getCount() == 0) {
 			// 検索結果ゼロ
 			table = "creator";
 			ContentValues ct = new ContentValues();
-			ct.put("userid", userid);
+			ct.put("userid", info.getUid());
 			Log.d(TAG, "userID insert");
 			db.insert(table, null, ct);
 			Log.d(TAG, "CreatorId追加完了");

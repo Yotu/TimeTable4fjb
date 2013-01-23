@@ -4,22 +4,22 @@ public class TimeTableInfo {
 	/** タイムテーブルID */
 	int _id;
 	/** タイムテーブル */
-	String subject;
+	private String subject;
 	/** 曜日 */
-	String day_of_week;
+	private String day_of_week;
 	/** 時間割 */
-	String time_table;
+	private String time_table;
 	/** 備考メモ */
-	String todo;
+	private String todo;
 	/** 　場所 */
-	String place;
+	private String place;
 	/** 予定の種類 */
-	String type;
+	private String type;
 	/** シェアする */
-	boolean isShare = false;
-	boolean bikoShare = false;
+	private boolean isShare = false;
+	private boolean bikoShare = false;
 	/** ユーザー名 */
-	String uid;
+	private String UID;
 
 	// listViewに表示する曜日一覧
 	public static String[] dayOfWeeks = { "日曜日", "月曜日", "火曜日", "水曜日", "木曜日",
@@ -37,7 +37,7 @@ public class TimeTableInfo {
 		todo = "";
 		type = "";
 		place = "";
-		uid = "";
+		UID = "";
 	}
 
 	public int getId() {
@@ -97,11 +97,11 @@ public class TimeTableInfo {
 	}
 
 	public String getUid() {
-		return uid;
+		return UID;
 	}
 
 	public void setUid(String uid) {
-		this.uid = uid;
+		this.UID = uid;
 	}
 
 	public String getPlace() {
