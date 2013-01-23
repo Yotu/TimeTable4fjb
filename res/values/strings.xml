@@ -5,21 +5,23 @@
 
     <!-- 登録画面で使っているリソース -->
     <string name="subject">授業名</string>
-    <string name="time">時限</string>
+    <string name="week">曜日</string>
     <string name="place">場所</string>
-    <string name="timeshare">時間割を共有する</string>
-    <string name="bikoShare">備考情報を共有する</string>
+    <string name="time">時限</string>
+    <string name="timetable">時間割</string>
+    <string name="type">種類</string>
+    <string name="share">時間割を共有する</string>
+    <string name="remarks">備考</string>
+    <string name="remarkShare">備考情報を共有する</string>
     <string name="todoshare">備考を共有する</string>
 
 <!-- 必要なリソースはこのコメントより上に記述します -->
 
     <string name="new_add">新規登録</string>
     <string name="list_show">時間割確認</string>
-    <string name="type">種類</string>
     <string name="department">学科</string>
     <string name="practical">実技</string>
     <string name="off_hours">プライベート</string>
-    <string name="week">曜日</string>
     <string name="sunday">日曜日</string>
     <string name="monday">月曜日</string>
     <string name="tuesday">火曜日</string>
@@ -49,16 +51,8 @@
         <item>7時限目</item>
         <item>放課後</item>
     </string-array>
-    <string-array name="types">
-        <item>学科</item>
-        <item>実技</item>
-        <item>プライベート</item>
-    </string-array>
 
-    <string name="taimetable">時間割</string>
     <string name="choice_week">曜日を選択してください。</string>
-    <string name="todo">備考：</string>
-    <string name="share">時間割をシェアする</string>
     <string name="title_label">授業科目名：</string>
     <string name="edit">編集</string>
     <string name="delBtn">削除</string>

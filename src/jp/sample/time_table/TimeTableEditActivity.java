@@ -30,7 +30,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	/** EditText 授業名 */
 	private EditText subjectEdt;
 	/** EditText 備考 */
-	private EditText todoEdt;
+	private EditText remarksEdt;
 	/** Spinner 曜日 */
 	private Spinner weekSpr;
 	/** Spinner 時間割 */
@@ -81,12 +81,12 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		cancelBtn = (Button) findViewById(R.id.cancel);
 		cancelBtn.setOnClickListener(this);
 		// todoのインスタンス取得
-		todoEdt = (EditText) findViewById(R.id.todo);
+		remarksEdt = (EditText)findViewById(R.id.remarks);
 		// 予定の種類のインスタンス取得
 		typeSpr = (Spinner) findViewById(R.id.type);
 		// シェアボタンのインスタンス取得
 		shareCb = (CheckBox) findViewById(R.id.share); //時間割のシェア
-		bikoShareCb = (CheckBox) findViewById(R.id.bikoShare); //備考情報のシェア
+		bikoShareCb = (CheckBox) findViewById(R.id.remarkShare); //備考情報のシェア
 		// 種類追加用ボタンのインスタンスを取得
 		addVarietyButton = (Button) findViewById(R.id.addVarietyButton);
 		addVarietyButton.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +179,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			info.setTitle(subjectEdt.getText().toString());
 			info.setDayOfWeek(weekSpr.getSelectedItem().toString());
 			info.setTimeTable(timeTableSpr.getSelectedItem().toString());
-			info.setTodo(todoEdt.getText().toString());
+			info.setTodo(remarksEdt.getText().toString());
 			info.setType(typeSpr.getSelectedItem().toString());
 			info.setPlace(placeEdt.getText().toString());
 			info.setIsShare(shareCb.isChecked());
