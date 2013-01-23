@@ -811,7 +811,7 @@ android.content.DialogInterface.OnClickListener {
 				" WHERE (SELECT strftime('%w', date) FROM remarks) = '3'" +
 				";", null);
 		cursor.moveToFirst();
-		Log.d("debug", "!SelectResult of remarks = " + cursor.getCount());
+		Log.d("debug", "SelectResult of remarks = " + cursor.getCount());
 		for(int i=0; i<cursor.getCount(); i++){
 			todo[i] = cursor.getString(0);
 			Log.d("debug", "select = " + todo[i]);
