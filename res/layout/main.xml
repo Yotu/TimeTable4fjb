@@ -29,36 +29,12 @@
         android:layout_weight="0" >
 
         <Button
-            android:id="@+id/visibleButton"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="出る" />
-
-        <Button
-            android:id="@+id/invisibleButton"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="消える" />
-
-        <Button
             android:id="@+id/dbClearButton"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="DB洗浄" />
-
-        <Button
-            android:id="@+id/newButton"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="add" />
     </LinearLayout>
 
     <LinearLayout

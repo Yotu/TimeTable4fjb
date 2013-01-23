@@ -58,6 +58,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -148,6 +150,29 @@ android.content.DialogInterface.OnClickListener {
 	private Editor editor;
 	String UID;
 
+	//登録されていないユーザーで起動した場合に出る
+	//ユーザー登録ダイアログ用の入力欄
+	EditText editView;
+
+	//入力欄用フィルター
+	class MinuteFilter implements InputFilter{
+		public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+			// TODO 自動生成されたメソッド・スタブ
+			 String sStr = source.toString();
+		        if (sStr.matches("\n")) {
+					//入力した文字をトースト出力する
+					Toast.makeText(TimeTableActivity.this,
+							editView.getText().toString()+"で入力を受付ました！",
+							Toast.LENGTH_LONG).show();
+					UID =editView.getText().toString();
+					Log.d(TAG,UID);
+					init(UID);
+		            return "";
+		        }
+		        return source;
+		}
+	}
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -165,7 +190,11 @@ android.content.DialogInterface.OnClickListener {
 			Log.d(TAG,"初回起動時の処理");
 
 			//ユーザー登録処理
-			final EditText editView = new EditText(TimeTableActivity.this);
+			editView = new EditText(TimeTableActivity.this);
+			editView.setLines(1);
+			editView.setFilters(new InputFilter[]{
+					new MinuteFilter()
+			});
 			new AlertDialog.Builder(TimeTableActivity.this)
 			.setIcon(android.R.drawable.ic_dialog_info)
 			.setTitle("ユーザーIDを入力してください")
