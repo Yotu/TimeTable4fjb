@@ -20,12 +20,12 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-//TimeTableSqlHelperの引数がContextだったので、テストで継承
-public class SnsReceiver extends Activity{
+public class SnsReceiver{
 
 	/** 受信用用URL */
 	private String RECEIVE_URL = "http://203.138.125.240/api/httpdocs/s01_rcv.php";
@@ -33,7 +33,7 @@ public class SnsReceiver extends Activity{
 	private int timeId;
 	private int subjectId;
 	private int typeId;
-	private int userId;
+	private int creatorid;
 	private int week;
 	private int getData;
 	private String todo;
@@ -41,7 +41,8 @@ public class SnsReceiver extends Activity{
 	private String field;
 	private String[] weekArray = { "日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日","土曜日" };
 	private int isShare;
-	private TimeTableSqlHelper sqlHelper = new TimeTableSqlHelper(this);
+	private Context context;
+	private TimeTableSqlHelper sqlHelper;
 	private SQLiteDatabase db;
 
 
@@ -53,6 +54,8 @@ public class SnsReceiver extends Activity{
 	 * @return
 	 */
 	public List<TimeTableInfo> receive(String userName) throws ReceiveException {
+		sqlHelper = new TimeTableSqlHelper(context);
+
 		List<TimeTableInfo> list = new ArrayList<TimeTableInfo>();
 		HttpClient objHttp = new DefaultHttpClient();
 		Log.d(TAG,"start SnsReceiver");
@@ -115,8 +118,7 @@ public class SnsReceiver extends Activity{
 						// 入力された情報を元に、関連のあるデータを検索　無ければ格納する
 						db = sqlHelper.getReadableDatabase();
 						//受信する場合は、Placeはnullにする
-						String sql = "SELECT subjectid FROM subject WHERE subject_name = '"
-								+ values +  " place = null;";
+						String sql = "SELECT subjectid FROM subject WHERE subject_name = '"+ value +  "' and place = null;";
 						Log.d(TAG,"start query ="+sql);
 						c = db.rawQuery(sql, null);
 						Log.d(TAG,"start if");
@@ -145,13 +147,13 @@ public class SnsReceiver extends Activity{
 						//		種類
 						//
 						//		-----------------------------------------------------------------------
+						db = sqlHelper.getReadableDatabase();
 						info.setType(value);
 						table = "type";
 						field = "type";
-						c = db.rawQuery("SELECT typeid FROM type WHERE " + table+ "."+ field +" = "+ value +";",null);
+						c = db.rawQuery("SELECT typeid FROM type WHERE " + table+ "."+ field +" = '"+ value +"';",null);
 						typeId =c.getInt(0);
-
-
+						db.close();
 
 					} else if ("week".equals(column[0])) {
 						Log.d(TAG,"曜日");
@@ -174,10 +176,12 @@ public class SnsReceiver extends Activity{
 						//
 						//		-----------------------------------------------------------------------
 						info.setTimeTable(value);
+						db = sqlHelper.getReadableDatabase();
 						table = "time_table";
 						field = "time_name";
-						c = db.rawQuery("SELECT time_table FROM timeid WHERE " + table + "."+ field +" = "+ value +";",null);
+						c = db.rawQuery("SELECT time_table FROM timeid WHERE " + table + "."+ field +" = '"+ value +"';",null);
 						timeId = c.getInt(0);
+						db.close();
 
 
 					} else if ("todo".equals(column[0])) {
@@ -202,20 +206,21 @@ public class SnsReceiver extends Activity{
 						info.setUid(value);
 						table = "creator";
 						field = "userid";
+						db = sqlHelper.getReadableDatabase();
 						ContentValues creatorValues = new ContentValues();
 
 						//CreatorTableにない場合は格納する
 						String sql = "SELECT * FROM creator WHERE userid ='"+ value +"';";
 						c = db.rawQuery(sql,null);
 						if(c.getCount() == 0){
-							creatorValues.put(table,value); //subjectテーブルに授業科目名を格納する
-							c = db.rawQuery(sql,null);      //もう一度検索
-							c.moveToFirst();
-							userId =c.getInt(0);
+							creatorValues.put(table,value); //creatorテーブルに授業科目名を格納する
+							creatorid =(int)sqlHelper.insert("userid", creatorValues);
 						}else{
 							c.moveToFirst();
-							userId =c.getInt(0);
+							creatorid =c.getInt(0);
 						}
+						c.close();
+						db.close();
 					}
 					//		-----------------------------------------------------------------------
 					//
@@ -253,7 +258,7 @@ public class SnsReceiver extends Activity{
 				Log.d(TAG,"時限="+timeId);
 				Log.d(TAG,"授業科目="+subjectId);
 				Log.d(TAG,"シェア＝"+isShare);
-				Log.d(TAG,"ユーザID="+userId);
+				Log.d(TAG,"ユーザID="+creatorid);
 				Log.d(TAG,"タイムスタンプ="+timestamp);
 				//time  |曜日	|時限ID	|授業科目ID	|種類ID	|シェア（時間割)	|作成者ID		|更新日	|
 				values.put("week", week);
@@ -261,7 +266,7 @@ public class SnsReceiver extends Activity{
 				values.put("subjectid", subjectId);
 				values.put("typeid", typeId);
 				values.put("share", isShare);
-				values.put("creatorid", userId);
+				values.put("creatorid", creatorid);
 				values.put("uptime", timestamp);
 				sqlHelper.insert("time", values);
 				c.close();
@@ -278,6 +283,10 @@ public class SnsReceiver extends Activity{
 			throw new ReceiveException(e);
 		}
 		return list;
+	}
+
+	public void setContext(Context context) {
+		this.context = context;
 	}
 
 }

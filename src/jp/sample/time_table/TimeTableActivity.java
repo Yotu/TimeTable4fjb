@@ -122,8 +122,12 @@ android.content.DialogInterface.OnClickListener {
 	private int limit;
 	private static final String[] weekDayTrue = { "日曜日", "月曜日", "火曜日", "水曜日",
 		"木曜日", "金曜日", "土曜日" };
-	private static final String[] timeTrue = { "0限目", "1限目", "2限目", "3限目", "4限目", "5限目",
-		"6限目", "7限目" };
+
+	//定数では既存以外の項目と比較できないのでDBから読み込むようにする
+	private static final String[] timeTrue = { "0時限目", "1時限目", "2時限目", "3時限目", "4時限目", "5時限目",
+		"6時限目", "7時限目" };
+
+
 
 	// ExpandListに表示する用
 	private String[] subject;
@@ -143,6 +147,7 @@ android.content.DialogInterface.OnClickListener {
 
 	// バックボタンを押したときの確認用(trueの状態で押すと終了)
 	boolean backButtonFirstFlag = false;
+
 	private int week;
 
 	//プリファレンス
@@ -152,24 +157,21 @@ android.content.DialogInterface.OnClickListener {
 
 	//登録されていないユーザーで起動した場合に出る
 	//ユーザー登録ダイアログ用の入力欄
-	EditText editView;
+	private EditText editView;
+
+	//ダイアログをエンターキーで閉じた場合のダイアログの終了処理用
+	private AlertDialog disD;
 
 	//入力欄用フィルター
 	class MinuteFilter implements InputFilter{
 		public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
 			// TODO 自動生成されたメソッド・スタブ
 			 String sStr = source.toString();
-		        if (sStr.matches("\n")) {
-					//入力した文字をトースト出力する
-					Toast.makeText(TimeTableActivity.this,
-							editView.getText().toString()+"で入力を受付ました！",
-							Toast.LENGTH_LONG).show();
-					UID =editView.getText().toString();
-					Log.d(TAG,UID);
-					init(UID);
-		            return "";
-		        }
-		        return source;
+			 if (sStr.matches("\n")) {
+					return "";
+			 }else{
+				 return source;
+			 }
 		}
 	}
 
@@ -190,12 +192,31 @@ android.content.DialogInterface.OnClickListener {
 			Log.d(TAG,"初回起動時の処理");
 
 			//ユーザー登録処理
-			editView = new EditText(TimeTableActivity.this);
+			final EditText editView = new EditText(TimeTableActivity.this);
 			editView.setLines(1);
 			editView.setFilters(new InputFilter[]{
 					new MinuteFilter()
 			});
-			new AlertDialog.Builder(TimeTableActivity.this)
+			editView.setOnKeyListener(new View.OnKeyListener() {
+
+				@Override
+				public boolean onKey(View arg0, int keyCode, KeyEvent event) {
+					// TODO 自動生成されたメソッド・スタブ
+					if (event.getAction() == KeyEvent.ACTION_DOWN
+			                   && keyCode == KeyEvent.KEYCODE_ENTER) {
+						//入力した文字をトースト出力する
+						Toast.makeText(TimeTableActivity.this,
+								editView.getText().toString()+"で入力を受付ました！",
+								Toast.LENGTH_LONG).show();
+						UID =editView.getText().toString();
+						Log.d(TAG,UID);
+						init(UID);
+						disD.dismiss();
+					}
+					return false;
+				}
+			});
+			AlertDialog.Builder adb = new AlertDialog.Builder(TimeTableActivity.this)
 			.setIcon(android.R.drawable.ic_dialog_info)
 			.setTitle("ユーザーIDを入力してください")
 			//setViewにてビューを設定します。
@@ -207,12 +228,12 @@ android.content.DialogInterface.OnClickListener {
 					Toast.makeText(TimeTableActivity.this,
 							editView.getText().toString()+"で入力を受付ました！",
 							Toast.LENGTH_LONG).show();
-					UID =editView.getText().toString();
+					UID = editView.getText().toString();
 					Log.d(TAG,UID);
 					init(UID);
 				}
-			})
-			.show();
+			});
+			/*disD = */adb.show();
 
 			//プリファレンスの書き変え
 			editor.putBoolean("Launched", true);
@@ -241,6 +262,7 @@ android.content.DialogInterface.OnClickListener {
 		dayNowTextView.setText(nowDate);
 
 		currentWeekDay = weekDayTrue[time.weekDay];
+		clickedWeekDay = time.weekDay;
 
 		String[] weekDays = new String[7];
 		switch (time.weekDay) {
@@ -679,6 +701,7 @@ android.content.DialogInterface.OnClickListener {
 			SnsReceiver receiver = new SnsReceiver();
 			List<TimeTableInfo> list;
 			try {
+				receiver.setContext(getApplicationContext());
 				list = receiver.receive(UID);
 			} catch (ReceiveException e) {
 				e.printStackTrace();
@@ -766,7 +789,7 @@ android.content.DialogInterface.OnClickListener {
 		//						";"
 		//						, null);
 		db = dbHelper.getWritableDatabase();
-		week = clickedWeekDay + 1;
+		week = clickedWeekDay;
 		Log.d(TAG,"week = "+ week);
 		Cursor cursor = db.rawQuery("SELECT time_name, subject_name, type, place" +
 				" FROM time, time_name, subject, type" +
@@ -774,9 +797,11 @@ android.content.DialogInterface.OnClickListener {
 				" AND time.subjectid = subject.subjectid" +
 				" AND time.typeid = type.typeid" +
 				" AND time.week = " + week +
+				" order by time.timeid" +
 				";"
 				, null);
-		Log.d(TAG,"Result ="+cursor.getCount());
+		Log.d(TAG,"Result = "+cursor.getCount());
+		Log.d("debug","Result = "+cursor.getCount());
 		time_name = new String[cursor.getCount() + 1];
 		subject = new String[cursor.getCount()];
 		type = new String[cursor.getCount()];
