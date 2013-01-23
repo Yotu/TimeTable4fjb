@@ -24,7 +24,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-public class SnsReceiver {
+//TimeTableSqlHelperの引数がContextだったので、テストで継承
+public class SnsReceiver extends Activity{
 
 	/** 受信用用URL */
 	private String RECEIVE_URL = "http://203.138.125.240/api/httpdocs/s01_rcv.php";
@@ -40,6 +41,8 @@ public class SnsReceiver {
 	private String field;
 	private String[] weekArray = { "日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日","土曜日" };
 	private int isShare;
+	private TimeTableSqlHelper sqlHelper = new TimeTableSqlHelper(this);
+	private SQLiteDatabase db;
 
 
 
@@ -86,13 +89,10 @@ public class SnsReceiver {
 				// \tで分割
 				String[] items = sLine.split("\t");
 				TimeTableInfo info = new TimeTableInfo();
-				Log.d(TAG,"SQLのインスタンス作成");
-				TimeTableSqlHelper h = new TimeTableSqlHelper(null);
-				SQLiteDatabase db = h.getWritableDatabase();
 				ContentValues values = new ContentValues();
 				Log.d(TAG,"make cursor");
 				Cursor c = null;
-				Log.d(TAG,"SQLのインスタンス作成完了！");
+
 
 				for (String item : items) {
 					// フィールド名と値は#container#で区切られている為
@@ -111,23 +111,32 @@ public class SnsReceiver {
 						//		-----------------------------------------------------------------------
 
 						info.setTitle(value);
-						table = "subject";
 						field = "subject_name";
-						ContentValues subjectValues = new ContentValues();
-
-						//subjectテーブルにない場合はplaceを nullにして格納する
-						String sql = "SELECT * FROM subject WHERE subject_name ='"+ value +"' AND place is null;";
-
-						c = db.rawQuery(sql,null);
-						if(c.getCount() == 0){
-							subjectValues.put(table,value); //subjectテーブルに授業科目名を格納する
-							c = db.rawQuery(sql,null);      //もう一度検索
-							c.moveToFirst();
-							subjectId =c.getInt(0);
+						// 入力された情報を元に、関連のあるデータを検索　無ければ格納する
+						db = sqlHelper.getReadableDatabase();
+						//受信する場合は、Placeはnullにする
+						String sql = "SELECT subjectid FROM subject WHERE subject_name = '"
+								+ values +  " place = null;";
+						Log.d(TAG,"start query ="+sql);
+						c = db.rawQuery(sql, null);
+						Log.d(TAG,"start if");
+						if (c.getCount() == 0) {
+							// 検索結果ゼロ
+							Log.d(TAG, "検索結果ゼロ");
+							table = "subject";
+							ContentValues ct = new ContentValues();
+							ct.put("subject_name", info.getTitle());
+							subjectId = (int)sqlHelper.insert(table, ct);
+							Log.d(TAG, "Subject追加完了");
 						}else{
 							c.moveToFirst();
-							subjectId =c.getInt(0);
+							subjectId = c.getInt(0);
+							Log.d(TAG,"既に登録されている科目データです。　index:"+subjectId);
 						}
+						c.close();
+						db.close();
+
+						Log.d(TAG,"授業科目名取得");
 
 					} else if ("type".equals(column[0])) {
 						Log.d(TAG,"種類");
@@ -254,10 +263,10 @@ public class SnsReceiver {
 				values.put("share", isShare);
 				values.put("creatorid", userId);
 				values.put("uptime", timestamp);
-				h.insert("time", values);
+				sqlHelper.insert("time", values);
 				c.close();
 				db.close();
-				h.close();
+				sqlHelper.close();
 
 
 			}
