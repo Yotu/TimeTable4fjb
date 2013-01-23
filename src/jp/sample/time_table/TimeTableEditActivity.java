@@ -44,7 +44,6 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	/** Button 種類追加用ボタン */
 	private Button addVarietyButton;
 	/** int timeTableId */
-	private int timeTableId;
 	/** シェア */
 	private CheckBox shareCb; // 時間割のシェア
 	private CheckBox bikoShareCb;
@@ -62,13 +61,11 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private int subjectid;
 	private int typeid;
 	private int week;
-	private String[] weekArray = { "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日", "日曜日" };
 	private int timeid;
 	private int isShare = 0;
 	private int bikoShare = 0;
 	private int creatorid;
 
-	private long index;
 
 	// アクティビティの開始時にボタンを登録する
 	public void onCreate(Bundle savedInstanceState) {
@@ -210,9 +207,11 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			bikoShare = 1; // 備考シェアのチェック判定
 		}
 
+		timeid = timeTableSpr.getSelectedItemPosition() + 1; //時限IDのインデックス
 		week = weekSpr.getSelectedItemPosition(); // 曜日のインデックス
 		typeid = typeSpr.getSelectedItemPosition(); // 種類のインデックス
 		Log.d(TAG,"チェック項目＆＆インデックス取得");
+		Log.d(TAG,"曜日番号を取得 ="+week+" 種類番号="+ typeid +"時限ID="+ timeid);
 		//		-----------------------------------------------------------------------
 		//
 		//		授業科目IDを取得
@@ -313,9 +312,11 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		try {
 			if (c.getCount() != 0) {
 				sqlHelper.update("time", values,"week = ? AND timeid = ?",null);
+				Toast.makeText(this,"予定を更新しました",Toast.LENGTH_LONG).show();
 			} else {
 				Log.d(TAG, "data insert");
 				sqlHelper.insert("time", values);
+				Toast.makeText(this,"予定を登録しました",Toast.LENGTH_LONG).show();
 			}
 		} catch (SQLiteException e) {
 			e.printStackTrace();
