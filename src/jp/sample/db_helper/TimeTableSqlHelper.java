@@ -23,6 +23,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	public static final String CREATOR_TABLE = "creator";
 	public static final String REMARKS_TABLE = "remarks";
 
+
 	/** CREATEテーブル */
 	private static final String CREATE_TIME = "create table " + TIME_TABLE
 			+ "(" + "week integer not null," + "timeid integer not null,"

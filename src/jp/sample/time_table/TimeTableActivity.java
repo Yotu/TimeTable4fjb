@@ -679,6 +679,7 @@ android.content.DialogInterface.OnClickListener {
 			SnsReceiver receiver = new SnsReceiver();
 			List<TimeTableInfo> list;
 			try {
+				receiver.setContext(getApplicationContext());
 				list = receiver.receive(UID);
 			} catch (ReceiveException e) {
 				e.printStackTrace();
