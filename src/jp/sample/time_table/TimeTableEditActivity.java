@@ -28,7 +28,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private static final String TAG = "TimeTableActivity";
 
 	/** EditText 授業名 */
-	private EditText titleEdt;
+	private EditText subjectEdt;
 	/** EditText 備考 */
 	private EditText todoEdt;
 	/** Spinner 曜日 */
@@ -72,15 +72,8 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.timetableedit);
 
-		// 授業名のインスタンス取得
-		titleEdt = (EditText) findViewById(R.id.title);
-		// 曜日のインスタンス取得
-		weekSpr = (Spinner) findViewById(R.id.week);
-		// 時間割のインスタンス取得
-		timeTableSpr = (Spinner) findViewById(R.id.time_table);
-		//timeTableSpr = (Spinner) findViewById(R.id.time);
-		// 場所のインスタンス取得
-		placeEdt = (EditText) findViewById(R.id.place);
+		init();
+		
 		// 登録用ボタンのインスタンス取得
 		addBtn = (Button) findViewById(R.id.edit);
 		addBtn.setOnClickListener(this);
@@ -143,14 +136,16 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		// android.R.layout.simple_spinner_item,TimeTableInfo.types);
 		// typeSpr.setAdapter(typeTableAdapter);
 
-		dbHelper = new MyDbHelper(this);
-		mDb = dbHelper.getWritableDatabase();
+		//dbHelper = new MyDbHelper(this);
+		//mDb = dbHelper.getWritableDatabase();
+		mDb = sqlHelper.getReadableDatabase();
 		ArrayAdapter<String> typeTableAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item);
-		typeTableAdapter.add("学科");
-		typeTableAdapter.add("実技");
-		typeTableAdapter.add("プライベート");
-		String sql = "select variety from " + MyDbHelper.TABLE + " ;";
+//		typeTableAdapter.add("学科");
+//		typeTableAdapter.add("実技");
+//		typeTableAdapter.add("プライベート");
+//		String sql = "select variety from " + MyDbHelper.TABLE + " ;";
+		String sql = "SELECT type FROM " + TimeTableSqlHelper.TYPE_TABLE + ";";
 		Cursor cursor = mDb.rawQuery(sql, null);
 		// カーソルをDBの最初の行へ移動
 		cursor.moveToFirst();
@@ -181,7 +176,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			Log.d(TAG, "TimeTableEditActivity onClick");
 
 			TimeTableInfo info = new TimeTableInfo();
-			info.setTitle(titleEdt.getText().toString());
+			info.setTitle(subjectEdt.getText().toString());
 			info.setDayOfWeek(weekSpr.getSelectedItem().toString());
 			info.setTimeTable(timeTableSpr.getSelectedItem().toString());
 			info.setTodo(todoEdt.getText().toString());
@@ -387,5 +382,21 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			return true;
 		}
 		return super.onKeyLongPress(keyCode, event);
+	}
+	
+	private void init() {
+		/** 授業名入力欄 */
+		subjectEdt = (EditText)findViewById(R.id.subject);
+
+		/** 曜日選択 */
+		weekSpr = (Spinner)findViewById(R.id.week);
+
+		/** 時限選択 */
+		timeTableSpr = (Spinner)findViewById(R.id.time_table);
+		//timeTableSpr = (Spinner) findViewById(R.id.time);
+		
+		/** 場所入力欄 */
+		placeEdt = (EditText)findViewById(R.id.place);
+
 	}
 }

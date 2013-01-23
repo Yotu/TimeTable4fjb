@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    tools:context=".TimeTableEditActivity" >
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -11,26 +13,25 @@
         android:orientation="vertical" >
 
         <LinearLayout
-            android:id="@+id/titleLine"
+            android:id="@+id/subjectLine"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" >
-
+            <!-- 「授業名」 -->
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/subjectText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/title" />
-
+                android:text="@string/subject" />
+			<!-- 授業名入力欄 -->
             <EditText
-                android:id="@+id/title"
+                android:id="@+id/subject"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:inputType="textMultiLine" >
-
-                <requestFocus />
+                android:inputType="text" >
+                <requestFocus />		<!-- この入力欄にフォーカスを設定 -->
             </EditText>
         </LinearLayout>
 
@@ -39,24 +40,24 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" >
-
+			<!-- 「曜日」 -->
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/weekText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/week" />
-
+			<!-- 曜日選択 -->
             <Spinner
                 android:id="@+id/week"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center"
                 android:layout_weight="4" />
-
         </LinearLayout>
 
+        
         <LinearLayout
             android:id="@+id/LinearLayout01"
             android:layout_width="fill_parent"
@@ -141,7 +142,6 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
-
             </LinearLayout>
 
             <CheckBox
@@ -150,7 +150,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:text="@string/share" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -192,7 +191,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:text="@string/bikoShare" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -200,7 +198,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5" >
-
         </LinearLayout>
 
         <LinearLayout
@@ -221,9 +218,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:text="@string/Cancel" />
-
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>

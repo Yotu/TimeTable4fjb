@@ -25,52 +25,51 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 
 
 	/** CREATEテーブル */
-	private static final String CREATE_TIME = "create table " + TIME_TABLE
-			+ "(" + "week integer not null," + "timeid integer not null,"
+	private static final String CREATE = "create table if not exists ";
+	private static final String CREATE_TIME = CREATE + TIME_TABLE + "("
+			+ "week integer not null,"
+			+ "timeid integer not null,"
 			+ "subjectid integer not null,"
 			+ "typeid integer not null default 1,"
 			+ "share integer not null default 1,"
 			+ "creatorid integer not null," + "uptime timestamp not null,"
 			+ "primary key(week, timeid)" + ");";
-	private static final String CREATE_TIMENAME = "create table "
-			+ TIMENAME_TABLE + "("
+	private static final String CREATE_TIMENAME = CREATE + TIMENAME_TABLE + "("
 			+ "timeid integer primary key autoincrement,"
 			+ "time_name varchar(15) not null" + ");";
-	private static final String CREATE_SUBJECT = "create table "
-			+ SUBJECT_TABLE + "("
+	private static final String CREATE_SUBJECT = CREATE + SUBJECT_TABLE + "("
 			+ "subjectid integer primary key autoincrement,"
 			+ "subject_name varchar(12) not null,"
-			+ "place varchar(12)"
-			+ ");";
-	private static final String CREATE_TYPE = "create table " + TYPE_TABLE
-			+ "(" + "typeid integer primary key autoincrement,"
+			+ "place varchar(12)" + ");";
+	private static final String CREATE_TYPE = CREATE + TYPE_TABLE + "("
+			+ "typeid integer primary key autoincrement,"
 			+ "type varchar(15) not null" + ");";
-	private static final String CREATE_CREATOR = "create table "
-			+ CREATOR_TABLE + "("
+	private static final String CREATE_CREATOR = CREATE + CREATOR_TABLE + "("
 			+ "creatorid integer primary key autoincrement,"
-			+ "userid varchar(20)"
-			+ ");";
-	private static final String CREATE_REMARKS = "create table "
-			+ REMARKS_TABLE + "(" + "date timestamp not null,"
-			+ "timeid integer default null," + "remarks text,"
-			+ "share numeric not null," + "creatorid integer not null,"
-			+ "upremarks timestamp not null," + "primary key(date, timeid)"
-			+ ");";
+			+ "userid varchar(20)" + ");";
+	private static final String CREATE_REMARKS = CREATE + REMARKS_TABLE + "("
+			+ "date timestamp not null,"
+			+ "timeid integer default null,"
+			+ "remarks text,"
+			+ "share numeric not null,"
+			+ "creatorid integer not null,"
+			+ "upremarks timestamp not null,"
+			+ "primary key(date, timeid)" + ");";
 
 	public TimeTableSqlHelper(Context context) {
 		super(context, DB, null, DB_VERSION);
-
 	}
 
 	/**
-	 * 新規追加 table_name: テーブル名 ct: 追加データ
-	 *
-	 * @return
+	 * 新規追加
+	 * table_name: テーブル名
+	 * ct: 追加データ
 	 */
-	public long insert(String table_name, ContentValues ct) {
+	public long insert(String table, ContentValues ct) {
 		Log.d(TAG, "insert");
 		SQLiteDatabase db = getWritableDatabase();
-		long rec = db.insert(table_name, null, ct);
+		long rec = db.insert(table, null, ct);
+		Log.d(TAG, String.format("insert: return code=%d", rec));
 		db.close();
 		return rec;
 	}
@@ -81,12 +80,12 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	 * "id = 1"のような書き方をした場合は、whereParam[]はnullにする。 whereParam:
 	 * 条件の値。whereCodeの内容に応じて設定。
 	 */
-	public long update(String table_name, ContentValues ct, String whereCode,
-			String[] whereParam) {
+	public long update(String table, ContentValues ct, String wCode, String[] wParam) {
 		Log.d(TAG, "update");
 
 		SQLiteDatabase db = getWritableDatabase();
-		long rec = db.update(table_name, ct, whereCode, whereParam);
+		long rec = db.update(table, ct, wCode, wParam);
+		Log.d(TAG, String.format("update: return code=%d", rec));
 		db.close();
 
 		return rec;
@@ -98,31 +97,28 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	 * "id = 1"のような書き方をした場合は、whereParam[]はnullにする。 whereParam:
 	 * 条件の値。whereCodeの内容に応じて設定。
 	 */
-	public long delete(String table_name, String where, String[] whereParam) {
-		Log.v(TAG, String.format("delete: where=%s whereParam=%s", where,
-				whereParam));
+	public long delete(String table, String where, String[] wParam) {
+		Log.v(TAG, String.format("delete: where=%s wParam=%s", where, wParam));
+
 		SQLiteDatabase db = getWritableDatabase();
-		long ret = -1;
+		long rec = -1;
 		try {
-			ret = db.delete(table_name, where, whereParam);
+			rec = db.delete(table, where, wParam);
 		} catch (SQLException e) {
+			e.printStackTrace();
 		} finally {
+			Log.d(TAG, String.format("delete: return code=%d", rec));
 			if (db != null) {
 				db.close();
 			}
 		}
-		return ret;
+		return rec;
 	}
 
 	public void dummyDataInsert() {
-		Log.d(TAG, "defaultTypeTable");
+		Log.d(TAG, "dummyDataInsert");
+
 		SQLiteDatabase db = getWritableDatabase();
-		/**
-		 * 科目
-		 * 時限
-		 * 種類
-		 *
-		 */
 		db.rawQuery("insert into subject values(null, 'Java演習', '204');", null);
 		db.rawQuery("insert into subject values(null, 'コンピュータ・システム', '303');", null);
 		db.rawQuery("insert into subject values(null, 'Office演習', '401');", null);
@@ -140,37 +136,18 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		db.rawQuery("delete from type;", null);
 		Log.d(TAG, "delete");
 		ContentValues ct = new ContentValues();
-		Cursor c;
+
 		Log.d(TAG, "create");
-		try {
-			c = getReadableDatabase().rawQuery(
-					"select * from " + TYPE_TABLE + " where type like '講義';",
-					null);
-			if (c.getCount() <= 0) {
-				ct.put("type", "講義");
-				insert(TYPE_TABLE, ct);
-				ct.clear();
-			}
-			c = getReadableDatabase().rawQuery(
-					"select * from " + TYPE_TABLE + " where type like '演習';",
-					null);
-			if (c.getCount() <= 0) {
-				ct.put("type", "演習");
-				insert(TYPE_TABLE, ct);
-				ct.clear();
-			}
-			c = getReadableDatabase().rawQuery(
-					"select * from " + TYPE_TABLE
-							+ " where type like 'プライベート';", null);
-			if (c.getCount() <= 0) {
-				ct.put("type", "プライベート");
-				insert(TYPE_TABLE, ct);
-				ct.clear();
-			}
-		} catch (SQLException e) {
-			Log.d(TAG, "SQLException");
-			e.printStackTrace();
-		}
+		ct.put("type", "学科");
+		insert(TYPE_TABLE, ct);
+		ct.clear();
+		ct.put("type", "実技");
+		insert(TYPE_TABLE, ct);
+		ct.clear();
+		ct.put("type", "プライベート");
+		insert(TYPE_TABLE, ct);
+		ct.clear();
+
 		db.close();
 	}
 
@@ -179,24 +156,16 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getWritableDatabase();
 		db.rawQuery("delete from " + TIMENAME_TABLE, null);
 		ContentValues ct = new ContentValues();
-		Cursor c = null;
-		try {
-			for (int i = 0; i < 8; i++) {
-				c = getReadableDatabase()
-						.rawQuery(
-								"select * from " + TIMENAME_TABLE
-										+ " where time_name like '"
-										+ (i + "時限目") + "';", null);
-				if (c.getCount() <= 0) {
-					ct.put("time_name", i + "時限目");
-					insert(TIMENAME_TABLE, ct);
-					ct.clear();
-				}
-			}
-		} catch (SQLException e) {
-			Log.d(TAG, "SQLException");
-			e.printStackTrace();
+
+		for (int i = 0; i < 8; i++) {
+			ct.put("time_name", i + "時限目");
+			insert(TIMENAME_TABLE, ct);
+			ct.clear();
 		}
+		ct.put("time_name", "放課後");
+		insert(TIMENAME_TABLE, ct);
+		ct.clear();
+
 		db.close();
 	}
 
@@ -211,6 +180,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			db.execSQL(CREATE_CREATOR);
 			db.execSQL(CREATE_REMARKS);
 		} catch (SQLException e) {
+			Log.d(TAG, "onCreate()でSQLException発生");
 			e.printStackTrace();
 		}
 	}
@@ -230,6 +200,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			db.execSQL("drop table " + REMARKS_TABLE);
 			onCreate(db);
 		} catch (SQLException e) {
+			Log.d(TAG, "onUpgrade()でSQLException発生");
 			e.printStackTrace();
 		}
 	}

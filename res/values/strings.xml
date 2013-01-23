@@ -4,6 +4,7 @@
     <string name="app_name">タイムテーブル</string>
 
     <!-- 登録画面で使っているリソース -->
+    <string name="subject">授業名</string>
     <string name="time">時限</string>
     <string name="place">場所</string>
     <string name="timeshare">時間割を共有する</string>
@@ -14,7 +15,6 @@
 
     <string name="new_add">新規登録</string>
     <string name="list_show">時間割確認</string>
-    <string name="title">授業名</string>
     <string name="type">種類</string>
     <string name="department">学科</string>
     <string name="practical">実技</string>
