@@ -42,7 +42,7 @@ public class SnsReceiver{
 	private String[] weekArray = { "日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日","土曜日" };
 	private int isShare;
 	private Context context;
-	private TimeTableSqlHelper sqlHelper = new TimeTableSqlHelper(getContext());
+	private TimeTableSqlHelper sqlHelper;
 	private SQLiteDatabase db;
 
 
@@ -54,6 +54,8 @@ public class SnsReceiver{
 	 * @return
 	 */
 	public List<TimeTableInfo> receive(String userName) throws ReceiveException {
+		sqlHelper = new TimeTableSqlHelper(context);
+
 		List<TimeTableInfo> list = new ArrayList<TimeTableInfo>();
 		HttpClient objHttp = new DefaultHttpClient();
 		Log.d(TAG,"start SnsReceiver");
@@ -116,7 +118,7 @@ public class SnsReceiver{
 						// 入力された情報を元に、関連のあるデータを検索　無ければ格納する
 						db = sqlHelper.getReadableDatabase();
 						//受信する場合は、Placeはnullにする
-						String sql = "SELECT subjectid FROM subject WHERE subject_name = '"+ values +  " place = null;";
+						String sql = "SELECT subjectid FROM subject WHERE subject_name = '"+ value +  "' and place = null;";
 						Log.d(TAG,"start query ="+sql);
 						c = db.rawQuery(sql, null);
 						Log.d(TAG,"start if");
@@ -280,14 +282,6 @@ public class SnsReceiver{
 		}
 		return list;
 	}
-
-
-
-	public Context getContext() {
-		return context;
-	}
-
-
 
 	public void setContext(Context context) {
 		this.context = context;
