@@ -250,8 +250,19 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		//自分のUIDを検索
 		//自分のUIDは必ず１になるので、1を指定する
 		creatorid = 1;
+		sql = "select userid from creator where creatorid=1;";
+		db = sqlHelper.getReadableDatabase();
+		c = db.rawQuery(sql, null);
+		String UID = "";
+		if (c.getCount() > 0) {
+			c.moveToFirst();
+			UID = c.getString(0);
+			info.setUid(UID);
+		} else {
+			Log.d(TAG, "UIDがない");
+		}
 
-		Log.d(TAG,"CreatorId取得");
+		Log.d(TAG,String.format("CreatorId取得: UID=%s, getUid()=%s", UID, info.getUid()));
 		//		-----------------------------------------------------------------------
 		//
 		//		備考情報の取得＆登録
@@ -309,9 +320,10 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		sql ="SELECT week,timeid FROM time WHERE week = " + week + " AND timeid =" + timeid +";";
 		db = sqlHelper.getReadableDatabase();
 		c = db.rawQuery(sql,null);
+		Log.d(TAG, String.format("登録確認 c=%d件", c.getCount()));
 		try {
 			if (c.getCount() != 0) {
-				sqlHelper.update("time", values,"week = ? AND timeid = ?",null);
+				sqlHelper.update("time", values,"week = " + week + " AND timeid = " + timeid + ";",null);
 				Toast.makeText(this,"予定を更新しました",Toast.LENGTH_LONG).show();
 			} else {
 				Log.d(TAG, "data insert");
