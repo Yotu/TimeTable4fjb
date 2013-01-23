@@ -37,7 +37,7 @@ public class TimeTableInfo {
 		todo = "";
 		type = "";
 		place = "";
-		UID = "";
+		UID ="";
 	}
 
 	public int getId() {

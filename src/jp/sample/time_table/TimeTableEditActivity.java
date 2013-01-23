@@ -50,7 +50,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private CheckBox bikoShareCb;
 	/** 場所 */
 	private EditText placeEdt;
-	/** ユニークID */
+
 
 
 	private MyDbHelper dbHelper;
@@ -196,8 +196,8 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		String timestamp = String.valueOf(currentTimeMillis);
 
 
-		TimeTableSqlHelper h = new TimeTableSqlHelper(this);
-		SQLiteDatabase db = h.getWritableDatabase();
+
+		SQLiteDatabase db = sqlHelper.getWritableDatabase();
 		ContentValues values = new ContentValues();
 
 		//		-----------------------------------------------------------------------
@@ -214,6 +214,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 		week = weekSpr.getSelectedItemPosition(); // 曜日のインデックス
 		typeid = typeSpr.getSelectedItemPosition(); // 種類のインデックス
+		Log.d(TAG,"チェック項目＆＆インデックス取得");
 		//		-----------------------------------------------------------------------
 		//
 		//		授業科目IDを取得
@@ -240,38 +241,25 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			subjectid = c.getInt(0);
 		}
 
-
+		Log.d(TAG,"授業科目名取得");
 		//		-----------------------------------------------------------------------
 		//
 		//		ユーザーIDを取得
 		//
 		//		-----------------------------------------------------------------------
 		//自分のUIDを検索
-		sql = "SELECT * FROM creator WHERE userid = '" + info.getUid() + "';";
-		c = db.rawQuery(sql, null);
-		if (c.getCount() == 0) {
-			// 検索結果ゼロ
-			table = "creator";
-			ContentValues ct = new ContentValues();
-			ct.put("userid", info.getUid());
-			Log.d(TAG, "userID insert");
-			db.insert(table, null, ct);
-			Log.d(TAG, "CreatorId追加完了");
-			c = db.rawQuery(sql, null);  //最新のデータを検索し直す
-			c.moveToLast();
-			creatorid = c.getInt(0);
-		} else{
-			c.moveToFirst();
-			creatorid = c.getInt(0);
-		}
+		//自分のUIDは必ず１になるので、1を指定する
+		creatorid = 1;
 
-
+		Log.d(TAG,"CreatorId取得");
 		//		-----------------------------------------------------------------------
 		//
 		//		備考情報の取得＆登録
 		//
 		//		-----------------------------------------------------------------------
-		table = "remarks";
+		if(info.getTodo()==null){
+			table = "remarks";
+
 		ContentValues ct = new ContentValues();
 		ct.put("date", timestamp);// ※ここをトップ画面から受け取った登録したい日時の情報にする
 		//========================================================================================================
@@ -291,14 +279,15 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		if (c.getCount() == 0) {
 			// 検索結果ゼロの場合は新規登録
 			Log.d(TAG, "remarks insert");
-			h.insert(table, ct);
+			sqlHelper.insert(table, ct);
 		} else {
 			// 検索結果がゼロでなかった場合は更新処理
 			// 脆弱性あり。実行確認優先
 			Log.d(TAG, "remarks update");
-			h.update(table, ct, "date=" + timestamp + " and timeid=" + info.getTimeTable(), null);
+			sqlHelper.update(table, ct, "date=" + timestamp + " and timeid=" + info.getTimeTable(), null);
 		}
-
+		}
+		Log.d(TAG,"備考取得");
 		//		-----------------------------------------------------------------------
 		//
 		//		===================timeデータベースにデータを保存===========================
@@ -319,10 +308,10 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		c = db.rawQuery(sql,null);
 		try {
 			if (c.getCount() != 0) {
-				h.update("time", values,"week = ? AND timeid = ?",null);
+				sqlHelper.update("time", values,"week = ? AND timeid = ?",null);
 			} else {
 				Log.d(TAG, "data insert");
-				h.insert("time", values);
+				sqlHelper.insert("time", values);
 			}
 		} catch (SQLiteException e) {
 			e.printStackTrace();
@@ -348,7 +337,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 		setResult(RESULT_OK);
 		finish();
-		h.close();
+		sqlHelper.close();
 		db.close();
 	}
 
