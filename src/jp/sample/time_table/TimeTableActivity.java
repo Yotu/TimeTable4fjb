@@ -808,7 +808,7 @@ android.content.DialogInterface.OnClickListener {
 		todo = new String[cursor.getCount()];
 		cursor = db.rawQuery("SELECT remarks " +
 				" FROM remarks" +
-				" WHERE (SELECT strftime('%w', date) FROM remarks) = '1'" +
+				" WHERE (SELECT strftime('%w', date) FROM remarks) = '3'" +
 				";", null);
 //		Cursor c = db.rawQuery("SELECT strftime('%w', date) FROM remarks", null);
 //		c.moveToFirst();
