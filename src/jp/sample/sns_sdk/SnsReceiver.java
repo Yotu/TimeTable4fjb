@@ -144,15 +144,21 @@ public class SnsReceiver{
 						Log.d(TAG,"種類");
 						//		-----------------------------------------------------------------------
 						//
-						//		種類
+						//		種類      ：現状では、テーブルにないデータは読み込まないようにする？
 						//
 						//		-----------------------------------------------------------------------
 						db = sqlHelper.getReadableDatabase();
 						info.setType(value);
 						table = "type";
 						field = "type";
+						Log.d(TAG,"type is :"+value);
 						c = db.rawQuery("SELECT typeid FROM type WHERE " + table+ "."+ field +" = '"+ value +"';",null);
-						typeId =c.getInt(0);
+						if(c.getCount() == 0){
+							typeId = 1;
+						}else{
+							c.moveToFirst();
+							typeId =c.getInt(0);
+						}
 						db.close();
 
 					} else if ("week".equals(column[0])) {
@@ -177,10 +183,15 @@ public class SnsReceiver{
 						//		-----------------------------------------------------------------------
 						info.setTimeTable(value);
 						db = sqlHelper.getReadableDatabase();
-						table = "time_table";
+						table = "time_name";
 						field = "time_name";
-						c = db.rawQuery("SELECT time_table FROM timeid WHERE " + table + "."+ field +" = '"+ value +"';",null);
-						timeId = c.getInt(0);
+						c = db.rawQuery("SELECT "+ field + " FROM "+ table +" WHERE " + table + "."+ field +" = '"+ value +"';",null);
+						if(c.getCount() == 0){
+							timeId = 1;
+						}else{
+							c.moveToFirst();
+							timeId = c.getInt(0);
+						}
 						db.close();
 
 
@@ -200,7 +211,8 @@ public class SnsReceiver{
 						Log.d(TAG,"ユーザー情報");
 						//		-----------------------------------------------------------------------
 						//
-						//		ユーザー情報
+						//		ユーザー情報      Todo:ユーザーテーブルを参照し、競合がないか確認して格納しておく
+						//　　　ユーザーIDが-1になるエラーあり
 						//
 						//		-----------------------------------------------------------------------
 						info.setUid(value);
@@ -213,8 +225,8 @@ public class SnsReceiver{
 						String sql = "SELECT * FROM creator WHERE userid ='"+ value +"';";
 						c = db.rawQuery(sql,null);
 						if(c.getCount() == 0){
-							creatorValues.put(table,value); //creatorテーブルに授業科目名を格納する
-							creatorid =(int)sqlHelper.insert("userid", creatorValues);
+							creatorValues.put("userid",value); //creatorテーブルに授業科目名を格納する
+							creatorid =(int)sqlHelper.insert(table, creatorValues);
 						}else{
 							c.moveToFirst();
 							creatorid =c.getInt(0);
