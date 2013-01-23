@@ -90,7 +90,6 @@ android.content.DialogInterface.OnClickListener {
 	/** Button 時間割確認ボタン用 */
 	// private Button listBtn;
 
-	public String UID; //UIDは初回起動時に入力させるようにした。
 	/*-----僕らの追加要素たち-----*/
 	// 他の画面から戻ってきたときにフラグが正だと強制終了させる
 	public static boolean endFlag;
@@ -147,6 +146,7 @@ android.content.DialogInterface.OnClickListener {
 	//プリファレンス
 	private SharedPreferences preference;
 	private Editor editor;
+	String UID;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -160,39 +160,40 @@ android.content.DialogInterface.OnClickListener {
 		preference = getSharedPreferences("Preference Name", MODE_PRIVATE);
 		editor = preference.edit();
 
-		//if (preference.getBoolean("Launched", false)==false) {
-		//初回起動時の処理
-		Log.d(TAG,"初回起動時の処理");
+		if (preference.getBoolean("Launched", false)==false) {
+			//初回起動時の処理
+			Log.d(TAG,"初回起動時の処理");
 
-		//ユーザー登録処理
-		final EditText editView = new EditText(TimeTableActivity.this);
-		new AlertDialog.Builder(TimeTableActivity.this)
-		.setIcon(android.R.drawable.ic_dialog_info)
-		.setTitle("ユーザーIDを入力してください")
-		//setViewにてビューを設定します。
-		.setView(editView)
-		.setPositiveButton("登録", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
+			//ユーザー登録処理
+			final EditText editView = new EditText(TimeTableActivity.this);
+			new AlertDialog.Builder(TimeTableActivity.this)
+			.setIcon(android.R.drawable.ic_dialog_info)
+			.setTitle("ユーザーIDを入力してください")
+			//setViewにてビューを設定します。
+			.setView(editView)
+			.setPositiveButton("登録", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
 
-				//入力した文字をトースト出力する
-				Toast.makeText(TimeTableActivity.this,
-						editView.getText().toString()+"で入力を受付ました！",
-						Toast.LENGTH_LONG).show();
-				UID =editView.getText().toString();
-				Log.d(TAG,UID);
-			}
-		})
-		.show();
-		;		init();
-		//プリファレンスの書き変え
-		editor.putBoolean("Launched", true);
-		editor.commit();
-		//		//} else {
-		//			//二回目以降の処理
-		//			editor.putBoolean("Launched", false);
-		//			editor.commit();
-		//
-		//		//}
+					//入力した文字をトースト出力する
+					Toast.makeText(TimeTableActivity.this,
+							editView.getText().toString()+"で入力を受付ました！",
+							Toast.LENGTH_LONG).show();
+					UID =editView.getText().toString();
+					Log.d(TAG,UID);
+					init(UID);
+				}
+			})
+			.show();
+
+			//プリファレンスの書き変え
+			editor.putBoolean("Launched", true);
+			editor.commit();
+		} else {
+			//二回目以降の処理
+			editor.putBoolean("Launched", false);
+			editor.commit();
+
+		}
 
 		/*-------------------ここからあいやのターン-------------------*/
 
@@ -885,20 +886,15 @@ android.content.DialogInterface.OnClickListener {
 	// }
 	// }
 
-	public void init(){
+	public void init(String UID){
 		Log.d(TAG,"データベース初期化");
 
 		ContentValues values = new ContentValues();
-		if(UID == null){
-			Log.d(TAG,"エラー");
-			UID = "ErrorUser";
-			values.put("userid",UID);
-			db.insert("creator",null,values);
-		}else{
-			values.put("userid",UID);
-			db.insert("creator", null, values);
-			Log.d(TAG,"ユーザーID:"+UID+" is Inseerted");
-		}
+
+		values.put("userid",UID);
+		dbHelper.insert("creator",values);
+		Log.d(TAG,"ユーザーID:"+UID+" is Inseerted");
+
 		dbHelper.defaultTimeNameTable();
 		dbHelper.defaultTypeTable();
 		Log.d(TAG,"種類テーブルと時限テーブルに項目が追加されました。");
