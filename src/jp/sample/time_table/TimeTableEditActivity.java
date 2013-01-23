@@ -304,7 +304,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			values.put("week", week);
 			values.put("timeid", timeid);
 			values.put("subjectid", subjectid);
-			values.put("typeid", typeid);
+			values.put("typeid", typeid + 1);
 			values.put("share", isShare);
 			values.put("creatorid", creatorid);
 			values.put("uptime", timestamp);

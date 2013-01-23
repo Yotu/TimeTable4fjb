@@ -782,8 +782,8 @@ android.content.DialogInterface.OnClickListener {
 				" ORDER by time.timeid" +
 				";"
 				, null);
-		Log.d(TAG,"Result = "+cursor.getCount());
-//		Log.d("debug","SelectedResult = "+cursor.getCount());
+		Log.d(TAG,"Result = " + cursor.getCount());
+		Log.d("debug","SelectedResult = " + cursor.getCount());
 		time_name = new String[cursor.getCount() + 1];
 		subject = new String[cursor.getCount()];
 		type = new String[cursor.getCount()];
@@ -795,11 +795,11 @@ android.content.DialogInterface.OnClickListener {
 			subject[i] = cursor.getString(1);
 			type[i] = cursor.getString(2);
 			place[i] = cursor.getString(3);
-//			Log.d("debug", "selected = \n time_name : " + time_name[i] +
-//					",\n subject : " + subject[i] +
-//					",\n type : " + type[i] +
-//					",\n place : " + place[i]
-//					);
+			Log.d("debug", "selected = \n time_name : " + time_name[i] +
+					",\n subject : " + subject[i] +
+					",\n type : " + type[i] +
+					",\n place : " + place[i]
+					);
 			cursor.moveToNext();
 		}
 		cursor.close();
@@ -810,11 +810,7 @@ android.content.DialogInterface.OnClickListener {
 				" FROM remarks" +
 				" WHERE (SELECT strftime('%w', date) FROM remarks) = '3'" +
 				";", null);
-//		Cursor c = db.rawQuery("SELECT strftime('%w', date) FROM remarks", null);
-//		c.moveToFirst();
-//		Log.d("debug", c.getString(0));
-//		cursor.moveToFirst();
-//		Log.d("debug", "SelectResult(remarks) = " + cursor.getCount());
+		cursor.moveToFirst();
 		for(int i=0; i<cursor.getCount(); i++){
 			todo[i] = cursor.getString(0);
 			Log.d("debug", "select = " + todo[i]);
