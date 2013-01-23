@@ -54,12 +54,10 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 
 	private MyDbHelper dbHelper;
-	private TimeTableSqlHelper sqlHelper;
+	private TimeTableSqlHelper sqlHelper = new TimeTableSqlHelper(this);
 	private SQLiteDatabase db;
 	private SQLiteDatabase mDb;  //MyDbHelper用
-	private Cursor c;
 	private String table;
-	private int index;
 
 	private int subjectid;
 	private int typeid;
@@ -69,6 +67,8 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private int isShare = 0;
 	private int bikoShare = 0;
 	private int creatorid;
+
+	private long index;
 
 	// アクティビティの開始時にボタンを登録する
 	public void onCreate(Bundle savedInstanceState) {
@@ -110,10 +110,10 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			}
 		});
 
-//
-//		sqlHelper = new TimeTableSqlHelper(this);
-//		Log.d(TAG, "dummyDataInsertを実行");
-//		sqlHelper.dummyDataInsert();
+		//
+		//		sqlHelper = new TimeTableSqlHelper(this);
+		//		Log.d(TAG, "dummyDataInsertを実行");
+		//		sqlHelper.dummyDataInsert();
 	}
 
 	// フォアグラウンドになった際に処理が実行
@@ -188,16 +188,14 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		info.setPlace(placeEdt.getText().toString());
 		info.setIsShare(shareCb.isChecked());
 		info.setBikoShare(bikoShareCb.isChecked());
-
+		Log.d(TAG,"インスタンス、セッター");
 
 		// 現在のUnixタイム取得
 		long currentTimeMillis = System.currentTimeMillis();
 		// 数値から文字列に変更
 		String timestamp = String.valueOf(currentTimeMillis);
+		Log.d(TAG,"タイム取得");
 
-
-
-		SQLiteDatabase db = sqlHelper.getWritableDatabase();
 		ContentValues values = new ContentValues();
 
 		//		-----------------------------------------------------------------------
@@ -221,9 +219,12 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		//
 		//		-----------------------------------------------------------------------
 		// 入力された情報を元に、関連のあるデータを検索　無ければ格納する
+		db = sqlHelper.getReadableDatabase();
 		String sql = "SELECT subjectid FROM subject WHERE subject_name = '"
 				+ info.getTitle() + "' AND place = '" + info.getPlace() + "';";
-		c = db.rawQuery(sql, null);
+		Log.d(TAG,"start query ="+sql);
+		Cursor c = db.rawQuery(sql, null);
+		Log.d(TAG,"start if");
 		if (c.getCount() == 0) {
 			// 検索結果ゼロ
 			Log.d(TAG, "検索結果ゼロ");
@@ -231,15 +232,15 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			ContentValues ct = new ContentValues();
 			ct.put("subject_name", info.getTitle());
 			ct.put("place", info.getPlace());
-			db.insert(table, null, ct);
+			subjectid = (int)sqlHelper.insert(table, ct);
 			Log.d(TAG, "Subject追加完了");
-			c = db.rawQuery(sql, null); //最新のデータを検索し直す
-			c.moveToLast();
-			subjectid = c.getInt(0);
 		}else{
 			c.moveToFirst();
 			subjectid = c.getInt(0);
+			Log.d(TAG,"既に登録されている科目データです。　index:"+subjectid);
 		}
+		c.close();
+		db.close();
 
 		Log.d(TAG,"授業科目名取得");
 		//		-----------------------------------------------------------------------
@@ -257,35 +258,37 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		//		備考情報の取得＆登録
 		//
 		//		-----------------------------------------------------------------------
-		if(info.getTodo()==null){
+		if(info.getTodo() != null){
 			table = "remarks";
 
-		ContentValues ct = new ContentValues();
-		ct.put("date", timestamp);// ※ここをトップ画面から受け取った登録したい日時の情報にする
-		//========================================================================================================
-		//======================↑要注意箇所↑（現時点だと、下と同じtimestampが格納されるよこれ)==============================
-		//========================================================================================================
-		ct.put("timeid", timeid);
-		ct.put("remarks", info.getTodo());
-		ct.put("share", bikoShare);
-		ct.put("creatorid", creatorid);
-		ct.put("upremarks", timestamp);
+			ContentValues ct = new ContentValues();
+			ct.put("date", timestamp);// ※ここをトップ画面から受け取った登録したい日時の情報にする
+			//========================================================================================================
+			//======================↑要注意箇所↑（現時点だと、下と同じtimestampが格納されるよこれ)==============================
+			//========================================================================================================
+			ct.put("timeid", timeid);
+			ct.put("remarks", info.getTodo());
+			ct.put("share", bikoShare);
+			ct.put("creatorid", creatorid);
+			ct.put("upremarks", timestamp);
 
-		// timestampは、後でトップ画面から受け取った登録したい日時の情報に変更する
-		sql = "SELECT * FROM remarks WHERE date=" + timestamp + " and timeid=" + timeid + ";";
-		// このSQLで、～日の～時限目の備考情報があるかどうかをチェック
-		c = db.rawQuery(sql, null);
-		Log.v(TAG, String.format("c=%d件", c.getCount()));
-		if (c.getCount() == 0) {
-			// 検索結果ゼロの場合は新規登録
-			Log.d(TAG, "remarks insert");
-			sqlHelper.insert(table, ct);
-		} else {
-			// 検索結果がゼロでなかった場合は更新処理
-			// 脆弱性あり。実行確認優先
-			Log.d(TAG, "remarks update");
-			sqlHelper.update(table, ct, "date=" + timestamp + " and timeid=" + info.getTimeTable(), null);
-		}
+			db = sqlHelper.getReadableDatabase();
+			// timestampは、後でトップ画面から受け取った登録したい日時の情報に変更する
+			sql = "SELECT * FROM remarks WHERE date=" + timestamp + " and timeid=" + timeid + ";";
+			// このSQLで、～日の～時限目の備考情報があるかどうかをチェック
+			c = db.rawQuery(sql, null);
+			Log.v(TAG, String.format("c=%d件", c.getCount()));
+			if (c.getCount() == 0) {
+				// 検索結果ゼロの場合は新規登録
+				Log.d(TAG, "remarks insert");
+				sqlHelper.insert(table, ct);
+			} else {
+				// 検索結果がゼロでなかった場合は更新処理
+				// 脆弱性あり。実行確認優先
+				Log.d(TAG, "remarks update");
+				sqlHelper.update(table, ct, "date=" + timestamp + " and timeid=" + info.getTimeTable(), null);
+			}
+			db.close();
 		}
 		Log.d(TAG,"備考取得");
 		//		-----------------------------------------------------------------------
@@ -305,6 +308,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 		//すでに登録されていないか検索
 		sql ="SELECT week,timeid FROM time WHERE week = " + week + " AND timeid =" + timeid +";";
+		db = sqlHelper.getReadableDatabase();
 		c = db.rawQuery(sql,null);
 		try {
 			if (c.getCount() != 0) {
