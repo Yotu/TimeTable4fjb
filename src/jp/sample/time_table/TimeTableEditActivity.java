@@ -54,7 +54,6 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 
 
-	private MyDbHelper dbHelper;
 	private TimeTableSqlHelper sqlHelper = new TimeTableSqlHelper(this);
 	private SQLiteDatabase db;
 	private SQLiteDatabase mDb;  //MyDbHelper用
@@ -67,6 +66,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private int isShare = 0;
 	private int bikoShare = 0;
 	private int creatorid;
+
 
 
 	// アクティビティの開始時にボタンを登録する
@@ -254,6 +254,16 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			//自分のUIDを検索
 			//自分のUIDは必ず１になるので、1を指定する
 			creatorid = 1;
+			db = sqlHelper.getReadableDatabase();
+			sql = "SELECT userid FROM creator WHERE creatorid =" + creatorid +";";
+			c = db.rawQuery(sql,null);
+			if(c.getCount() == 0){
+				Toast.makeText(this, "データの保存に失敗しました。", Toast.LENGTH_LONG).show();
+				finish();
+			}else{
+				c.moveToFirst();
+				info.setUid(c.getString(0));
+			}
 
 			Log.d(TAG,"CreatorId取得");
 			//		-----------------------------------------------------------------------
