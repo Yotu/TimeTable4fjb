@@ -426,18 +426,30 @@ android.content.DialogInterface.OnClickListener {
 					newTime_table[i] = null;
 				}
 			}
-
-			//ここ特有でないものも入っていることに注意
-			Log.d("debug", newTime_table[clickedItemNumber]);
-			intent.putExtra("editMode", true);
-			intent.putExtra("weekDay", clickedWeekDay);
-			intent.putExtra("num", clickedItemNumber);
-			intent.putExtra("title", newTitle[clickedItemNumber]);
-			intent.putExtra("place", newPlace[clickedItemNumber]);
-			intent.putExtra("type", newType[clickedItemNumber]);
-			intent.putExtra("todo", newTodo[clickedItemNumber]);
-			intent.putExtra("time_table", newTime_table[clickedItemNumber]);
-			startActivity(intent);
+			db = dbHelper.getReadableDatabase();
+			int timeid = clickedItemNumber +1;
+			Log.d(TAG,"start db +"+clickedItemNumber+" weekday = "+week);
+			String sql ="SELECT id FROM time WHERE week ="+ week +" AND timeid = " + timeid +";";
+			Cursor c = db.rawQuery(sql, null);
+			if(c.getCount() ==0){
+				Log.d(TAG,"エラー");
+			}else{
+				c.moveToFirst();
+				String id = String.valueOf(c.getInt(0));
+				Log.d(TAG,"selected id = "+ id);
+				//ここ特有でないものも入っていることに注意
+				Log.d("debug", newTime_table[clickedItemNumber]);
+				intent.putExtra("editMode", true);
+				intent.putExtra("weekDay", clickedWeekDay);
+				intent.putExtra("num", clickedItemNumber);
+				intent.putExtra("title", newTitle[clickedItemNumber]);
+				intent.putExtra("place", newPlace[clickedItemNumber]);
+				intent.putExtra("type", newType[clickedItemNumber]);
+				intent.putExtra("todo", newTodo[clickedItemNumber]);
+				intent.putExtra("time_table", newTime_table[clickedItemNumber]);
+				intent.putExtra("id", id);
+				startActivity(intent);
+			}
 		} else if (adbList[paramInt].equals("削除")) {
 			// 選択した場所の予定をDBから削除
 			// ifExist文もつけたい
@@ -750,7 +762,7 @@ android.content.DialogInterface.OnClickListener {
 
 		//ユーザーリスト表示用ダイアログ設置
 		new AlertDialog.Builder(this)
-		.setTitle("Please Select Color")
+		.setTitle("表示したい予定のユーザーを選択してください")
 		.setItems(users, new DialogInterface.OnClickListener(){
 			public void onClick(DialogInterface dialog, int which) {
 				creatorid = which;

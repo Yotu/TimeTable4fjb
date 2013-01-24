@@ -66,6 +66,9 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private int isShare = 0;
 	private int bikoShare = 0;
 	private int creatorid;
+	private boolean editFlag = false;
+
+	private String[] id = new String[1];
 
 
 
@@ -163,28 +166,29 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		mDb.close();
 		typeSpr.setAdapter(typeTableAdapter);
 		Intent intent = getIntent();
-		String id = intent
-				.getStringExtra("jp.sample.time_table.TimeTableIdString");// 値がなければNull
-
 		weekSpr.setSelection(intent.getIntExtra("weekDay", 0));
 		timeTableSpr.setSelection(intent.getIntExtra("num", 3));
-		boolean editFlag = intent.getBooleanExtra("editMode",EditMode);   //編集モードがON
+		editFlag = intent.getBooleanExtra("editMode",EditMode);   //編集モードがON
 
 		//エディットモードがtrueだった場合、モードに入る
 		if(editFlag){
 			Log.d(TAG, "editMode Entered");
-
+			
+			Log.d(TAG, "set typeNumber");
 			int typeNumber = -1;
 			for(int i=0; i<typeTrue.length; i++){
 				if(intent.getStringExtra("type").equals(typeTrue[i])){
 					typeNumber = i;
 				}
 			}
-
+			Log.d(TAG, "getIntent");
 			subjectEdt.setText(intent.getStringExtra("title"));
 			placeEdt.setText(intent.getStringExtra("place"));
 			typeSpr.setSelection(typeNumber);
 			remarksEdt.setText(intent.getStringExtra("todo"));
+			Log.d(TAG, "getIntent");
+			id[0] = intent.getStringExtra("id");
+			Log.d(TAG,"Get id is "+id[0]);
 		}
 
 	}
@@ -327,7 +331,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			//
 			//		-----------------------------------------------------------------------
 
-			//time  |曜日	|時限ID	|授業科目ID	|種類ID	|シェア（時間割)	|作成者ID		|更新日	|
+			//time  ID	|曜日	|時限ID	|授業科目ID	|種類ID	|シェア（時間割)	|作成者ID		|更新日	|
 			values.put("week", week);
 			values.put("timeid", timeid);
 			values.put("subjectid", subjectid);
@@ -336,14 +340,11 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			values.put("creatorid", creatorid);
 			values.put("uptime", timestamp);
 
-			//すでに登録されていないか検索
-			sql ="SELECT week,timeid FROM time WHERE week = " + week + " AND timeid =" + timeid +";";
-			db = sqlHelper.getReadableDatabase();
-			c = db.rawQuery(sql,null);
+
 			try {
-				if (EditMode) {
+				if (editFlag) {
 					Log.d(TAG,"data update");
-					sqlHelper.update("time", values,"week = ? AND timeid = ?",null);
+					sqlHelper.update("time",values,"id = "+id[0],null);
 					Toast.makeText(this,"予定を更新しました",Toast.LENGTH_LONG).show();
 				} else {
 					Log.d(TAG, "data insert");
