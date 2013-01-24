@@ -49,6 +49,8 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	private CheckBox bikoShareCb;
 	/** 場所 */
 	private EditText placeEdt;
+	/**Edit mode*/
+	private boolean EditMode = false;
 
 
 
@@ -141,10 +143,10 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		mDb = sqlHelper.getReadableDatabase();
 		ArrayAdapter<String> typeTableAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item);
-//		typeTableAdapter.add("学科");
-//		typeTableAdapter.add("実技");
-//		typeTableAdapter.add("プライベート");
-//		String sql = "select variety from " + MyDbHelper.TABLE + " ;";
+		//		typeTableAdapter.add("学科");
+		//		typeTableAdapter.add("実技");
+		//		typeTableAdapter.add("プライベート");
+		//		String sql = "select variety from " + MyDbHelper.TABLE + " ;";
 		String sql = "SELECT type FROM " + TimeTableSqlHelper.TYPE_TABLE + ";";
 		Cursor cursor = mDb.rawQuery(sql, null);
 		// カーソルをDBの最初の行へ移動
@@ -162,6 +164,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 		weekSpr.setSelection(intent.getIntExtra("weekDay", 0));
 		timeTableSpr.setSelection(intent.getIntExtra("num", 3));
+		intent.getBooleanExtra("Editmode",EditMode);   //編集モードがON
 
 		// 強制終了用処理
 		if (TimeTableActivity.endFlag == true) {
@@ -170,9 +173,11 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	}
 
 	public void onClick(View v) {
-		if(v == findViewById(R.id.cancelButton)){
-
+		if(v == cancelBtn){
+			Log.d(TAG,"キャンセルボタンが押されました");
+			finish();
 		}else {
+
 			Log.d(TAG, "TimeTableEditActivity onClick");
 
 			TimeTableInfo info = new TimeTableInfo();
@@ -309,7 +314,8 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			db = sqlHelper.getReadableDatabase();
 			c = db.rawQuery(sql,null);
 			try {
-				if (c.getCount() != 0) {
+				if (EditMode) {
+					Log.d(TAG,"data update");
 					sqlHelper.update("time", values,"week = ? AND timeid = ?",null);
 					Toast.makeText(this,"予定を更新しました",Toast.LENGTH_LONG).show();
 				} else {
