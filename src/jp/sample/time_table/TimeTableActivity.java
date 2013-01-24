@@ -37,7 +37,6 @@ package jp.sample.time_table;
 //																  //
 /*----------------------------------------------------------------*/
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -107,7 +106,7 @@ android.content.DialogInterface.OnClickListener {
 	// 曜日ボタンを押したときに設定される現在曜日の数字
 	private int clickedWeekDay;
 
-	// private Button optButton;
+	//マンスビューへのボタン
 	private ImageButton MonthBtn;
 
 	// リストと現在時間とインテント
@@ -171,12 +170,12 @@ android.content.DialogInterface.OnClickListener {
 	class MinuteFilter implements InputFilter{
 		public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
 			// TODO 自動生成されたメソッド・スタブ
-			 String sStr = source.toString();
-			 if (sStr.matches("\n")) {
-					return "";
-			 }else{
-				 return source;
-			 }
+			String sStr = source.toString();
+			if (sStr.matches("\n")) {
+				return "";
+			}else{
+				return source;
+			}
 		}
 	}
 
@@ -208,7 +207,7 @@ android.content.DialogInterface.OnClickListener {
 				public boolean onKey(View arg0, int keyCode, KeyEvent event) {
 					// TODO 自動生成されたメソッド・スタブ
 					if (event.getAction() == KeyEvent.ACTION_DOWN
-			                   && keyCode == KeyEvent.KEYCODE_ENTER) {
+							&& keyCode == KeyEvent.KEYCODE_ENTER) {
 						//入力した文字をトースト出力する
 						Toast.makeText(TimeTableActivity.this,
 								editView.getText().toString()+"で入力を受付ました！",
@@ -388,6 +387,7 @@ android.content.DialogInterface.OnClickListener {
 		// optButton = (Button)findViewById(R.id.optButton);
 		// optButton.setOnClickListener(this);
 
+		//マンスビュー用意
 		MonthBtn = (ImageButton) findViewById(R.id.monthBtn);
 		MonthBtn.setOnClickListener(this);
 
@@ -404,36 +404,59 @@ android.content.DialogInterface.OnClickListener {
 	public void onClick(DialogInterface paramDialogInterface, int paramInt) {
 		// TODO 自動生成されたメソッド・スタブ
 		if (adbList[paramInt].equals("編集")) {
+			Log.d(TAG, "EditModeButton");
+			setCurrentDb();
 			intent = new Intent(this, TimeTableEditActivity.class);
 			int itemPointer = 0;
-			String[] newTitle = new String[timeTrue.length], newTodo = new String[timeTrue.length], newTime_table = new String[timeTrue.length];
+			String[] newTime_table = new String[timeTrue.length], newTitle = new String[timeTrue.length],
+					newPlace = new String[timeTrue.length], newType = new String[timeTrue.length], newTodo = new String[timeTrue.length];
 			for (int i = 0; i < timeTrue.length; i++) {
 				if (timeTrue[i].equals(time_name[itemPointer])) {
 					newTitle[i] = subject[itemPointer];
+					newPlace[i] = place[itemPointer];
+					newType[i] = type[itemPointer];
 					newTodo[i] = todo[itemPointer];
 					newTime_table[i] = time_name[itemPointer];
+					itemPointer++;
 				} else {
 					newTitle[i] = null;
+					newPlace[i] = null;
+					newType[i] = null;
 					newTodo[i] = null;
 					newTime_table[i] = null;
 				}
 			}
+
+			//ここ特有でないものも入っていることに注意
+			Log.d("debug", newTime_table[clickedItemNumber]);
 			intent.putExtra("editMode", true);
 			intent.putExtra("weekDay", clickedWeekDay);
 			intent.putExtra("num", clickedItemNumber);
 			intent.putExtra("title", newTitle[clickedItemNumber]);
+			intent.putExtra("place", newPlace[clickedItemNumber]);
+			intent.putExtra("type", newType[clickedItemNumber]);
 			intent.putExtra("todo", newTodo[clickedItemNumber]);
 			intent.putExtra("time_table", newTime_table[clickedItemNumber]);
 			startActivity(intent);
 		} else if (adbList[paramInt].equals("削除")) {
 			// 選択した場所の予定をDBから削除
 			// ifExist文もつけたい
-			db.execSQL("delete from " + TimeTableSqlHelper.TIME_TABLE
-					+ " where week = '" + currentWeekDay + "'"
-					+ " and time_table = '" + timeTrue[clickedItemNumber] + "'"
-					+ ";");
-			setCurrentDb();
-			createExpandList();
+			Log.d(TAG, "DeleteRowButton");
+			try{
+				db = dbHelper.getWritableDatabase();
+				Log.d("debug", "delete from " + TimeTableSqlHelper.TIME_TABLE
+						+ " where week = '" + clickedWeekDay + "'"
+						+ " and timeid = '" + clickedItemNumber+1 + "'"
+						+ ";");
+				db.execSQL("delete from " + TimeTableSqlHelper.TIME_TABLE
+						+ " where week = '" + clickedWeekDay + "'"
+						+ " and timeid = '" + clickedItemNumber+1 + "'"		//+1はデータベースのtimeidとの差分埋め
+						+ ";");
+				setCurrentDb();
+				createExpandList();
+			}catch(Exception e){
+				Log.d(TAG, "データ削除に失敗しました");
+			}
 		} else {
 			Log.d("debug", adbList[paramInt] + " Button is failed");
 		}
@@ -470,27 +493,23 @@ android.content.DialogInterface.OnClickListener {
 			View paramView, int paramInt, long paramLong) {
 		// TODO 自動生成されたメソッド・スタブ
 		// Log.d("debug", "onItemLongClick");
-		// ダイアログ要素追加
-		// Log.d("debug", String.valueOf(paramInt) + " : " +
-		// String.valueOf(paramLong));
-		// Log.d("debug", String.valueOf(paramInt));
 
+		// 現在のリストの状況を再設定
 		setCurrentDb();
+
+		//リストの予定の有無を全判定
 		int itemsPointer = 0;
 		boolean[] checked = new boolean[timeTrue.length];
 		for (int i = 0; i < timeTrue.length; i++) {
-			// Log.d("debug", timeTrue[i] + " : " + time_table[itemsPointer]);
 			if (timeTrue[i].equals(time_name[itemsPointer])) {
 				checked[i] = true;
 				itemsPointer++;
 			} else {
 				checked[i] = false;
 			}
-			// Log.d("debug", i + " : " + checked[i]);
 		}
 
-		// Log.d("debug", "clicked number is " + paramInt + " = " +
-		// checked[paramInt]);
+		//長押しした項目に予定があるかないか判定、なければなにも行わない
 		if (checked[paramInt]) {
 			clickedItemNumber = paramInt;
 			AlertDialog.Builder adbuilder = new AlertDialog.Builder(this);
@@ -542,17 +561,11 @@ android.content.DialogInterface.OnClickListener {
 			startActivityForResult(intent, REQUES_TTIME_TABLE_EDIT);
 			break;
 
-			// 時間割確認のボタンをクリック
-			// case R.id.listButton:
-			// Log.d(TAG,"時間割確認ボタンがクリックされました"); //デバッグ用(LogCatに表示)
-			// intent = new
-			// Intent(TimeTableActivity.this,TimeTableListActivity.class);
-			// startActivityForResult(intent,REQUES_TTIME_TABLE_LIST);
-			// break;
 		case R.id.monthBtn:
 			intent = new Intent(this,MonthActivity.class);
 			startActivityForResult(intent, REQUES_TTIME_TABLE_EDIT);
 			break;
+
 		case R.id.monButton:
 			currentWeekDay = "月曜日";
 			clickedWeekDay = 1;
@@ -721,32 +734,34 @@ android.content.DialogInterface.OnClickListener {
 			//ユーザーリストの実態を用意
 			ArrayAdapter<String> users = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
 
-			//ユーザーズ抽出
-			db = dbHelper.getReadableDatabase();
-			Cursor cursor = db.rawQuery("SELECT userid" +
-										" FROM creator" +
-										" ORDER BY creatorid" +
-										";", null);
-			cursor.moveToFirst();
-			for(int i=0; i<cursor.getCount(); i++){
-				Log.d("debug", cursor.getString(0));
-				users.add(cursor.getString(0));
-				cursor.moveToNext();
-			}
-			cursor.close();				//まず閉じる、話はそれからだ。
-			db.close();					//過去の過ちを繰り返さない。
+		//ユーザーズ抽出
+		db = dbHelper.getReadableDatabase();
+		Cursor cursor = db.rawQuery("SELECT userid" +
+				" FROM creator" +
+				" ORDER BY creatorid" +
+				";", null);
+		cursor.moveToFirst();
+		for(int i=0; i<cursor.getCount(); i++){
+			Log.d("debug", cursor.getString(0));
+			users.add(cursor.getString(0));
+			cursor.moveToNext();
+		}
+		cursor.close();				//まず閉じる、話はそれからだ。
+		db.close();					//過去の過ちを繰り返さない。
 
-			//ユーザーリストの実態をスピナーに登録
-			Spinner userList = new Spinner(this);
-			userList.setAdapter(users);
+		//ユーザーリストの実態をスピナーに登録
+		Spinner userList = new Spinner(this);
+		userList.setAdapter(users);
 
-			//ユーザーリスト表示用ダイアログ設置
-			new AlertDialog.Builder(this)
-			.setTitle("表示したい予定のユーザーを選択してください")
-			.setIcon(android.R.drawable.ic_dialog_info)
-			.setView(userList)
-			.show();
-			return true;
+		//ユーザーリスト表示用ダイアログ設置
+		new AlertDialog.Builder(this)
+		.setTitle("表示したい予定のユーザーを選択してください")
+		.setIcon(android.R.drawable.ic_dialog_info)
+		.setView(userList)
+		.setPositiveButton("決定", null)
+		.setNegativeButton("キャンセル", null)
+		.show();
+		return true;
 		}
 		return false;
 	}
@@ -808,11 +823,11 @@ android.content.DialogInterface.OnClickListener {
 				" AND time.typeid = type.typeid" +
 				" AND time.week = " + week +
 				" AND time.creatorid = " + creatorid +
-				" ORDER by time.timeid" +
+				" ORDER BY time.timeid" +
 				";"
 				, null);
 		Log.d(TAG,"Result = " + cursor.getCount());
-//		Log.d("debug","SelectedResult = " + cursor.getCount());
+		//		Log.d("debug","SelectedResult = " + cursor.getCount());
 		time_name = new String[cursor.getCount() + 1];
 		subject = new String[cursor.getCount()];
 		type = new String[cursor.getCount()];
@@ -824,21 +839,14 @@ android.content.DialogInterface.OnClickListener {
 			subject[i] = cursor.getString(1);
 			type[i] = cursor.getString(2);
 			place[i] = cursor.getString(3);
-//			Log.d("debug", "selected = \n time_name : " + time_name[i] +
-//					",\n subject : " + subject[i] +
-//					",\n type : " + type[i] +
-//					",\n place : " + place[i]
-//					);
+			//			Log.d("debug", "selected = \n time_name : " + time_name[i] +
+			//					",\n subject : " + subject[i] +
+			//					",\n type : " + type[i] +
+			//					",\n place : " + place[i]
+			//					);
 			cursor.moveToNext();
 		}
 		cursor.close();
-
-
-
-//		Cursor c = db.rawQuery("SELECT strftime('%w', date) FROM remarks", null);
-//		c.moveToFirst();
-//		Log.d("debug", String.valueOf(cursor.getString(0)));
-//		c.close();
 
 		// remarks(todo)読み込み
 		cursor = db.rawQuery("SELECT remarks " +
@@ -882,7 +890,7 @@ android.content.DialogInterface.OnClickListener {
 			// 何回か同じ判定をするので、まとめて行う
 			// 判定内容はこの時限に予定があるかないか
 			nullJudg = timeTrue[i].equals(time_name[itemsPointer]);
-			Log.d("debug", "nullJudg = " + nullJudg);
+//			Log.d("debug", "nullJudg = " + nullJudg);
 			// 予定の入っている（行のある）時限のみ各項目を設定する
 			if (nullJudg) {
 				childArray = new String[4];

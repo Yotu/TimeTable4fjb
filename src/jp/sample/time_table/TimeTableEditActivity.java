@@ -52,7 +52,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	/**Edit mode*/
 	private boolean EditMode = false;
 
-
+	private String[] typeTrue = {"学科", "実技", "プライベート"};
 
 	private TimeTableSqlHelper sqlHelper = new TimeTableSqlHelper(this);
 	private SQLiteDatabase db;
@@ -112,6 +112,10 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 	public void onResume() {
 		super.onResume();
 
+		// 強制終了用処理
+		if (TimeTableActivity.endFlag == true) {
+			finish();
+		}
 
 		/**
 		 * 曜日spinnerの初期設定
@@ -164,12 +168,25 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 		weekSpr.setSelection(intent.getIntExtra("weekDay", 0));
 		timeTableSpr.setSelection(intent.getIntExtra("num", 3));
-		intent.getBooleanExtra("Editmode",EditMode);   //編集モードがON
+		boolean editFlag = intent.getBooleanExtra("editMode",EditMode);   //編集モードがON
 
-		// 強制終了用処理
-		if (TimeTableActivity.endFlag == true) {
-			finish();
+		//エディットモードがtrueだった場合、モードに入る
+		if(editFlag){
+			Log.d(TAG, "editMode Entered");
+
+			int typeNumber = -1;
+			for(int i=0; i<typeTrue.length; i++){
+				if(intent.getStringExtra("type").equals(typeTrue[i])){
+					typeNumber = i;
+				}
+			}
+
+			subjectEdt.setText(intent.getStringExtra("title"));
+			placeEdt.setText(intent.getStringExtra("place"));
+			typeSpr.setSelection(typeNumber);
+			remarksEdt.setText(intent.getStringExtra("todo"));
 		}
+
 	}
 
 	public void onClick(View v) {
