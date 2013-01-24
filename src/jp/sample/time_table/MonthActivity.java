@@ -80,7 +80,8 @@ public class MonthActivity extends Activity implements OnClickListener,View.OnTo
 			button_table[i].setOnClickListener(this);
 			//ボタンのタッチ（フリック）を受け付ける
 			button_table[i].setOnTouchListener(this);
-
+			// ボタンに画像を設定する
+			button_table[i].setBackgroundDrawable(getResources().getDrawable(R.drawable.schedule_none));
 		}
 		drawText();
 
