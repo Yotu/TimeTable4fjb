@@ -74,6 +74,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.ImageButton;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -107,7 +108,7 @@ android.content.DialogInterface.OnClickListener {
 	private int clickedWeekDay;
 
 	// private Button optButton;
-	private Button dbClearButton;
+	private ImageButton MonthBtn;
 
 	// リストと現在時間とインテント
 	private ExpandableListView dayList;
@@ -387,22 +388,8 @@ android.content.DialogInterface.OnClickListener {
 		// optButton = (Button)findViewById(R.id.optButton);
 		// optButton.setOnClickListener(this);
 
-		dbClearButton = (Button) findViewById(R.id.dbClearButton);
-
-		dbClearButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO 自動生成されたメソッド・スタブ
-				File file = new File(
-						"/data/data/jp.sample.time_table/databases/time_table.db");
-				file.delete();
-				dbHelper = new TimeTableSqlHelper(TimeTableActivity.this);
-				db = dbHelper.getWritableDatabase();
-				setCurrentDb();
-				createExpandList();
-				db.close();
-			}
-		});
+		MonthBtn = (ImageButton) findViewById(R.id.monthBtn);
+		MonthBtn.setOnClickListener(this);
 
 		// ExpandList連携
 		dayList = (ExpandableListView) findViewById(R.id.dayExpandList);
@@ -562,7 +549,10 @@ android.content.DialogInterface.OnClickListener {
 			// Intent(TimeTableActivity.this,TimeTableListActivity.class);
 			// startActivityForResult(intent,REQUES_TTIME_TABLE_LIST);
 			// break;
-
+		case R.id.monthBtn:
+			intent = new Intent(this,MonthActivity.class);
+			startActivityForResult(intent, REQUES_TTIME_TABLE_EDIT);
+			break;
 		case R.id.monButton:
 			currentWeekDay = "月曜日";
 			clickedWeekDay = 1;

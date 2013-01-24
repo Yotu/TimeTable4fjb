@@ -14,27 +14,14 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="現在日付" />
+            android:text="現在日付"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/currentWeekDayView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0" >
-
-        <Button
-            android:id="@+id/dbClearButton"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="DB洗浄" />
     </LinearLayout>
 
     <LinearLayout
@@ -222,6 +209,21 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#000000" />
         </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0"
+        android:gravity="center" >
+
+        <ImageButton
+            android:id="@+id/monthBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@android:drawable/ic_dialog_dialer" />
     </LinearLayout>
 
 </LinearLayout>
