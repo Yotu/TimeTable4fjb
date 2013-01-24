@@ -732,38 +732,38 @@ android.content.DialogInterface.OnClickListener {
 
 		case Menu.FIRST+1:
 			//ユーザーリストの実態を用意
-			ArrayAdapter<String> users = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
-
-		//ユーザーズ抽出
-		db = dbHelper.getReadableDatabase();
+			//ユーザーズ抽出
+			db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.rawQuery("SELECT userid" +
 				" FROM creator" +
 				" ORDER BY creatorid" +
 				";", null);
 		cursor.moveToFirst();
+		String[] users = new String[cursor.getCount()];
 		for(int i=0; i<cursor.getCount(); i++){
 			Log.d("debug", cursor.getString(0));
-			users.add(cursor.getString(0));
+			users[i] = cursor.getString(0);
 			cursor.moveToNext();
 		}
 		cursor.close();				//まず閉じる、話はそれからだ。
 		db.close();					//過去の過ちを繰り返さない。
 
-		//ユーザーリストの実態をスピナーに登録
-		Spinner userList = new Spinner(this);
-		userList.setAdapter(users);
-
 		//ユーザーリスト表示用ダイアログ設置
 		new AlertDialog.Builder(this)
-		.setTitle("表示したい予定のユーザーを選択してください")
-		.setIcon(android.R.drawable.ic_dialog_info)
-		.setView(userList)
-		.setPositiveButton("決定", null)
-		.setNegativeButton("キャンセル", null)
+		.setTitle("Please Select Color")
+		.setItems(users, new DialogInterface.OnClickListener(){
+			public void onClick(DialogInterface dialog, int which) {
+				creatorid = which;
+
+			}
+		})
 		.show();
+
+		setCurrentDb();
 		return true;
 		}
 		return false;
+
 	}
 
 	/*-----ここから全てあいやのターン-----*/
@@ -890,7 +890,7 @@ android.content.DialogInterface.OnClickListener {
 			// 何回か同じ判定をするので、まとめて行う
 			// 判定内容はこの時限に予定があるかないか
 			nullJudg = timeTrue[i].equals(time_name[itemsPointer]);
-//			Log.d("debug", "nullJudg = " + nullJudg);
+			//			Log.d("debug", "nullJudg = " + nullJudg);
 			// 予定の入っている（行のある）時限のみ各項目を設定する
 			if (nullJudg) {
 				childArray = new String[4];
