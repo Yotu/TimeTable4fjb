@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    tools:context=".TimeTableEditActivity" >
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -11,26 +13,25 @@
         android:orientation="vertical" >
 
         <LinearLayout
-            android:id="@+id/titleLine"
+            android:id="@+id/subjectLine"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" >
-
+            <!-- 「授業名」 -->
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/subjectText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/title" />
-
+                android:text="@string/subject" />
+			<!-- 授業名入力欄 -->
             <EditText
-                android:id="@+id/title"
+                android:id="@+id/subject"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:inputType="textMultiLine" >
-
-                <requestFocus />
+                android:inputType="text" >
+                <requestFocus />		<!-- この入力欄にフォーカスを設定 -->
             </EditText>
         </LinearLayout>
 
@@ -39,38 +40,38 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" >
-
+			<!-- 「曜日」 -->
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/weekText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/week" />
-
+			<!-- 曜日選択 -->
             <Spinner
                 android:id="@+id/week"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center"
                 android:layout_weight="4" />
-
         </LinearLayout>
 
+        
         <LinearLayout
-            android:id="@+id/LinearLayout01"
+            android:id="@+id/placeLine"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" >
-
+			<!-- 「場所」 -->
             <TextView
-                android:id="@+id/TextView03"
+                android:id="@+id/placeText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/place" />
-
+			<!-- 場所入力欄 -->
             <EditText
                 android:id="@+id/place"
                 android:layout_width="0dp"
@@ -78,7 +79,7 @@
                 android:layout_gravity="center_horizontal|center"
                 android:layout_weight="4"
                 android:ems="10"
-                android:inputType="textMultiLine" />
+                android:inputType="text" />
         </LinearLayout>
 
         <LinearLayout
@@ -86,15 +87,15 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" >
-
+			<!-- 「時限」 -->
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/timeText"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center"
                 android:layout_weight="4"
-                android:text="@string/taimetable" />
-
+                android:text="@string/timetable" />
+            <!-- 時限選択 -->
             <Spinner
                 android:id="@+id/time_table"
                 android:layout_width="fill_parent"
@@ -107,21 +108,20 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" >
-
+			<!-- 「種類」 -->
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/typeText"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:text="@string/type" />
-
+			<!-- 種類選択 -->
             <Spinner
                 android:id="@+id/type"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_weight="2"
-                android:entries="@array/types" />
-
+                android:layout_weight="2" />
+			<!-- 種類追加ボタン -->
             <Button
                 android:id="@+id/addVarietyButton"
                 style="?android:attr/buttonStyleSmall"
@@ -136,38 +136,36 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" >
-
+			<!-- 空白部分 -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
-
             </LinearLayout>
-
+			<!-- 時間割のシェア設定 -->
             <CheckBox
                 android:id="@+id/share"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:text="@string/share" />
-
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/bikoLine"
+            android:id="@+id/remarksLine"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" >
-
+			<!-- 「備考」 -->
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/remarksText"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:text="@string/todo" />
-
+                android:text="@string/remarks" />
+			<!-- 備考情報 -->
             <EditText
-                android:id="@+id/todo"
+                android:id="@+id/remarks"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
@@ -179,20 +177,19 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1" >
-
+			<!-- 空白部分 -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
             </LinearLayout>
-
+			<!-- 備考情報共有設定 -->
             <CheckBox
-                android:id="@+id/bikoShare"
+                android:id="@+id/remarkShare"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:text="@string/bikoShare" />
-
+                android:text="@string/remarkShare" />
         </LinearLayout>
 
         <LinearLayout
@@ -200,7 +197,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5" >
-
         </LinearLayout>
 
         <LinearLayout
@@ -221,9 +217,7 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:text="@string/Cancel" />
-
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>
