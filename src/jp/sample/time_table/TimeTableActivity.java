@@ -119,18 +119,13 @@ android.content.DialogInterface.OnClickListener {
 
 	public int day = calendar.get(Calendar.DAY_OF_MONTH);
 	public int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-	/** Button 新規登録ボタン用 */
-	//	private Button addBtn;
-	/** Button 時間割確認ボタン用 */
-	// private Button listBtn;
-
 	/*-----僕らの追加要素たち-----*/
 	// 他の画面から戻ってきたときにフラグが正だと強制終了させる
 	public static boolean endFlag;
 
 	// 曜日ボタンと日付テキストと押した曜日番号
 	private Button monButton, tueButton, wedButton, thuButton, friButton,
-	satButton, sunButton;
+	satButton, sunButton,backBtn,nextBtn;
 	private TextView monD, tueD, wedD, thuD, friD, satD, sunD;
 
 	// 曜日ボタンを押したときに設定される現在曜日の数字
@@ -156,9 +151,10 @@ android.content.DialogInterface.OnClickListener {
 		"木曜日", "金曜日", "土曜日" };
 
 	//定数では既存以外の項目と比較できないのでDBから読み込むようにする
-	private static final String[] timeTrue = { "0時限目", "1時限目", "2時限目", "3時限目", "4時限目", "5時限目",
-		"6時限目", "7時限目" };
-
+	private static final String[] timeTrue = { "0時限目", "1時限目", "2時限目", "3時限目", "4時限目", "5時限目","６時限目","７時限目","放課後"};
+	private static String[] weekDays = new String[7];
+	private boolean mode;
+	private boolean changeMode = false;
 
 
 	// ExpandListに表示する用
@@ -168,10 +164,6 @@ android.content.DialogInterface.OnClickListener {
 	private String[] time_name;
 	private String[] place;
 	private String[] userid;
-
-	// 現在日時取得用(util.Date)
-	private Time time;
-	private String nowDate;
 
 	// ExpandList長押し用ダイアログの項目リスト
 	private final CharSequence[] adbList = { "編集", "削除" };
@@ -196,6 +188,7 @@ android.content.DialogInterface.OnClickListener {
 	private AlertDialog disD;
 
 	private int creatorid;
+
 
 	//入力欄用フィルター
 	class MinuteFilter implements InputFilter{
@@ -284,59 +277,30 @@ android.content.DialogInterface.OnClickListener {
 		/*-------------------ここからあいやのターン-------------------*/
 		/*↑トラップカード発動！！！　首無しキリンの雄叫び！！　　
 		 * このカードは、あいやがコードを書き間違えた際、強制的に首無しキリンの手によってコードが改変される!*/
-		// 現在日にち表示の準備
-
-		dayNowTextView = (TextView) findViewById(R.id.dayNowText);
-		dayNowTextView.setText(year+"年"+(month+1)+"月"+day+"日");
-		//日付
-		day = calendar.get(Calendar.DAY_OF_MONTH);
-		//曜日
-		dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-		currentWeekDay = weekDayTrue[calendar.get(Calendar.DAY_OF_WEEK)];
-		clickedWeekDay = calendar.get(Calendar.DAY_OF_WEEK);
-		//今週の月曜日をセット
-		calendar.add(Calendar.DATE, -(dayOfWeek-2));
-		int setInit = calendar.get(Calendar.DATE);
-
-		//月曜日を基準に、７日分の日付を格納していく
-		String[] weekDays = new String[7];
-		for(int i=0;i<7;i++){
-			weekDays[i] = (month +"/" + setInit);
-			calendar.add(Calendar.DATE, 1); //ここで１日増やす。途中で月をまたいでもCalendarクラスなので大丈夫
-			setInit = calendar.get(Calendar.DATE);
-			Log.d("test",weekDays[i]);
-		}
 
 
 		// 曜日ボタン処理
 		Log.d("test","曜日ボタン処理");
 		monButton = (Button) findViewById(R.id.monButton);
 		monD = (TextView) findViewById(R.id.monDay);
-		monD.setText(weekDays[0]);
 		monButton.setOnClickListener(this);
 		tueButton = (Button) findViewById(R.id.tueButton);
 		tueD = (TextView) findViewById(R.id.tueDay);
-		tueD.setText(weekDays[1]);
 		tueButton.setOnClickListener(this);
 		wedButton = (Button) findViewById(R.id.wedButton);
 		wedD = (TextView) findViewById(R.id.wedDay);
-		wedD.setText(weekDays[2]);
 		wedButton.setOnClickListener(this);
 		thuButton = (Button) findViewById(R.id.thuButton);
 		thuD = (TextView) findViewById(R.id.thuDay);
-		thuD.setText(weekDays[3]);
 		thuButton.setOnClickListener(this);
 		friButton = (Button) findViewById(R.id.friButton);
 		friD = (TextView) findViewById(R.id.friDay);
-		friD.setText(weekDays[4]);
 		friButton.setOnClickListener(this);
 		satButton = (Button) findViewById(R.id.satButton);
 		satD = (TextView) findViewById(R.id.satDay);
-		satD.setText(weekDays[5]);
 		satButton.setOnClickListener(this);
 		sunButton = (Button) findViewById(R.id.sunButton);
 		sunD = (TextView) findViewById(R.id.sunDay);
-		sunD.setText(weekDays[6]);
 		sunButton.setOnClickListener(this);
 		monButton.setBackgroundColor(Color.WHITE);
 		tueButton.setBackgroundColor(Color.WHITE);
@@ -354,11 +318,16 @@ android.content.DialogInterface.OnClickListener {
 		MonthBtn = (ImageButton) findViewById(R.id.monthBtn);
 		MonthBtn.setOnClickListener(this);
 
+		backBtn = (Button)findViewById(R.id.backBtn);
+		backBtn.setOnClickListener(this);
+		nextBtn = (Button)findViewById(R.id.nextBtn);
+		nextBtn.setOnClickListener(this);
+
 		// ExpandList連携
 		dayList = (ExpandableListView) findViewById(R.id.dayExpandList);
 		dayList.setOnGroupClickListener(this);
 		dayList.setOnItemLongClickListener(this);
-
+		initWeek();
 		onClick(new View(this));
 
 	}
@@ -546,6 +515,16 @@ android.content.DialogInterface.OnClickListener {
 		// Log.d("debug", String.valueOf(v.getId()));
 		switch (v.getId()) {
 		// 新規作成のボタンをクリック
+		case R.id.backBtn:
+			mode = true;
+			changeMode =true;
+			initWeek();
+			break;
+		case R.id.nextBtn:
+			mode = false;
+			changeMode = true;
+			initWeek();
+			break;
 		case R.id.newButton:
 			Log.d(TAG, "新規登録ボタンがクリックされました"); // デバッグ用(LogCatに表示)
 			intent = new Intent(TimeTableActivity.this, TimeTableEditActivity.class);
@@ -675,7 +654,7 @@ android.content.DialogInterface.OnClickListener {
 				break;
 
 			default:
-				Log.d("error", "Unknown WeekDay = " + time.weekDay);
+
 				break;
 			}
 			break;
@@ -966,6 +945,50 @@ android.content.DialogInterface.OnClickListener {
 		dbHelper.defaultTimeNameTable();
 		dbHelper.defaultTypeTable();
 		Log.d(TAG,"種類テーブルと時限テーブルに項目が追加されました。");
+	}
+
+	public void initWeek(){
+		Log.d(TAG,"initWeek");
+		dayNowTextView = (TextView) findViewById(R.id.dayNowText);
+		dayNowTextView.setText(year+"年"+(month)+"月"+day+"日");
+		//日付
+		day = calendar.get(Calendar.DAY_OF_MONTH);
+		//曜日(日曜:0,月曜:1,火曜:2,,,,土曜:6)
+		dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+		currentWeekDay = weekDayTrue[calendar.get(Calendar.DAY_OF_WEEK)];
+		clickedWeekDay = calendar.get(Calendar.DAY_OF_WEEK);
+		//今週の月曜日をセット
+		calendar.add(Calendar.DATE, -(dayOfWeek-2));
+		int setInit = calendar.get(Calendar.DATE);
+		int nextInit = 0;
+		Log.d(TAG,"default: "+setInit+"/"+nextInit);
+		//戻るか進むかで分岐
+
+		if(changeMode && mode){
+			Log.d(TAG,"FLAG IS true");
+			nextInit = setInit - 7;
+		}else if(changeMode && !mode){
+			Log.d(TAG,"FLAG IS false");
+			nextInit = setInit + 7;
+		}else if(!changeMode){
+			nextInit = setInit;
+		}
+		Log.d(TAG,"after: "+setInit+"/"+nextInit);
+		//月曜日を基準に、７日分の日付を格納していく
+
+		for(int i=0;i<7;i++){
+			weekDays[i] = (month +"/" + nextInit);
+			calendar.add(Calendar.DATE, 1); //ここで１日増やす。途中で月をまたいでもCalendarクラスなので大丈夫
+			nextInit = calendar.get(Calendar.DATE);
+			Log.d("test",weekDays[i]);
+		}
+		monD.setText(weekDays[0]);
+		tueD.setText(weekDays[1]);
+		wedD.setText(weekDays[2]);
+		thuD.setText(weekDays[3]);
+		friD.setText(weekDays[4]);
+		satD.setText(weekDays[5]);
+		sunD.setText(weekDays[6]);
 	}
 
 }

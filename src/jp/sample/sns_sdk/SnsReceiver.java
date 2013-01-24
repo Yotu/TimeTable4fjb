@@ -261,29 +261,6 @@ public class SnsReceiver{
 						c.close();
 						db.close();
 					}
-					//		-----------------------------------------------------------------------
-					//
-					//		データベースに追加処理
-					//
-					//		-----------------------------------------------------------------------
-
-					//					// Time_Tableに格納するために、それぞれのＩＤとテキストを比較
-					//					if (!(table == null) || !(field == null)) {
-					//						c = db.rawQuery("SELECT * FROM time,'" + table
-					//								+ "' WHERE '" + column[0] + "' like '" + table
-					//								+ "'.'" + field + "';", null);
-					//					}
-
-					//					// データを検索
-					//					c.moveToFirst();
-					//					int get = c.getCount();
-					//					for (int i = 0; i < get; i++) {
-					//						getData = c.getInt(0);
-					//						c.moveToNext();
-					//					}
-					//					// insert用のvaluesに追加していく
-					//					values.put(table, getData);
-
 
 				}
 				// 現在のUnixタイム取得
