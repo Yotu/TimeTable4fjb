@@ -137,6 +137,7 @@ android.content.DialogInterface.OnClickListener {
 	private String[] type;
 	private String[] time_name;
 	private String[] place;
+	private String[] userid;
 
 	// 現在日時取得用(util.Date)
 	private Time time;
@@ -242,6 +243,7 @@ android.content.DialogInterface.OnClickListener {
 			//プリファレンスの書き変え
 			editor.putBoolean("Launched", true);
 			editor.commit();
+			creatorid =1;
 		} else {
 			//二回目以降の処理
 			//表示するデータを予め自分のものに設定しておく
@@ -264,6 +266,7 @@ android.content.DialogInterface.OnClickListener {
 		nowDate = time.year + "/" + (time.month + 1) + "/" + time.monthDay
 				+ "(" + weekDayTrue[time.weekDay].substring(0, 1) + ")";
 		dayNowTextView.setText(nowDate);
+
 
 		currentWeekDay = weekDayTrue[time.weekDay];
 		clickedWeekDay = time.weekDay;
@@ -783,13 +786,15 @@ android.content.DialogInterface.OnClickListener {
 		.setTitle("表示したい予定のユーザーを選択してください")
 		.setItems(users, new DialogInterface.OnClickListener(){
 			public void onClick(DialogInterface dialog, int which) {
-				creatorid = which;
+				creatorid = which+1;
+				Log.d(TAG,"中のCreatorId;"+creatorid);
 
 			}
 		})
 		.show();
 
 		setCurrentDb();
+		Log.d(TAG,"外のCreatorId;"+creatorid);
 		return true;
 		}
 		return false;
@@ -846,22 +851,25 @@ android.content.DialogInterface.OnClickListener {
 		db = dbHelper.getWritableDatabase();
 		week = clickedWeekDay;
 		Log.d(TAG,"week = "+ week);
-		Cursor cursor = db.rawQuery("SELECT time_name, subject_name, type, place" +
-				" FROM time, time_name, subject, type" +
+		String sql ="SELECT time_name, subject_name, type, place, userid" +
+				" FROM time, time_name, subject, type, creator" +
 				" WHERE time.timeid = time_name.timeid" +
 				" AND time.subjectid = subject.subjectid" +
 				" AND time.typeid = type.typeid" +
 				" AND time.week = " + week +
-				" AND time.creatorid = " + creatorid +
-				" ORDER BY time.timeid" +
-				";"
-				, null);
+				" AND time.creatorid = creator.creatorid"+
+				" AND time.creatorid = " +creatorid +
+				" ORDER BY time.timeid";
+		Log.d(TAG,sql);
+		Cursor cursor = db.rawQuery(sql, null);
+
 		Log.d(TAG,"Result = " + cursor.getCount());
 		//		Log.d("debug","SelectedResult = " + cursor.getCount());
 		time_name = new String[cursor.getCount() + 1];
 		subject = new String[cursor.getCount()];
 		type = new String[cursor.getCount()];
 		place = new String[cursor.getCount()];
+		userid = new String[cursor.getCount()];
 
 		cursor.moveToFirst();
 		for(int i=0; i<cursor.getCount(); i++){
@@ -869,6 +877,7 @@ android.content.DialogInterface.OnClickListener {
 			subject[i] = cursor.getString(1);
 			type[i] = cursor.getString(2);
 			place[i] = cursor.getString(3);
+			userid[i] = cursor.getString(4);
 			//			Log.d("debug", "selected = \n time_name : " + time_name[i] +
 			//					",\n subject : " + subject[i] +
 			//					",\n type : " + type[i] +
@@ -923,12 +932,13 @@ android.content.DialogInterface.OnClickListener {
 			//			Log.d("debug", "nullJudg = " + nullJudg);
 			// 予定の入っている（行のある）時限のみ各項目を設定する
 			if (nullJudg) {
-				childArray = new String[4];
+				childArray = new String[5];
 				childArray[0] = "授業名 : " + subject[itemsPointer];
 				childArray[1] = "場所 : " + ( place[itemsPointer] != null ? place[itemsPointer] : "登録なし" );
 				childArray[2] = "種類 : " + type[itemsPointer];
 				//				childArray[3] = "備考 : " + todo[itemsPointer]; // nullでも大丈夫だった
 				childArray[3] = "備考 : " + ( todo[itemsPointer] != null ? todo[itemsPointer] : "なし" );
+				childArray[4] = "ユーザー :"+(userid[itemsPointer] != null ?  userid[itemsPointer] : "不明");
 				// アイテムポインタは下でインクリメントするので、ここではしない
 			} else {
 				childArray = new String[0];

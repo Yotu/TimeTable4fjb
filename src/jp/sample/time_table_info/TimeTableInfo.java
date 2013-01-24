@@ -31,12 +31,12 @@ public class TimeTableInfo {
 	public static String[] types = { "学科", "実技", "プライベート", };
 
 	public TimeTableInfo() {
-		subject = "";
+		subject = null;
 		day_of_week = "";
 		time_table = "";
 		todo = "";
 		type = "";
-		place = "";
+		place = null;
 		UID ="";
 	}
 

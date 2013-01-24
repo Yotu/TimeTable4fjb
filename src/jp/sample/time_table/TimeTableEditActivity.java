@@ -173,7 +173,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		//エディットモードがtrueだった場合、モードに入る
 		if(editFlag){
 			Log.d(TAG, "editMode Entered");
-			
+
 			Log.d(TAG, "set typeNumber");
 			int typeNumber = -1;
 			for(int i=0; i<typeTrue.length; i++){
@@ -200,7 +200,6 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		}else {
 
 			Log.d(TAG, "TimeTableEditActivity onClick");
-
 			TimeTableInfo info = new TimeTableInfo();
 			info.setTitle(subjectEdt.getText().toString());
 			info.setDayOfWeek(weekSpr.getSelectedItem().toString());
@@ -211,6 +210,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			info.setIsShare(shareCb.isChecked());
 			info.setBikoShare(bikoShareCb.isChecked());
 			Log.d(TAG,"インスタンス、セッター");
+
 
 			// 現在のUnixタイム取得
 			long currentTimeMillis = System.currentTimeMillis();
