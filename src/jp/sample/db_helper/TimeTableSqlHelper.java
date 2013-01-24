@@ -10,11 +10,15 @@ import android.util.Log;
 
 public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	private final String TAG = "TimeTableSqlHelper";
-	private static final int DB_VERSION = 4;
+	private static final int DB_VERSION = 5;
 
 	/** データベース名 */
 	private static final String DB = "time_table.db";
 
+	/** create および　drop */
+	private static final String CREATE = "create table ";
+	private static final String DROP = "drop table ";
+	
 	/** テーブル名 */
 	public static final String TIME_TABLE = "time";
 	public static final String TIMENAME_TABLE = "time_name";
@@ -25,15 +29,15 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 
 
 	/** CREATEテーブル */
-	private static final String CREATE = "create table if not exists ";
 	private static final String CREATE_TIME = CREATE + TIME_TABLE + "("
+			+ "id integer primary key,"
 			+ "week integer not null,"
 			+ "timeid integer not null,"
 			+ "subjectid integer not null,"
 			+ "typeid integer not null default 1,"
 			+ "share integer not null default 1,"
-			+ "creatorid integer not null," + "uptime timestamp not null,"
-			+ "primary key(week, timeid)" + ");";
+			+ "creatorid integer not null,"
+			+ "uptime timestamp not null" + ");";
 	private static final String CREATE_TIMENAME = CREATE + TIMENAME_TABLE + "("
 			+ "timeid integer primary key autoincrement,"
 			+ "time_name varchar(15) not null" + ");";
@@ -48,13 +52,13 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			+ "creatorid integer primary key autoincrement,"
 			+ "userid varchar(20)" + ");";
 	private static final String CREATE_REMARKS = CREATE + REMARKS_TABLE + "("
+			+ "id integer primary key,"
 			+ "date timestamp not null,"
 			+ "timeid integer default null,"
 			+ "remarks text,"
 			+ "share numeric not null,"
 			+ "creatorid integer not null,"
-			+ "upremarks timestamp not null,"
-			+ "primary key(date, timeid)" + ");";
+			+ "upremarks timestamp not null" + ")";
 
 	public TimeTableSqlHelper(Context context) {
 		super(context, DB, null, DB_VERSION);
@@ -192,12 +196,12 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 				oldVersion, newVersion));
 
 		try {
-			db.execSQL("drop table " + TIME_TABLE);
-			db.execSQL("drop table " + TIMENAME_TABLE);
-			db.execSQL("drop table " + SUBJECT_TABLE);
-			db.execSQL("drop table " + TYPE_TABLE);
-			db.execSQL("drop table " + CREATE_CREATOR);
-			db.execSQL("drop table " + REMARKS_TABLE);
+			db.execSQL(DROP + TIME_TABLE);
+			db.execSQL(DROP + TIMENAME_TABLE);
+			db.execSQL(DROP + SUBJECT_TABLE);
+			db.execSQL(DROP + TYPE_TABLE);
+			db.execSQL(DROP + CREATE_CREATOR);
+			db.execSQL(DROP + REMARKS_TABLE);
 			onCreate(db);
 		} catch (SQLException e) {
 			Log.d(TAG, "onUpgrade()でSQLException発生");
