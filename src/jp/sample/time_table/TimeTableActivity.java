@@ -800,6 +800,14 @@ android.content.DialogInterface.OnClickListener {
 				" order by time.timeid" +
 				";"
 				, null);
+		Log.d(TAG,"SELECT time_name, subject_name, type, place" +
+				" FROM time, time_name, subject, type" +
+				" WHERE time.timeid = time_name.timeid" +
+				" AND time.subjectid = subject.subjectid" +
+				" AND time.typeid = type.typeid" +
+				" AND time.week = " + week +
+				" order by time.timeid" +
+				";");
 		Log.d(TAG,"Result = "+cursor.getCount());
 		Log.d("debug","Result = "+cursor.getCount());
 		time_name = new String[cursor.getCount() + 1];

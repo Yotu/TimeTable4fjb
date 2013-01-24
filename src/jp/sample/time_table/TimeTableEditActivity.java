@@ -73,7 +73,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.timetableedit);
 
 		init();
-		
+
 		// 登録用ボタンのインスタンス取得
 		addBtn = (Button) findViewById(R.id.edit);
 		addBtn.setOnClickListener(this);
@@ -206,9 +206,9 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 				bikoShare = 1; // 備考シェアのチェック判定
 			}
 
-			timeid = timeTableSpr.getSelectedItemPosition() + 1; //時限IDのインデックス
+			timeid = timeTableSpr.getSelectedItemPosition()+1; //時限IDのインデックス
 			week = weekSpr.getSelectedItemPosition(); // 曜日のインデックス
-			typeid = typeSpr.getSelectedItemPosition(); // 種類のインデックス
+			typeid = typeSpr.getSelectedItemPosition() +1; // 種類のインデックス
 			Log.d(TAG,"チェック項目＆＆インデックス取得");
 			Log.d(TAG,"曜日番号を取得 ="+week+" 種類番号="+ typeid +"時限ID="+ timeid);
 			//		-----------------------------------------------------------------------
@@ -383,7 +383,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		}
 		return super.onKeyLongPress(keyCode, event);
 	}
-	
+
 	private void init() {
 		/** 授業名入力欄 */
 		subjectEdt = (EditText)findViewById(R.id.subject);
@@ -394,7 +394,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		/** 時限選択 */
 		timeTableSpr = (Spinner)findViewById(R.id.time_table);
 		//timeTableSpr = (Spinner) findViewById(R.id.time);
-		
+
 		/** 場所入力欄 */
 		placeEdt = (EditText)findViewById(R.id.place);
 
