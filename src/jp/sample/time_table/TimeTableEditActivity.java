@@ -339,8 +339,17 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			values.put("share", isShare);
 			values.put("creatorid", creatorid);
 			values.put("uptime", timestamp);
-
-
+			
+			db = sqlHelper.getReadableDatabase();
+			c = db.rawQuery("SELECT id FROM time WHERE week="+week+" AND timeid = "+ timeid +";",null);
+			if(c.getCount() >0){
+				c.moveToFirst();
+				id[0] =String.valueOf(c.getInt(0));
+				editFlag = true;
+			}
+			c.close();
+			db.close();
+			
 			try {
 				if (editFlag) {
 					Log.d(TAG,"data update");
