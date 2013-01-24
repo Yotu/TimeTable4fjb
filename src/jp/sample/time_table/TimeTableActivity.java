@@ -1,5 +1,28 @@
 package jp.sample.time_table;
 
+//／　 ,/　／　／ 　 _,..-''
+//／ / ／／/　 〃　,r'',.-'" ／／ 　 　 ／
+//,.ｨ <´　 〈,/〃／-／/-'"／　／ ,／__,,..-／　
+//} }　,〉　//" ,r'´ノ ,r'′／／-''"二´‐'''~＿＿_ノ
+//,) Y　ﾉ　／／ ,r''´‐''"　　-='"―-､彡"r'"￣´
+//,ｲ　　ﾘ　ﾉ り ,=、、-ﾆ_~―　~''-=二　∠"´
+//ヾ,ヽ　､, , ﾉﾉ {.ﾄヾｰ-~ﾆ_-二　―　二ニ＝=-‐''"　　　
+//ゝ 　ミｨｲｨ彡`ﾕ.|｀＼ヽ丶､‐ __ヽ'''三二,,,＿
+//〈　`ヾべ_{:::: 　　'ｩ) 　`8-､ ヽ‐ ､ヽ`''-_＝-
+//ゝ_ﾉ⌒ﾍ~"　 　_”＼　 　 ヽ!＼ヽ､'''ー-"ﾆ.._
+//〈 (._　　　|∠ｨ ,.ノ 　/ 　__ﾊ_j! 　　 　　＼
+//`‐''^ 　 ,. -‐`ヾ__/ヽ.　>,､く　　　　　　　＼
+//r;>-＝<´ 〈　ﾉ_,.　　 　 　 　 　　 ヽ　＼
+//(l》L -―''''"~´　　　　　　　　　　　　ヽ　 ｀ 、
+//／　　　　　　　　　　　　　　　 `、　　 `、　 lヽ
+///　　　　　　　　　　　　　 　 　 　 ヽ.　　　l　 ｜|
+//!　　　　　　　　　　　　　　　　　　　｀、 　 !　　!｜
+//｀、　　　　　　　　　　　　 、　　　　　| 　　}　Ｖ,/
+//ヽ　　　　　　　　　　　　 |　　　　／　　/　〃
+//＼　　　　　　　　　　 ﾍ_,. -''"　　　/ ,.ｲ′
+//＼　　 　 　 　 　 　 ヽ　　　　　l / /
+//　ｌ　　　　　　　　 　 |　　　 　 |′,'
+
 /*-----------------------ここでのおやくそく-----------------------*/
 //																  //
 //						weekDay  =  曜日						  //
@@ -38,6 +61,7 @@ package jp.sample.time_table;
 /*----------------------------------------------------------------*/
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +113,12 @@ android.content.DialogInterface.OnClickListener {
 	private final static int REQUES_TTIME_TABLE_EDIT = 1;
 	private final static int REQUES_TTIME_TABLE_LIST = 2;
 
+	public Calendar calendar = Calendar.getInstance();
+	public int year = calendar.get(Calendar.YEAR);
+	public int month = calendar.get(Calendar.MONTH)+1;
+
+	public int day = calendar.get(Calendar.DAY_OF_MONTH);
+	public int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 	/** Button 新規登録ボタン用 */
 	//	private Button addBtn;
 	/** Button 時間割確認ボタン用 */
@@ -252,104 +282,34 @@ android.content.DialogInterface.OnClickListener {
 		}
 
 		/*-------------------ここからあいやのターン-------------------*/
-
-
-
+		/*↑トラップカード発動！！！　首無しキリンの雄叫び！！　　
+		 * このカードは、あいやがコードを書き間違えた際、強制的に首無しキリンの手によってコードが改変される!*/
 		// 現在日にち表示の準備
+
 		dayNowTextView = (TextView) findViewById(R.id.dayNowText);
+		dayNowTextView.setText(year+"年"+(month+1)+"月"+day+"日");
+		//日付
+		day = calendar.get(Calendar.DAY_OF_MONTH);
+		//曜日
+		dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+		currentWeekDay = weekDayTrue[calendar.get(Calendar.DAY_OF_WEEK)];
+		clickedWeekDay = calendar.get(Calendar.DAY_OF_WEEK);
+		//今週の月曜日をセット
+		calendar.add(Calendar.DATE, -(dayOfWeek-2));
+		int setInit = calendar.get(Calendar.DATE);
 
-		// 現在曜日表示の準備
-		// currentWeekDayView = (TextView)findViewById(R.id.currentWeekDayView);
-
-		time = new Time("Asia/Tokyo");
-		time.setToNow();
-		nowDate = time.year + "/" + (time.month + 1) + "/" + time.monthDay
-				+ "(" + weekDayTrue[time.weekDay].substring(0, 1) + ")";
-		dayNowTextView.setText(nowDate);
-
-
-		currentWeekDay = weekDayTrue[time.weekDay];
-		clickedWeekDay = time.weekDay;
-
+		//月曜日を基準に、７日分の日付を格納していく
 		String[] weekDays = new String[7];
-		switch (time.weekDay) {
-		case 1:
-			weekDays[0] = (time.month + 1) + "/" + (time.monthDay);
-			weekDays[1] = (time.month + 1) + "/" + (time.monthDay + 1);
-			weekDays[2] = (time.month + 1) + "/" + (time.monthDay + 2);
-			weekDays[3] = (time.month + 1) + "/" + (time.monthDay + 3);
-			weekDays[4] = (time.month + 1) + "/" + (time.monthDay + 4);
-			weekDays[5] = (time.month + 1) + "/" + (time.monthDay + 5);
-			weekDays[6] = (time.month + 1) + "/" + (time.monthDay + 6);
-			break;
-
-		case 2:
-			weekDays[0] = (time.month + 1) + "/" + (time.monthDay - 1);
-			weekDays[1] = (time.month + 1) + "/" + (time.monthDay);
-			weekDays[2] = (time.month + 1) + "/" + (time.monthDay + 1);
-			weekDays[3] = (time.month + 1) + "/" + (time.monthDay + 2);
-			weekDays[4] = (time.month + 1) + "/" + (time.monthDay + 3);
-			weekDays[5] = (time.month + 1) + "/" + (time.monthDay + 4);
-			weekDays[6] = (time.month + 1) + "/" + (time.monthDay + 5);
-			break;
-
-		case 3:
-			weekDays[0] = (time.month + 1) + "/" + (time.monthDay - 2);
-			weekDays[1] = (time.month + 1) + "/" + (time.monthDay - 1);
-			weekDays[2] = (time.month + 1) + "/" + (time.monthDay);
-			weekDays[3] = (time.month + 1) + "/" + (time.monthDay + 1);
-			weekDays[4] = (time.month + 1) + "/" + (time.monthDay + 2);
-			weekDays[5] = (time.month + 1) + "/" + (time.monthDay + 3);
-			weekDays[6] = (time.month + 1) + "/" + (time.monthDay + 4);
-			break;
-
-		case 4:
-			weekDays[0] = (time.month + 1) + "/" + (time.monthDay - 3);
-			weekDays[1] = (time.month + 1) + "/" + (time.monthDay - 2);
-			weekDays[2] = (time.month + 1) + "/" + (time.monthDay - 1);
-			weekDays[3] = (time.month + 1) + "/" + (time.monthDay);
-			weekDays[4] = (time.month + 1) + "/" + (time.monthDay + 1);
-			weekDays[5] = (time.month + 1) + "/" + (time.monthDay + 2);
-			weekDays[6] = (time.month + 1) + "/" + (time.monthDay + 3);
-			break;
-
-		case 5:
-			weekDays[0] = (time.month + 1) + "/" + (time.monthDay - 4);
-			weekDays[1] = (time.month + 1) + "/" + (time.monthDay - 3);
-			weekDays[2] = (time.month + 1) + "/" + (time.monthDay - 2);
-			weekDays[3] = (time.month + 1) + "/" + (time.monthDay - 1);
-			weekDays[4] = (time.month + 1) + "/" + (time.monthDay);
-			weekDays[5] = (time.month + 1) + "/" + (time.monthDay + 1);
-			weekDays[6] = (time.month + 1) + "/" + (time.monthDay + 2);
-			break;
-
-		case 6:
-			// Log.d("debug", String.valueOf(time.monthDay));
-			weekDays[0] = (time.month + 1) + "/" + (time.monthDay - 5);
-			weekDays[1] = (time.month + 1) + "/" + (time.monthDay - 4);
-			weekDays[2] = (time.month + 1) + "/" + (time.monthDay - 3);
-			weekDays[3] = (time.month + 1) + "/" + (time.monthDay - 2);
-			weekDays[4] = (time.month + 1) + "/" + (time.monthDay - 1);
-			weekDays[5] = (time.month + 1) + "/" + (time.monthDay);
-			weekDays[6] = (time.month + 1) + "/" + (time.monthDay + 1);
-			break;
-
-		case 0:
-			weekDays[0] = (time.month + 1) + "/" + (time.monthDay - 6);
-			weekDays[1] = (time.month + 1) + "/" + (time.monthDay - 5);
-			weekDays[2] = (time.month + 1) + "/" + (time.monthDay - 4);
-			weekDays[3] = (time.month + 1) + "/" + (time.monthDay - 3);
-			weekDays[4] = (time.month + 1) + "/" + (time.monthDay - 2);
-			weekDays[5] = (time.month + 1) + "/" + (time.monthDay - 1);
-			weekDays[6] = (time.month + 1) + "/" + (time.monthDay);
-			break;
-
-		default:
-			Log.d("debug", "settingWeedDays is error");
-			break;
+		for(int i=0;i<7;i++){
+			weekDays[i] = (month +"/" + setInit);
+			calendar.add(Calendar.DATE, 1); //ここで１日増やす。途中で月をまたいでもCalendarクラスなので大丈夫
+			setInit = calendar.get(Calendar.DATE);
+			Log.d("test",weekDays[i]);
 		}
 
+
 		// 曜日ボタン処理
+		Log.d("test","曜日ボタン処理");
 		monButton = (Button) findViewById(R.id.monButton);
 		monD = (TextView) findViewById(R.id.monDay);
 		monD.setText(weekDays[0]);
@@ -385,7 +345,7 @@ android.content.DialogInterface.OnClickListener {
 		friButton.setBackgroundColor(Color.WHITE);
 		satButton.setBackgroundColor(Color.WHITE);
 		sunButton.setBackgroundColor(Color.WHITE);
-
+		Log.d("test","曜日ボタン処理");
 		// オプションボタン処理
 		// optButton = (Button)findViewById(R.id.optButton);
 		// optButton.setOnClickListener(this);
@@ -671,7 +631,7 @@ android.content.DialogInterface.OnClickListener {
 			// おそらく初期値が-1なので、どのボタンでもないとここに入る、
 		case -1: // それを利用してnew
 			// View(this)での強制イベントをここに分岐させている（本来は特別なIDを発行したほうがバグには強いかもしれない）
-			switch (time.weekDay) {
+			switch (calendar.get(Calendar.DAY_OF_WEEK)) {
 			case 1:
 				monButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
@@ -809,7 +769,7 @@ android.content.DialogInterface.OnClickListener {
 		super.onResume();
 
 		// 現在曜日を新規登録画面に送る変数に設定
-		clickedWeekDay = time.weekDay;
+		//clickedWeekDay = time.weekDay;
 
 		// 他の画面でバックボタン長押しが発生して戻ってきた場合強制終了
 		if (endFlag) {
