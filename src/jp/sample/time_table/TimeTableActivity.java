@@ -162,6 +162,8 @@ android.content.DialogInterface.OnClickListener {
 	//ダイアログをエンターキーで閉じた場合のダイアログの終了処理用
 	private AlertDialog disD;
 
+	private int creatorid;
+
 	//入力欄用フィルター
 	class MinuteFilter implements InputFilter{
 		public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -240,8 +242,8 @@ android.content.DialogInterface.OnClickListener {
 			editor.commit();
 		} else {
 			//二回目以降の処理
-			editor.putBoolean("Launched", false);
-			editor.commit();
+			//表示するデータを予め自分のものに設定しておく
+			creatorid = 1;
 
 		}
 
@@ -779,6 +781,7 @@ android.content.DialogInterface.OnClickListener {
 				" AND time.subjectid = subject.subjectid" +
 				" AND time.typeid = type.typeid" +
 				" AND time.week = " + week +
+				" AND time.creatorid = " + creatorid +
 				" ORDER by time.timeid" +
 				";"
 				, null);
