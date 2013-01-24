@@ -69,11 +69,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.SimpleExpandableListAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -692,6 +694,7 @@ android.content.DialogInterface.OnClickListener {
 		Log.d(TAG, "onCraeteOptionMenu");
 
 		menu.add(Menu.NONE, Menu.FIRST, Menu.NONE, "データ受信");
+		menu.add(Menu.NONE, Menu.FIRST+1, Menu.NONE, "ユーザーリスト");
 
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -720,6 +723,39 @@ android.content.DialogInterface.OnClickListener {
 			 * h.insert(info); } h.close();
 			 */
 			Toast.makeText(this, "データを受信しました。", Toast.LENGTH_LONG).show();
+			return true;
+
+			//---------------------------------------//
+
+		case Menu.FIRST+1:
+			//ユーザーリストの実態を用意
+			ArrayAdapter<String> users = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+
+			//ユーザーズ抽出
+			db = dbHelper.getReadableDatabase();
+			Cursor cursor = db.rawQuery("SELECT userid" +
+										" FROM creator" +
+										" ORDER BY creatorid" +
+										";", null);
+			cursor.moveToFirst();
+			for(int i=0; i<cursor.getCount(); i++){
+				Log.d("debug", cursor.getString(0));
+				users.add(cursor.getString(0));
+				cursor.moveToNext();
+			}
+			cursor.close();				//まず閉じる、話はそれからだ。
+			db.close();					//過去の過ちを繰り返さない。
+
+			//ユーザーリストの実態をスピナーに登録
+			Spinner userList = new Spinner(this);
+			userList.setAdapter(users);
+
+			//ユーザーリスト表示用ダイアログ設置
+			new AlertDialog.Builder(this)
+			.setTitle("表示したい予定のユーザーを選択してください")
+			.setIcon(android.R.drawable.ic_dialog_info)
+			.setView(userList)
+			.show();
 			return true;
 		}
 		return false;
@@ -919,7 +955,6 @@ android.content.DialogInterface.OnClickListener {
 		}
 		return super.onKeyLongPress(keyCode, event);
 	}
-
 
 	public void init(String UID){
 		Log.d(TAG,"データベース初期化");
