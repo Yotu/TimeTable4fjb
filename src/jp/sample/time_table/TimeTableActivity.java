@@ -450,22 +450,40 @@ android.content.DialogInterface.OnClickListener {
 				intent.putExtra("id", id);
 				startActivity(intent);
 			}
+			db.close();
+			c.close();
 		} else if (adbList[paramInt].equals("削除")) {
 			// 選択した場所の予定をDBから削除
 			// ifExist文もつけたい
 			Log.d(TAG, "DeleteRowButton");
 			try{
-				db = dbHelper.getWritableDatabase();
-				Log.d("debug", "delete from " + TimeTableSqlHelper.TIME_TABLE
-						+ " where week = '" + clickedWeekDay + "'"
-						+ " and timeid = '" + clickedItemNumber+1 + "'"
-						+ ";");
-				db.execSQL("delete from " + TimeTableSqlHelper.TIME_TABLE
-						+ " where week = '" + clickedWeekDay + "'"
-						+ " and timeid = '" + clickedItemNumber+1 + "'"		//+1はデータベースのtimeidとの差分埋め
-						+ ";");
-				setCurrentDb();
-				createExpandList();
+				new AlertDialog.Builder(this)
+				.setMessage("データを削除します。よろしいですか？")
+				.setCancelable(false)
+				.setPositiveButton("はい",new DialogInterface.OnClickListener(){
+					public void onClick(DialogInterface dialog,int getId){
+						db = dbHelper.getWritableDatabase();
+						int timeid = clickedItemNumber +1;
+						Log.d(TAG,"start db +"+clickedItemNumber+" weekday = "+week);
+						String sql ="SELECT id FROM time WHERE week ="+ week +" AND timeid = " + timeid +";";
+						Cursor c = db.rawQuery(sql, null);
+						c.moveToFirst();
+						String id =  String.valueOf(c.getInt(0));
+						dbHelper.delete("time", "id = "+ id, null);
+						Log.d(TAG,"データの削除完了");
+						Toast.makeText(TimeTableActivity.this,
+								"データを削除しました",
+								Toast.LENGTH_LONG).show();
+						setCurrentDb();
+						createExpandList();
+					}
+				})
+				.setNegativeButton("いいえ", new DialogInterface.OnClickListener(){
+					public void onClick(DialogInterface dialog,int id){
+						dialog.cancel();
+					}
+				})
+				.show();
 			}catch(Exception e){
 				Log.d(TAG, "データ削除に失敗しました");
 			}
