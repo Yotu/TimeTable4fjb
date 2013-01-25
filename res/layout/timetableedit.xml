@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/editLiner"
+    style="@style/Style1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    tools:context=".TimeTableEditActivity" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/subjectLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <!-- 「授業名」 -->
+
+            <TextView
+                android:id="@+id/subjectText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/subject"
+                android:textColor="#000000" />
+
+            <!-- 授業名入力欄 -->
+
+            <EditText
+                android:id="@+id/subject"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:inputType="text" >
+
+                <requestFocus /> <!-- この入力欄にフォーカスを設定 -->
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/weekLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <!-- 「曜日」 -->
+
+            <TextView
+                android:id="@+id/weekText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/week"
+                android:textColor="#000000" />
+
+            <!-- 曜日選択 -->
+
+            <Spinner
+                android:id="@+id/week"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center"
+                android:layout_weight="4" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/placeLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <!-- 「場所」 -->
+
+            <TextView
+                android:id="@+id/placeText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/place"
+                android:textColor="#000000" />
+
+            <!-- 場所入力欄 -->
+
+            <EditText
+                android:id="@+id/place"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center"
+                android:layout_weight="4"
+                android:ems="10"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timeLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <!-- 「時限」 -->
+
+            <TextView
+                android:id="@+id/timeText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center"
+                android:layout_weight="4"
+                android:text="@string/timetable"
+                android:textColor="#000000" />
+
+            <!-- 時限選択 -->
+
+            <Spinner
+                android:id="@+id/time_table"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/typLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <!-- 「種類」 -->
+
+            <TextView
+                android:id="@+id/typeText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="@string/type"
+                android:textColor="#000000"/>
+
+            <!-- 種類選択 -->
+
+            <Spinner
+                android:id="@+id/type"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2" />
+            <!-- 種類追加ボタン -->
+
+            <Button
+                android:id="@+id/addVarietyButton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="4"
+                android:text="@string/addVariety" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/shareTimeLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <!-- 空白部分 -->
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                 >
+            </LinearLayout>
+            <!-- 時間割のシェア設定 -->
+
+            <CheckBox
+                android:id="@+id/share"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="@string/share" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/remarksLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <!-- 「備考」 -->
+
+            <TextView
+                android:id="@+id/remarksText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="@string/remarks"
+                android:textColor="#000000" />
+
+            <!-- 備考情報 -->
+
+            <EditText
+                android:id="@+id/remarks"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:inputType="textMultiLine" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/shareBikoLine"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <!-- 空白部分 -->
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+            </LinearLayout>
+            <!-- 備考情報共有設定 -->
+
+            <CheckBox
+                android:id="@+id/remarkShare"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="@string/remarkShare" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/kuuhaku"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/edit"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="@string/add" />
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="@string/Cancel" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
