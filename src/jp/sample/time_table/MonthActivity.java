@@ -11,15 +11,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MonthActivity extends Activity implements OnClickListener,View.OnTouchListener{
+	private static final String TAG = "MonthActivity";
+
+	// トップ画面へ戻すためのボタン
 	private ImageView weekBtn;
+
 	public Button[] button_table = new Button[43];
 	public TextView todayLabel;
+	
 	//カレンダーのインスタンスを作成
 	public Calendar calendar = Calendar.getInstance();
 	//今日の年月日を取得する
@@ -90,18 +94,19 @@ public class MonthActivity extends Activity implements OnClickListener,View.OnTo
 		}
 		drawText();
 		
+		
 		// トップ画面へ戻るボタン準備
 		weekBtn = (ImageView)findViewById(R.id.weekBtn);
 		weekBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(MonthActivity.this, TimeTableActivity.class);
-				int requestCode = 100;
-				startActivityForResult(intent, requestCode);
-			}
+			public void onClick(View v) { finish(); }
 		});
 		
 	}
+	
+	/**
+	 * 
+	 */
 	public void drawText(){
 				//セットされたテキストのリセット
 				for(int i=1;i<=42;i++){
@@ -135,6 +140,7 @@ public class MonthActivity extends Activity implements OnClickListener,View.OnTo
 					day=day+1;
 				}
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -191,13 +197,21 @@ public class MonthActivity extends Activity implements OnClickListener,View.OnTo
 		calendar.set(year,month,1);
 		for(int i=dayOfWeek;i<=dayOfWeek+lastDate-1;i++){
 			if(v==button_table[i]){
-				Toast.makeText(this, (month+1)+"月の"+day+"日がタッチされました", Toast.LENGTH_SHORT).show();
+				Log.d(TAG, (month+1)+"月の"+day+"日がタッチされました");
+				
+				Intent intent = new Intent(this, TimeTableActivity.class);
+				intent.putExtra("year", year);
+				intent.putExtra("month", month);
+				intent.putExtra("day", day);
+				intent.putExtra("dayOfWeek", dayOfWeek);
+
+				finish();		// トップ画面へ
+				// Toast.makeText(this, (month+1)+"月の"+day+"日がタッチされました", Toast.LENGTH_SHORT).show();
 			}
 			day=day+1;
 		}
 
 	}
 
-
-
+	
 }
