@@ -1,30 +1,30 @@
-//　　　　　　　　　　　　　　　 _______
-//　　　　　　　　 　　　 　 ／　　 　   ＼
-//　　　　　　　　  　　　 ／   ─　 　 ─  ＼
-//　　　　　　　　　  　 ／　 （●） 　（●）　＼
-//　　　 　 　 　 　 　 |　　 　 （__人__） 　 |　
-//　　　　　　　　　 　,.ﾞ-‐- ､　 ｀⌒´　　　,／
-//　　　 　 　 ┌､.　/　　 　 ヽ　ー‐　　＜.
-//　　　　 　 　 ヽ.X､- ､　　 ,ﾉi　　　　　 ハ
-//　　　　　　⊂＞'">┐ヽノ〃　　　　　/　ﾍ
-//　　　　　　　入 ´／/ ﾉ　　　　　　　 } ,..,.._',.-ｧ
-//　　　　　 ／ 　 ｀ｰ''"´　　　　　 ,'　 ｃ〈〈〈っ<
-//　　　　 /　　　　　　　　　　__,,..ノ　,ノヽー'"ﾉ
-//　 　 　 {　　　　　　　　　　´　 　 /　　｀`¨´
-//　　　　/´¨`'''‐､._　　　　　　　　,'＼
-//　　 　 ∨´　　 　 ｀ヽ、　　　　 ﾉ 　 ﾞヽ
-//　 　 　 ∨　　　　　　ヽ　_,,..-'"　　　　｀ヽ
-//　　　　　∨　　 　 　 〈-=､.__　　　　　　　}
-//　　　　　　ヽ、　　　　 }　　　｀`７‐-.　　/
-//　 　 　 　 　 ヽ　　 　 ﾘ　　　 /′　　ノ
-//　 　 　 　 　 /′　　, { 　 　 /　　 ／
-//　　　　　 　 {　　　　　!　　 ,ﾉ　 ,/′
-//　 　 　 　 　 !　　　　/　　/　　　`‐-､
-//　　　　　　　 !　　　,/　　 ﾞー''' ｰ---'
-//　　　 　 　 　 ',　　/
-//　　　　　　　　{ 　 }
-//　　 　 　 　 　 ﾞY　｀ヽ､
-//　　　 　 　 　 　 ﾞｰ--‐'
+//                               _______
+//                           ／          ＼
+//                         ／   ─      ─  ＼
+//                       ／   （●）   （●）  ＼
+//                      |        （__人__）    |
+//                     ,.ﾞ-‐- ､   ｀⌒´      ,／
+//             ┌､.  /        ヽ  ー‐    ＜.
+//               ヽ.X､- ､     ,ﾉi           ハ
+//            ⊂＞'">┐ヽノ〃          /  ﾍ
+//              入 ´／/ ﾉ               } ,..,.._',.-ｧ
+//           ／    ｀ｰ''"´           ,'   ｃ〈〈〈っ<
+//         /                    __,,..ノ  ,ノヽー'"ﾉ
+//         {                    ´      /    ｀`¨´
+//        /´¨`'''‐､._                ,'＼
+//        ∨´        ｀ヽ、         ﾉ    ﾞヽ
+//         ∨            ヽ  _,,..-'"        ｀ヽ
+//          ∨           〈-=､.__              }
+//            ヽ、         }      ｀`７‐-.    /
+//               ヽ        ﾘ       /′    ノ
+//               /′    , {       /     ／
+//              {          !     ,ﾉ   ,/′
+//               !        /    /      `‐-､
+//               !      ,/     ﾞー''' ｰ---'
+//                ',    /
+//                {    }
+//                 ﾞY  ｀ヽ､
+//                   ﾞｰ--‐'
 package jp.sample.sns_sdk;
 
 import java.io.BufferedReader;
@@ -106,7 +106,7 @@ public class SnsReceiver{
 			}
 
 			// 戻って来たものStreamで読み込み
-			Log.d(TAG,"start　インスタンス");
+			Log.d(TAG,"start  インスタンス");
 			InputStream objStream = objResponse.getEntity().getContent();
 			InputStreamReader objReader = new InputStreamReader(objStream);
 			BufferedReader objBuf = new BufferedReader(objReader);
@@ -142,7 +142,7 @@ public class SnsReceiver{
 
 						info.setTitle(value);
 						field = "subject_name";
-						// 入力された情報を元に、関連のあるデータを検索　無ければ格納する
+						// 入力された情報を元に、関連のあるデータを検索  無ければ格納する
 						db = sqlHelper.getReadableDatabase();
 						//受信する場合は、Placeはnullにする
 						String sql = "SELECT subjectid FROM subject WHERE subject_name = '"+ value +  "' and place = null;";
@@ -160,7 +160,7 @@ public class SnsReceiver{
 						}else{
 							c.moveToFirst();
 							subjectId = c.getInt(0);
-							Log.d(TAG,"既に登録されている科目データです。　index:"+subjectId);
+							Log.d(TAG,"既に登録されている科目データです。  index:"+subjectId);
 						}
 						c.close();
 						db.close();
@@ -239,7 +239,7 @@ public class SnsReceiver{
 						//		-----------------------------------------------------------------------
 						//
 						//		ユーザー情報      Todo:ユーザーテーブルを参照し、競合がないか確認して格納しておく
-						//　　　ユーザーIDが-1になるエラーあり
+						//      ユーザーIDが-1になるエラーあり
 						//
 						//		-----------------------------------------------------------------------
 						info.setUid(value);

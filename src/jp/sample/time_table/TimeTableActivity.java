@@ -1,27 +1,27 @@
 package jp.sample.time_table;
 
-//／　 ,/　／　／ 　 _,..-''
-//／ / ／／/　 〃　,r'',.-'" ／／ 　 　 ／
-//,.ｨ <´　 〈,/〃／-／/-'"／　／ ,／__,,..-／　
-//} }　,〉　//" ,r'´ノ ,r'′／／-''"二´‐'''~＿＿_ノ
-//,) Y　ﾉ　／／ ,r''´‐''"　　-='"―-､彡"r'"￣´
-//,ｲ　　ﾘ　ﾉ り ,=、、-ﾆ_~―　~''-=二　∠"´
-//ヾ,ヽ　､, , ﾉﾉ {.ﾄヾｰ-~ﾆ_-二　―　二ニ＝=-‐''"　　　
-//ゝ 　ミｨｲｨ彡`ﾕ.|｀＼ヽ丶､‐ __ヽ'''三二,,,＿
-//〈　`ヾべ_{:::: 　　'ｩ) 　`8-､ ヽ‐ ､ヽ`''-_＝-
-//ゝ_ﾉ⌒ﾍ~"　 　_”＼　 　 ヽ!＼ヽ､'''ー-"ﾆ.._
-//〈 (._　　　|∠ｨ ,.ノ 　/ 　__ﾊ_j! 　　 　　＼
-//`‐''^ 　 ,. -‐`ヾ__/ヽ.　>,､く　　　　　　　＼
-//r;>-＝<´ 〈　ﾉ_,.　　 　 　 　 　　 ヽ　＼
-//(l》L -―''''"~´　　　　　　　　　　　　ヽ　 ｀ 、
-//／　　　　　　　　　　　　　　　 `、　　 `、　 lヽ
-///　　　　　　　　　　　　　 　 　 　 ヽ.　　　l　 ｜|
-//!　　　　　　　　　　　　　　　　　　　｀、 　 !　　!｜
-//｀、　　　　　　　　　　　　 、　　　　　| 　　}　Ｖ,/
-//ヽ　　　　　　　　　　　　 |　　　　／　　/　〃
-//＼　　　　　　　　　　 ﾍ_,. -''"　　　/ ,.ｲ′
-//＼　　 　 　 　 　 　 ヽ　　　　　l / /
-//　ｌ　　　　　　　　 　 |　　　 　 |′,'
+//／   ,/  ／  ／    _,..-''
+//／ / ／／/   〃  ,r'',.-'" ／／       ／
+//,.ｨ <´   〈,/〃／-／/-'"／  ／ ,／__,,..-／
+//} }  ,〉  //" ,r'´ノ ,r'′／／-''"二´‐'''~＿＿_ノ
+//,) Y  ﾉ  ／／ ,r''´‐''"    -='"―-､彡"r'"￣´
+//,ｲ    ﾘ  ﾉ り ,=、、-ﾆ_~―  ~''-=二  ∠"´
+//ヾ,ヽ  ､, , ﾉﾉ {.ﾄヾｰ-~ﾆ_-二  ―  二ニ＝=-‐''"
+//ゝ   ミｨｲｨ彡`ﾕ.|｀＼ヽ丶､‐ __ヽ'''三二,,,＿
+//〈  `ヾべ_{::::     'ｩ)   `8-､ ヽ‐ ､ヽ`''-_＝-        貴様、見ているなッ！！！！
+//ゝ_ﾉ⌒ﾍ~"     _”＼      ヽ!＼ヽ､'''ー-"ﾆ.._
+//〈 (._      |∠ｨ ,.ノ   /   __ﾊ_j!          ＼
+//`‐''^    ,. -‐`ヾ__/ヽ.  >,､く              ＼
+//r;>-＝<´ 〈  ﾉ_,.                   ヽ  ＼
+//(l》L -―''''"~´                        ヽ   ｀ 、
+//／                               `、     `、   lヽ
+///                                    ヽ.      l   ｜|
+//!                                      ｀、    !    !｜
+//｀、                         、          |     }  Ｖ,/
+//ヽ                         |        ／    /  〃
+//＼                     ﾍ_,. -''"      / ,.ｲ′
+//＼                    ヽ          l / /
+//  ｌ                    |          |′,'
 
 /*-----------------------ここでのおやくそく-----------------------*/
 //																  //
@@ -132,7 +132,7 @@ android.content.DialogInterface.OnClickListener {
 	// 曜日ボタンを押したときに設定される現在曜日の数字
 	private int clickedWeekDay;
 
-	//マンスビューへのボタン　イメージビューで代用
+	//マンスビューへのボタン  イメージビューで代用
 	private ImageView MonthBtn;
 
 	// リストと現在時間とインテント
@@ -276,7 +276,7 @@ android.content.DialogInterface.OnClickListener {
 		}
 
 		/*-------------------ここからあいやのターン-------------------*/
-		/*↑トラップカード発動！！！　首無しキリンの雄叫び！！　　
+		/*↑トラップカード発動！！！  首無しキリンの雄叫び！！
 		 * このカードは、あいやがコードを書き間違えた際、強制的に首無しキリンの手によってコードが改変される!*/
 
 
@@ -952,35 +952,66 @@ android.content.DialogInterface.OnClickListener {
 		Log.d(TAG,"initWeek");
 		dayNowTextView = (TextView) findViewById(R.id.dayNowText);
 		dayNowTextView.setText(year+"年"+(month)+"月"+day+"日");
+
 		//日付
 		day = calendar.get(Calendar.DAY_OF_MONTH);
-		//曜日(日曜:0,月曜:1,火曜:2,,,,土曜:6)
-		dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-		currentWeekDay = weekDayTrue[calendar.get(Calendar.DAY_OF_WEEK)];
-		clickedWeekDay = calendar.get(Calendar.DAY_OF_WEEK);
-		//今週の月曜日をセット
-		calendar.add(Calendar.DATE, -(dayOfWeek-2));
-		int setInit = calendar.get(Calendar.DATE);
-		int nextInit = 0;
-		Log.d(TAG,"default: "+setInit+"/"+nextInit);
-		//戻るか進むかで分岐
 
-		if(changeMode && mode){
-			Log.d(TAG,"FLAG IS true");
-			nextInit = setInit - 7;
-		}else if(changeMode && !mode){
-			Log.d(TAG,"FLAG IS false");
-			nextInit = setInit + 7;
-		}else if(!changeMode){
-			nextInit = setInit;
+		//一旦来月の1日にセット
+		calendar.add(Calendar.MONTH, 1);
+		Log.d(TAG,"来月は"+calendar.get(Calendar.MONTH)+1 +"月");
+
+
+		//ここで-1すると、　今月末の日付になる。
+		calendar.add(Calendar.DATE, -1);
+		int lastDay = calendar.get(Calendar.DATE);
+		Log.d(TAG,"今月末の日付は"+calendar.get(Calendar.DATE)+"日");
+
+
+		
+
+
+		//戻るか進むかで分岐
+		if(changeMode){
+			if(mode){
+
+				//戻るボタン
+				Log.d(TAG,"FLAG IS true");
+				calendar.add(Calendar.DATE,-7);
+				Log.d(TAG,"一週間前の月曜日の日付は"+calendar.get(Calendar.DATE));
+			}else{
+
+				//進むボタン
+				Log.d(TAG,"FLAG IS false");
+				calendar.add(Calendar.DATE, 7);
+				Log.d(TAG,"一週間前の月曜日の日付は"+calendar.get(Calendar.DATE));
+			}
+			Calendar.getInstance(); //ボタンいじったわけじゃないのに呼び出されたら初期化する
+			//曜日(日曜:0,月曜:1,火曜:2,,,,土曜:6)
+			dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+
+			//今週の月曜日をセット
+			calendar.add(Calendar.DATE, -(dayOfWeek-2));
+			Log.d(TAG,"セットした月曜日の日付は"+calendar.get(Calendar.DATE));
+
 		}
-		Log.d(TAG,"after: "+setInit+"/"+nextInit);
 		//月曜日を基準に、７日分の日付を格納していく
 
 		for(int i=0;i<7;i++){
-			weekDays[i] = (month +"/" + nextInit);
+			//今月末を超えた
+			if(calendar.get(Calendar.DATE) > lastDay){
+				calendar.add(Calendar.MONTH, 1);
+
+			//今月頭を超えた
+			}else if(calendar.get(Calendar.DATE) < 1){
+				calendar.add(Calendar.MONTH, -1);
+				
+			}
+
+			weekDays[i] = (month +"/" + calendar.get(Calendar.DATE));
+			Log.d(TAG,"calendar.get(Calendar.DATE) = "+ calendar.get(Calendar.DATE));;
 			calendar.add(Calendar.DATE, 1); //ここで１日増やす。途中で月をまたいでもCalendarクラスなので大丈夫
-			nextInit = calendar.get(Calendar.DATE);
+
 			Log.d("test",weekDays[i]);
 		}
 		monD.setText(weekDays[0]);
@@ -990,6 +1021,10 @@ android.content.DialogInterface.OnClickListener {
 		friD.setText(weekDays[4]);
 		satD.setText(weekDays[5]);
 		sunD.setText(weekDays[6]);
+		calendar.add(Calendar.DATE, -7);
+
+		currentWeekDay = weekDayTrue[calendar.get(Calendar.DAY_OF_WEEK)];
+		clickedWeekDay = calendar.get(Calendar.DAY_OF_WEEK);
 	}
 
 }
