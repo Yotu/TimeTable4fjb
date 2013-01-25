@@ -113,7 +113,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 	private final static int REQUES_TTIME_TABLE_LIST = 2;
 
 	public Calendar calendar = Calendar.getInstance();
-	public Calendar calendar2 =Calendar.getInstance();
 	public int year = calendar.get(Calendar.YEAR);
 	public int month = calendar.get(Calendar.MONTH)+1;
 
@@ -556,7 +555,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 
 		// Log.d("debug", String.valueOf(v.getId()));
 		switch (v.getId()) {
-		// 新規作成のボタンをクリック
 		case R.id.backBtn:
 			mode = true;
 			changeMode =true;
@@ -684,6 +682,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			Log.d("error", "UnknownButton clicked = " + v.getId());
 			break;
 		}
+		initWeek();
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -800,7 +799,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 	private void setCurrentDb() {
 		// TODO 自動生成されたメソッド・スタブ
 		Log.d(TAG, "setCurrentDb");
-
+		initWeek();
 		// スタブ
 		//				subject = new String[1];
 		//				todo = new String[1];
@@ -977,24 +976,27 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 	public void initWeek(){
 		Log.d(TAG,"initWeek");
 		dayNowTextView = (TextView) findViewById(R.id.dayNowText);
-		dayNowTextView.setText(year+"年"+(month)+"月"+day+"日");
+
 
 		currentWeekDay = weekDayTrue[calendar.get(Calendar.DAY_OF_WEEK)];
-		clickedWeekDay = calendar.get(Calendar.DAY_OF_WEEK);
+		//clickedWeekDay = calendar.get(Calendar.DAY_OF_WEEK);
+		day = calendar.get(Calendar.DATE);
+		month = calendar.get(Calendar.MONTH);
+		month++;
+		year = calendar.get(Calendar.YEAR);
+		//1,2,3,4,5,6,0
+		//月火水木金土日
+
+
+
+		dayNowTextView.setText(
+				calendar.get(Calendar.YEAR) + "年" +
+						(calendar.get(Calendar.MONTH)+1) +"月"+
+						(calendar.get(Calendar.DATE) +(clickedWeekDay-1))+"日"
+				);
+		Log.d(TAG,year+"年"+(month)+"月"+day+"日");
 		//日付
 		day = calendar.get(Calendar.DAY_OF_MONTH);
-
-		//一旦来月の1日にセット
-		calendar2.add(Calendar.MONTH, 1);
-		Log.d(TAG,"来月は"+calendar2.get(Calendar.MONTH)+1 +"月");
-
-
-		//ここで-1すると、　今月末の日付になる。
-		calendar2.add(Calendar.DATE, -1);
-		int lastDay = calendar2.get(Calendar.DATE);
-		Log.d(TAG,"今月末の日付は"+calendar2.get(Calendar.DATE)+"日");
-
-
 
 		Calendar.getInstance();
 		//曜日(日曜:0,月曜:1,火曜:2,,,,土曜:6)
@@ -1012,26 +1014,13 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			}
 		}
 
-		day = calendar.get(Calendar.DATE);
-		month = calendar.get(Calendar.MONTH);
-		month++;
-		year = calendar.get(Calendar.YEAR);
-		dayNowTextView.setText(year+"年"+(month)+"月"+day+"日");
+
 
 		//月曜日を基準に、７日分の日付を格納していく
 
 		for(int i=0;i<7;i++){
-			//今月末を超えた
-			if(calendar.get(Calendar.DATE) > lastDay){
-				calendar.add(Calendar.MONTH, 1);
 
-				//今月頭を超えた
-			}else if(calendar.get(Calendar.DATE) < 1){
-				calendar.add(Calendar.MONTH, -1);
-
-			}
-
-			weekDays[i] = (month +"/" + calendar.get(Calendar.DATE));
+			weekDays[i] = ((calendar.get(Calendar.MONTH)+1) +"/" + calendar.get(Calendar.DATE));
 			Log.d(TAG,"calendar.get(Calendar.DATE) = "+ calendar.get(Calendar.DATE));;
 			calendar.add(Calendar.DATE, 1); //ここで１日増やす。途中で月をまたいでもCalendarクラスなので大丈夫
 
