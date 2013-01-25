@@ -4,16 +4,20 @@ import java.util.Calendar;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MonthActivity extends Activity implements OnClickListener,View.OnTouchListener{
+	private ImageView weekBtn;
 	public Button[] button_table = new Button[43];
 	public TextView todayLabel;
 	//カレンダーのインスタンスを作成
@@ -28,6 +32,7 @@ public class MonthActivity extends Activity implements OnClickListener,View.OnTo
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.month);
+
 		//yyyy/mm  を表示するラベル
 		todayLabel = (TextView)this.findViewById(R.id.monthLabel);
 		//ボタンを一つずつ取得し、配列に格納する。
@@ -84,8 +89,18 @@ public class MonthActivity extends Activity implements OnClickListener,View.OnTo
 			button_table[i].setBackgroundDrawable(getResources().getDrawable(R.drawable.schedule_none));
 		}
 		drawText();
-
-
+		
+		// トップ画面へ戻るボタン準備
+		weekBtn = (ImageView)findViewById(R.id.weekBtn);
+		weekBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MonthActivity.this, TimeTableActivity.class);
+				int requestCode = 100;
+				startActivityForResult(intent, requestCode);
+			}
+		});
+		
 	}
 	public void drawText(){
 				//セットされたテキストのリセット

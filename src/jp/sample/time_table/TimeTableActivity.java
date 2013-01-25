@@ -98,6 +98,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -131,8 +132,8 @@ android.content.DialogInterface.OnClickListener {
 	// 曜日ボタンを押したときに設定される現在曜日の数字
 	private int clickedWeekDay;
 
-	//マンスビューへのボタン
-	private ImageButton MonthBtn;
+	//マンスビューへのボタン　イメージビューで代用
+	private ImageView MonthBtn;
 
 	// リストと現在時間とインテント
 	private ExpandableListView dayList;
@@ -315,7 +316,7 @@ android.content.DialogInterface.OnClickListener {
 		// optButton.setOnClickListener(this);
 
 		//マンスビュー用意
-		MonthBtn = (ImageButton) findViewById(R.id.monthBtn);
+		MonthBtn = (ImageView)findViewById(R.id.monthBtn);
 		MonthBtn.setOnClickListener(this);
 
 		backBtn = (Button)findViewById(R.id.backBtn);

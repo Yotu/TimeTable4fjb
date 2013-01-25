@@ -30,7 +30,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 
 	/** CREATEテーブル */
 	private static final String CREATE_TIME = CREATE + TIME_TABLE + "("
-			+ "id integer primary key,"
+			+ "id integer primary key autoincrement,"
 			+ "week integer not null,"
 			+ "timeid integer not null,"
 			+ "subjectid integer not null,"
@@ -52,7 +52,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 			+ "creatorid integer primary key autoincrement,"
 			+ "userid varchar(20)" + ");";
 	private static final String CREATE_REMARKS = CREATE + REMARKS_TABLE + "("
-			+ "id integer primary key,"
+			+ "id integer primary key autoincrement,"
 			+ "date timestamp not null,"
 			+ "timeid integer default null,"
 			+ "remarks text,"
@@ -75,6 +75,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		long rec = db.insert(table, null, ct);
 		Log.d(TAG, String.format("insert: return code=%d", rec));
 		db.close();
+		Log.d(TAG, "DB閉じたよ");
 		return rec;
 	}
 
