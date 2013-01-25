@@ -994,7 +994,16 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 						(calendar.get(Calendar.MONTH)+1) +"月"+
 						(calendar.get(Calendar.DATE))+"日"
 				);
+
+		Log.d(TAG,"クリックされた日付"+
+				calendar.get(Calendar.YEAR) + "年" +
+				(calendar.get(Calendar.MONTH)+1) +"月"+
+				(calendar.get(Calendar.DATE))+"日");
+
+
+		//日付の取得したいならこの中でやってね
 		calendar.add(Calendar.DATE, -(clickedWeekDay-1));
+
 
 		//日付
 		day = calendar.get(Calendar.DAY_OF_MONTH);
