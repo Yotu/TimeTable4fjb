@@ -145,8 +145,9 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		// android.R.layout.simple_spinner_item,TimeTableInfo.types);
 		// typeSpr.setAdapter(typeTableAdapter);
 
-		//dbHelper = new MyDbHelper(this);
-		//mDb = dbHelper.getWritableDatabase();
+		MyDbHelper dbHelper = new MyDbHelper(this);
+		mDb = dbHelper.getWritableDatabase();
+		mDb.close();
 		mDb = sqlHelper.getReadableDatabase();
 		ArrayAdapter<String> typeTableAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item);
@@ -163,6 +164,19 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			cursor.moveToNext();
 		}
 		cursor.close();
+		mDb.close();
+//		typeSpr.setAdapter(typeTableAdapter);
+		String sql2 = "select variety from " + MyDbHelper.TABLE + " order by id;";
+		SQLiteDatabase db2 = dbHelper.getWritableDatabase();
+		Cursor c = db2.rawQuery(sql2, null);
+		c.moveToFirst();
+		for (int i = 0; i < c.getCount(); i++) {
+			typeTableAdapter.add(c.getString(0));
+			c.moveToNext();
+		}
+		c.close();
+		db2.close();
+		typeSpr.setAdapter(typeTableAdapter);
 		mDb.close();
 		typeSpr.setAdapter(typeTableAdapter);
 		Intent intent = getIntent();
@@ -339,7 +353,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			values.put("share", isShare);
 			values.put("creatorid", creatorid);
 			values.put("uptime", timestamp);
-			
+
 			db = sqlHelper.getReadableDatabase();
 			c = db.rawQuery("SELECT id FROM time WHERE week="+week+" AND timeid = "+ timeid +";",null);
 			if(c.getCount() >0){
@@ -349,7 +363,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 			}
 			c.close();
 			db.close();
-			
+
 			try {
 				if (editFlag) {
 					Log.d(TAG,"data update");
@@ -401,6 +415,8 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 				Bundle bundle = data.getExtras(); // Extraがないときにこれするとエラー出る（落ちる）みたいなので注意
 				String value = bundle.getString("varietyWord");
 				Log.d(TAG, "adding value is " + value);
+				MyDbHelper dbh = new MyDbHelper(this);
+				db = dbh.getWritableDatabase();
 				MyDbHelper.insert(db, value);
 			} else if (resultCode == RESULT_CANCELED) {
 				// Log.d("debug", "adding canceled");

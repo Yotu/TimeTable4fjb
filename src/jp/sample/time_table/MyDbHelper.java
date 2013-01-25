@@ -38,5 +38,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
 		if (id == -1) {
 			Log.d("debug", "DBが不正です、データが追加できませんでした");
 		}
+		db.close();
 	}
 }
