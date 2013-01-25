@@ -485,6 +485,11 @@ android.content.DialogInterface.OnClickListener {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		/*
+		 * このメソッドに、マンスビューから戻ってきた時の日時を受け取る処理を記述する予定。
+		 * 受け取った値でトップ画面の表示も変更する。
+		 */
+		Log.d(TAG, String.format("requestCode=%d, resultCode=%d", requestCode, resultCode));
 		if (requestCode == REQUES_TTIME_TABLE_EDIT && resultCode == RESULT_OK) {
 			// 同期終了時にアラート
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
