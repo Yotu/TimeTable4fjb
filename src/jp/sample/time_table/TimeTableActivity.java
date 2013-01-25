@@ -480,6 +480,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			intent.putExtra("editMode", false);
 			intent.putExtra("weekDay", clickedWeekDay);
 			intent.putExtra("num", number);
+			intent.putExtra("date", calendar.get(Calendar.YEAR)+ "/" + (calendar.get(Calendar.MONTH)+1) + "/" + calendar.get(Calendar.DATE));
 			startActivity(intent);
 		}
 		return false;
@@ -748,7 +749,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			public void onClick(DialogInterface dialog, int which) {
 				creatorid = which+1;
 				Log.d(TAG,"中のCreatorId;"+creatorid);
-
 			}
 		})
 		.show();
