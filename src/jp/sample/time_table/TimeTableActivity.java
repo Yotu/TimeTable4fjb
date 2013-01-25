@@ -1005,11 +1005,11 @@ android.content.DialogInterface.OnClickListener {
 		for(int i=0;i<7;i++){
 			//今月末を超えた
 			if(calendar.get(Calendar.DATE) > lastDay){
-				calendar.add(Calendar.MONTH, 1);
+				//calendar.add(Calendar.MONTH, 1);
 
 			//今月頭を超えた
 			}else if(calendar.get(Calendar.DATE) < 1){
-				calendar.add(Calendar.MONTH, -1);
+				//calendar.add(Calendar.MONTH, -1);
 				
 			}
 
