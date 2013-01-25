@@ -209,7 +209,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		setContentView(R.layout.main);
 
 		endFlag = false;
-
+		clickedWeekDay = calendar.get(Calendar.WEEK_OF_MONTH)+1;
 		//プリファレンスの準備
 		preference = getSharedPreferences("Preference Name", MODE_PRIVATE);
 		editor = preference.edit();
