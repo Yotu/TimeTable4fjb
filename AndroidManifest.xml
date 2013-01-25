@@ -23,6 +23,7 @@
         <activity android:name="AddVarietyActivity"></activity>
         <activity android:name="PrefsActivity"></activity>
         <activity android:name="MonthActivity"></activity>
+        <activity android:name ="OptionActivity"></activity>
     </application>
 
 </manifest>

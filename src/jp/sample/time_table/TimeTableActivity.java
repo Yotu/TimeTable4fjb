@@ -328,6 +328,7 @@ android.content.DialogInterface.OnClickListener {
 		dayList = (ExpandableListView) findViewById(R.id.dayExpandList);
 		dayList.setOnGroupClickListener(this);
 		dayList.setOnItemLongClickListener(this);
+		dayList.setScrollingCacheEnabled(false);
 		initWeek();
 		onClick(new View(this));
 
@@ -531,14 +532,6 @@ android.content.DialogInterface.OnClickListener {
 			changeMode = true;
 			initWeek();
 			break;
-		case R.id.newButton:
-			Log.d(TAG, "新規登録ボタンがクリックされました"); // デバッグ用(LogCatに表示)
-			intent = new Intent(TimeTableActivity.this, TimeTableEditActivity.class);
-			intent.putExtra("weekDay", 0);
-			intent.putExtra("num", 0);
-			startActivityForResult(intent, REQUES_TTIME_TABLE_EDIT);
-			break;
-
 		case R.id.monthBtn:
 			intent = new Intent(this,MonthActivity.class);
 			startActivityForResult(intent, REQUES_TTIME_TABLE_EDIT);
@@ -598,19 +591,6 @@ android.content.DialogInterface.OnClickListener {
 			sunButton.setBackgroundColor(Color.BLUE);
 			setCurrentDb();
 			createExpandList();
-			break;
-
-			// case R.id.optButton:
-			// intent = new Intent(this, PrefsActivity.class);
-			// startActivity(intent);
-			// break;
-
-		case R.id.visibleButton:
-			dayList.setVisibility(View.VISIBLE);
-			break;
-
-		case R.id.invisibleButton:
-			dayList.setVisibility(View.INVISIBLE);
 			break;
 
 			// おそらく初期値が-1なので、どのボタンでもないとここに入る、
@@ -676,6 +656,7 @@ android.content.DialogInterface.OnClickListener {
 
 		menu.add(Menu.NONE, Menu.FIRST, Menu.NONE, "データ受信");
 		menu.add(Menu.NONE, Menu.FIRST+1, Menu.NONE, "ユーザーリスト");
+		menu.add(Menu.NONE, Menu.FIRST+2, Menu.NONE,"オプション");
 
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -741,6 +722,12 @@ android.content.DialogInterface.OnClickListener {
 		setCurrentDb();
 		Log.d(TAG,"外のCreatorId;"+creatorid);
 		return true;
+
+		case Menu.FIRST+2:
+			//オプション画面へ
+			Intent intent  = new Intent(this,OptionActivity.class);
+			startActivity(intent);
+			return true;
 		}
 		return false;
 
@@ -972,7 +959,7 @@ android.content.DialogInterface.OnClickListener {
 		Log.d(TAG,"今月末の日付は"+calendar.get(Calendar.DATE)+"日");
 
 
-		
+
 
 
 		//戻るか進むかで分岐
@@ -1007,10 +994,10 @@ android.content.DialogInterface.OnClickListener {
 			if(calendar.get(Calendar.DATE) > lastDay){
 				//calendar.add(Calendar.MONTH, 1);
 
-			//今月頭を超えた
+				//今月頭を超えた
 			}else if(calendar.get(Calendar.DATE) < 1){
 				//calendar.add(Calendar.MONTH, -1);
-				
+
 			}
 
 			weekDays[i] = (month +"/" + calendar.get(Calendar.DATE));

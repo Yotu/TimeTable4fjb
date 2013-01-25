@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
+    style="@style/Style1"
     tools:context=".MainActivity" >
 
     <LinearLayout
@@ -99,14 +100,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:gravity="top|center" />
+                android:gravity="top|center"
+                android:background="#33000000"/>
 
             <Button
                 android:id="@+id/dayB02"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:gravity="top|center" />
+                android:gravity="top|center"
+                android:background="#33000000"/>
 
             <Button
                 android:id="@+id/dayB03"
@@ -434,23 +437,23 @@
         android:layout_gravity="center"
         android:layout_weight="0"
         android:gravity="center">
-        
+
         <ImageView
             android:id="@+id/weekBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/month" />
-        
+
     </LinearLayout>
-    
+
     <LinearLayout
         android:id="@+id/LinearLayout3"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="5"
         android:orientation="vertical" >
-                
+
 <!--<ImageButton
             android:id="@+id/imageButton1"
             android:layout_width="wrap_content"
