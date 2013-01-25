@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:stretchColumns="0"
+    >
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/text1"
+            android:paddingLeft="36dp"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/text2"
+            android:paddingLeft="36dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </TableRow>
+ </TableLayout>

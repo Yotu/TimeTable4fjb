@@ -899,10 +899,10 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			if (nullJudg) {
 				childArray = new String[5];
 				childArray[0] = "授業名 : " + subject[itemsPointer];
-				childArray[1] = "場所 : " + ( place[itemsPointer] != null ? place[itemsPointer] : "登録なし" );
+				childArray[1] = "場所 : " + ( !place[itemsPointer].equals("") ? place[itemsPointer] : "登録なし" );
 				childArray[2] = "種類 : " + type[itemsPointer];
 				//				childArray[3] = "備考 : " + todo[itemsPointer]; // nullでも大丈夫だった
-				childArray[3] = "備考 : " + ( todo[itemsPointer] != null ? todo[itemsPointer] : "なし" );
+				childArray[3] = "備考 : " + ( !todo[itemsPointer].equals("") ? todo[itemsPointer] : "登録なし" );
 				childArray[4] = "ユーザー :"+(userid[itemsPointer] != null ?  userid[itemsPointer] : "不明");
 				// アイテムポインタは下でインクリメントするので、ここではしない
 			} else {
@@ -916,7 +916,10 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			// i限目 != titleの中のi限目のタイトルであることに注意
 			if (nullJudg) {
 				group.put("PTag", item + "  " + subject[itemsPointer]);
-				group.put("appendInfo", "[場所]   " + ( place[itemsPointer] != null ? place[itemsPointer] : "登録なし" ));
+				for(int j=0; j<3; j++){
+					Log.d("main", "i = " + i + " : " + place[i]);
+				}
+				group.put("appendInfo", ( !place[itemsPointer].equals("") ? "[場所]   " + place[itemsPointer] : "" ));
 				itemsPointer++;
 			} else {
 				group.put("PTag", item + "   +");
@@ -938,9 +941,9 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		// 上で作ったものをひとつに合体
 		SimpleExpandableListAdapter adapter = new SimpleExpandableListAdapter(
 				this, groupData,
-				android.R.layout.simple_expandable_list_item_2, new String[] {
-						"PTag", "appendInfo" }, new int[] { android.R.id.text1,
-						android.R.id.text2 }, childData, R.layout.raw,
+				R.layout.raw2, new String[] {
+						"PTag", "appendInfo" }, new int[] { R.id.text1 ,
+						R.id.text2 }, childData, R.layout.raw,
 						new String[] { "CTag" }, new int[] { R.id.child_text });
 		// セット
 		dayList.setAdapter(adapter);
