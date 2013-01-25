@@ -629,7 +629,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			// おそらく初期値が-1なので、どのボタンでもないとここに入る、
 		case -1: // それを利用してnew
 			// View(this)での強制イベントをここに分岐させている（本来は特別なIDを発行したほうがバグには強いかもしれない）
-			switch (calendar.get(Calendar.DAY_OF_WEEK)) {
+			switch (clickedWeekDay) {
 			case 1:
 				monButton.setBackgroundColor(Color.BLUE);
 				setCurrentDb();
@@ -978,7 +978,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		dayNowTextView = (TextView) findViewById(R.id.dayNowText);
 
 
-		currentWeekDay = weekDayTrue[calendar.get(Calendar.DAY_OF_WEEK)];
+		//currentWeekDay = weekDayTrue[calendar.get(Calendar.DAY_OF_WEEK)];
 		//clickedWeekDay = calendar.get(Calendar.DAY_OF_WEEK);
 		day = calendar.get(Calendar.DATE);
 		month = calendar.get(Calendar.MONTH);
@@ -988,13 +988,14 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		//月火水木金土日
 
 
-
+		calendar.add(Calendar.DATE, (clickedWeekDay-1));
 		dayNowTextView.setText(
 				calendar.get(Calendar.YEAR) + "年" +
 						(calendar.get(Calendar.MONTH)+1) +"月"+
-						(calendar.get(Calendar.DATE) +(clickedWeekDay-1))+"日"
+						(calendar.get(Calendar.DATE))+"日"
 				);
-		Log.d(TAG,year+"年"+(month)+"月"+day+"日");
+		calendar.add(Calendar.DATE, -(clickedWeekDay-1));
+
 		//日付
 		day = calendar.get(Calendar.DAY_OF_MONTH);
 
