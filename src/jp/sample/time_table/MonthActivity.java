@@ -2,9 +2,13 @@ package jp.sample.time_table;
 
 import java.util.Calendar;
 
+import jp.sample.db_helper.TimeTableSqlHelper;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -93,7 +97,7 @@ public class MonthActivity extends Activity implements OnClickListener,View.OnTo
 			button_table[i].setBackgroundDrawable(getResources().getDrawable(R.drawable.schedule_none));
 		}
 		drawText();
-		
+		setRemarksImage();
 		
 		// トップ画面へ戻るボタン準備
 		weekBtn = (ImageView)findViewById(R.id.weekBtn);
@@ -102,6 +106,26 @@ public class MonthActivity extends Activity implements OnClickListener,View.OnTo
 			public void onClick(View v) { finish(); }
 		});
 		
+	}
+
+	/**
+	 * 備考情報がある日時のアイコンを変更する
+	 */
+	private void setRemarksImage() {
+		Log.d(TAG, "setRemarksImageの処理開始");
+		TimeTableSqlHelper sqlHelper = new TimeTableSqlHelper(this);
+		SQLiteDatabase db = sqlHelper.getReadableDatabase();
+		Cursor c = null;
+		c = db.rawQuery("select date, count(date) from remarks group by date;", null);
+		Log.d(TAG, String.format("c=%d",  c.getCount()));
+		for (int i = 0; i < c.getCount(); i++) {
+			long timestamp = c.getInt(0);
+			int count = c.getInt(1);
+			Log.d(TAG, String.format("timestamp=%d, count=%d", timestamp, count));
+		}
+		
+		db.close();
+		Log.d(TAG, "さらばsetRemarksImage");
 	}
 	
 	/**
