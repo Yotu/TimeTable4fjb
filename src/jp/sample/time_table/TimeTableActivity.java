@@ -83,24 +83,22 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SimpleExpandableListAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -108,7 +106,7 @@ import android.widget.Toast;
 
 public class TimeTableActivity extends Activity implements OnClickListener,
 OnGroupClickListener, OnItemLongClickListener,
-android.content.DialogInterface.OnClickListener {
+android.content.DialogInterface.OnClickListener, OnTouchListener {
 	/** デバッグ用タグ */
 	private static final String TAG = "TimeTableActivity";
 	private final static int REQUES_TTIME_TABLE_EDIT = 1;
@@ -328,6 +326,7 @@ android.content.DialogInterface.OnClickListener {
 		dayList = (ExpandableListView) findViewById(R.id.dayExpandList);
 		dayList.setOnGroupClickListener(this);
 		dayList.setOnItemLongClickListener(this);
+		dayList.setOnTouchListener(this);
 		initWeek();
 		onClick(new View(this));
 
@@ -380,6 +379,9 @@ android.content.DialogInterface.OnClickListener {
 				intent.putExtra("type", newType[clickedItemNumber]);
 				intent.putExtra("todo", newTodo[clickedItemNumber]);
 				intent.putExtra("time_table", newTime_table[clickedItemNumber]);
+				intent.putExtra("date", calendar.get(Calendar.YEAR)
+						+ "/" + (calendar.get(Calendar.MONTH)+1)
+						+ "/" + calendar.get(Calendar.DATE));
 				intent.putExtra("id", id);
 				startActivity(intent);
 			}
@@ -423,6 +425,39 @@ android.content.DialogInterface.OnClickListener {
 		} else {
 			Log.d("debug", adbList[paramInt] + " Button is failed");
 		}
+	}
+
+	//スワイプ動作
+	private float lastTouchX;
+	private float currentX;
+	@Override
+	public boolean onTouch(View arg0, MotionEvent event) {
+		// TODO 自動生成されたメソッド・スタブ
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			lastTouchX = event.getX();
+			break;
+
+		case MotionEvent.ACTION_UP:
+			currentX = event.getX();
+			if(lastTouchX < currentX){
+				mode = true;
+				changeMode = true;
+				initWeek();
+			}else if(lastTouchX > currentX){
+				mode = false;
+				changeMode = true;
+				initWeek();
+			}
+			break;
+
+		default:
+			break;
+		}
+		mode = false;
+		changeMode = true;
+		initWeek();
+		return false;
 	}
 
 	// 親要素クリック時
@@ -972,7 +1007,7 @@ android.content.DialogInterface.OnClickListener {
 		Log.d(TAG,"今月末の日付は"+calendar.get(Calendar.DATE)+"日");
 
 
-		
+
 
 
 		//戻るか進むかで分岐
@@ -1010,7 +1045,7 @@ android.content.DialogInterface.OnClickListener {
 			//今月頭を超えた
 			}else if(calendar.get(Calendar.DATE) < 1){
 				//calendar.add(Calendar.MONTH, -1);
-				
+
 			}
 
 			weekDays[i] = (month +"/" + calendar.get(Calendar.DATE));
