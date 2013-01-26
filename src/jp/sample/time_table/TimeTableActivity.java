@@ -916,9 +916,9 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			// i限目 != titleの中のi限目のタイトルであることに注意
 			if (nullJudg) {
 				group.put("PTag", item + "  " + subject[itemsPointer]);
-				for(int j=0; j<3; j++){
-					Log.d("main", "i = " + i + " : " + place[i]);
-				}
+//				for(int j=0; j<3; j++){
+//					Log.d("main", "i = " + i + " : " + place[i]);
+//				}
 				group.put("appendInfo", ( !place[itemsPointer].equals("") ? "[場所]   " + place[itemsPointer] : "" ));
 				itemsPointer++;
 			} else {
