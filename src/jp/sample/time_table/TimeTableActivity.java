@@ -370,7 +370,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 				String id = String.valueOf(c.getInt(0));
 				Log.d(TAG,"selected id = "+ id);
 				//ここ特有でないものも入っていることに注意
-				Log.d("debug", newTime_table[clickedItemNumber]);
 				intent.putExtra("editMode", true);
 				intent.putExtra("weekDay", clickedWeekDay);
 				intent.putExtra("num", clickedItemNumber);
@@ -423,7 +422,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 				Log.d(TAG, "データ削除に失敗しました");
 			}
 		} else {
-			Log.d("debug", adbList[paramInt] + " Button is failed");
+			Log.d(TAG, adbList[paramInt] + " Button is failed (unknown Button");
 		}
 	}
 
@@ -475,7 +474,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			}
 		}
 		if (!existFlag) {
-			// Log.d("debug", "matching is suceed");
 			intent = new Intent(this, TimeTableEditActivity.class);
 			intent.putExtra("editMode", false);
 			intent.putExtra("weekDay", clickedWeekDay);
@@ -491,7 +489,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 	public boolean onItemLongClick(AdapterView<?> paramAdapterView,
 			View paramView, int paramInt, long paramLong) {
 		// TODO 自動生成されたメソッド・スタブ
-		// Log.d("debug", "onItemLongClick");
 
 		// 現在のリストの状況を再設定
 		setCurrentDb();
@@ -554,7 +551,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		satButton.setBackgroundColor(Color.WHITE);
 		sunButton.setBackgroundColor(Color.WHITE);
 
-		// Log.d("debug", String.valueOf(v.getId()));
+		 Log.d(TAG, "「" + v.getId() + "」" + "Clicked");
 		switch (v.getId()) {
 		case R.id.backBtn:
 			mode = true;
@@ -735,7 +732,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		cursor.moveToFirst();
 		String[] users = new String[cursor.getCount()];
 		for(int i=0; i<cursor.getCount(); i++){
-			Log.d("debug", cursor.getString(0));
 			users[i] = cursor.getString(0);
 			cursor.moveToNext();
 		}
@@ -829,7 +825,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		Cursor cursor = db.rawQuery(sql, null);
 
 		Log.d(TAG,"Result = " + cursor.getCount());
-		//		Log.d("debug","SelectedResult = " + cursor.getCount());
 		time_name = new String[cursor.getCount() + 1];
 		subject = new String[cursor.getCount()];
 		type = new String[cursor.getCount()];
@@ -860,10 +855,8 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		todo = new String[cursor.getCount()];
 		cursor.moveToFirst();
 
-		Log.d("debug", "SelectResult of remarks = " + cursor.getCount());
 		for(int i=0; i<cursor.getCount(); i++){
 			todo[i] = cursor.getString(0);
-			Log.d("debug", "select = " + todo[i]);
 			cursor.moveToNext();
 		}
 		cursor.close();
@@ -894,7 +887,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			// 何回か同じ判定をするので、まとめて行う
 			// 判定内容はこの時限に予定があるかないか
 			nullJudg = timeTrue[i].equals(time_name[itemsPointer]);
-			//			Log.d("debug", "nullJudg = " + nullJudg);
 			// 予定の入っている（行のある）時限のみ各項目を設定する
 			if (nullJudg) {
 				childArray = new String[5];
