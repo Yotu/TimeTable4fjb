@@ -688,7 +688,8 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 
 		menu.add(Menu.NONE, Menu.FIRST, Menu.NONE, "データ受信");
 		menu.add(Menu.NONE, Menu.FIRST+1, Menu.NONE, "ユーザーリスト");
-
+		//+2はオプション画面の予定地のようなので、なし。
+		menu.add(Menu.NONE, Menu.FIRST+3, Menu.NONE, "種類の編集");
 
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -752,11 +753,17 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		setCurrentDb();
 		Log.d(TAG,"外のCreatorId;"+creatorid);
 		return true;
+
 		case Menu.FIRST+2:
 			//オプション画面へ
 			Intent intent  = new Intent(this,OptionActivity.class);
-		startActivity(intent);
+			startActivity(intent);
 		return true;
+
+		case Menu.FIRST+3:
+			Intent forVarietyIntent = new Intent(this, AddVarietyActivity.class);
+			startActivity(forVarietyIntent);
+			return true;
 		}
 		return false;
 

@@ -415,9 +415,10 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 				Bundle bundle = data.getExtras(); // Extraがないときにこれするとエラー出る（落ちる）みたいなので注意
 				String value = bundle.getString("varietyWord");
 				Log.d(TAG, "adding value is " + value);
-				MyDbHelper dbh = new MyDbHelper(this);
+//				MyDbHelper dbh = new MyDbHelper(this);
+				TimeTableSqlHelper dbh = new TimeTableSqlHelper(this);
 				db = dbh.getWritableDatabase();
-				MyDbHelper.insert(db, value);
+				dbh.insertType(value);
 			} else if (resultCode == RESULT_CANCELED) {
 				// Log.d("debug", "adding canceled");
 			}
