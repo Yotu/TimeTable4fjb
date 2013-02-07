@@ -2,7 +2,6 @@ package jp.sample.db_helper;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -18,7 +17,7 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 	/** create および　drop */
 	private static final String CREATE = "create table ";
 	private static final String DROP = "drop table ";
-	
+
 	/** テーブル名 */
 	public static final String TIME_TABLE = "time";
 	public static final String TIMENAME_TABLE = "time_name";
@@ -77,6 +76,19 @@ public class TimeTableSqlHelper extends SQLiteOpenHelper {
 		db.close();
 		Log.d(TAG, "DB閉じたよ");
 		return rec;
+	}
+
+	public void insertType(String value){
+		Log.d(TAG, "insert of type");
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put("type", value);
+		long result = db.insert(TYPE_TABLE, null, cv);
+		if(result == -1){
+			Log.d(TAG, "typeテーブルへの追加に失敗しました(value：" + value + ")");
+			Log.d("debug", "typeテーブルへの追加に失敗しました(value：" + value + ")");
+		}
+		db.close();
 	}
 
 	/**

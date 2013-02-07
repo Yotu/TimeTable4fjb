@@ -1,5 +1,6 @@
 package jp.sample.time_table;
 
+import jp.sample.db_helper.TimeTableSqlHelper;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,8 +21,8 @@ public class AddVarietyActivity extends Activity implements OnClickListener {
 	private EditText addText;
 	private Button addButton, cancelButton, deleteButton;
 	private Spinner existList;
-	private SQLiteDatabase db;
 	private ArrayAdapter<String> typeTableAdapter;
+	private TimeTableSqlHelper dbHelper;
 	private String nowList;
 
 	@Override
@@ -50,18 +51,24 @@ public class AddVarietyActivity extends Activity implements OnClickListener {
 
 		// 既存の項目を読み込み（デフォルト項目以外）
 		existList = (Spinner) findViewById(R.id.existList);
-		MyDbHelper dbHelper = new MyDbHelper(this);
-		db = dbHelper.getWritableDatabase();
+
+		dbHelper = new TimeTableSqlHelper(this);
+		SQLiteDatabase tdb = dbHelper.getWritableDatabase();
+
 		typeTableAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item);
-		String sql = "select variety from " + MyDbHelper.TABLE;
-		Cursor cursor = db.rawQuery(sql, null);
-		cursor.moveToFirst();
-		for (int i = 0; i < cursor.getCount(); i++) {
-			typeTableAdapter.add(cursor.getString(0));
-			cursor.moveToNext();
+
+		String sql = "SELECT type FROM " + TimeTableSqlHelper.TYPE_TABLE +
+					" WHERE typeid > 3" +
+					" order by typeid;";
+		Cursor c = tdb.rawQuery(sql, null);
+		c.moveToFirst();
+		for(int i=0; i<c.getCount(); i++){
+			typeTableAdapter.add(c.getString(0));
+			c.moveToNext();
 		}
-		cursor.close();
+		c.close();
+		tdb.close();
 
 		existList.setAdapter(typeTableAdapter);
 		existList.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -94,13 +101,12 @@ public class AddVarietyActivity extends Activity implements OnClickListener {
 		} else if (v.equals(deleteButton)) {
 			// DELETE FROM tyoe_table where variety = 現在のスピナー
 			if (nowList != null) {
-				db.execSQL("delete from " + MyDbHelper.TABLE
-						+ " where variety = '" + nowList + "'");
-				Log.d("debug", "delete from " + MyDbHelper.TABLE
-						+ " where variety = '" + nowList + "'");
+				SQLiteDatabase db = dbHelper.getWritableDatabase();
+				db.execSQL("delete from " + TimeTableSqlHelper.TYPE_TABLE
+						+ " where type = '" + nowList + "';");
+				db.close();
 			}
 		}
-		db.close();
 		finish();
 	}
 
