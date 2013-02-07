@@ -112,6 +112,9 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 	private final static int REQUES_TTIME_TABLE_EDIT = 1;
 	private final static int REQUES_TTIME_TABLE_LIST = 2;
 
+	private Date dateInfo = null;
+
+	
 	public Calendar calendar = Calendar.getInstance();
 	public int year = calendar.get(Calendar.YEAR);
 	public int month = calendar.get(Calendar.MONTH)+1;
@@ -207,6 +210,14 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
+		// 日付操作用のクラスをインスタンス化
+		dateInfo = new Date();
+		
+		Log.d(TAG, "[dateInfo] dateInfo=" + dateInfo.toString());
+		Log.d(TAG, "[dateInfo] 現在の日付=" + dateInfo.getCurrentDate());
+		Log.d(TAG, "[dateInfo] 今日の日付=" + dateInfo.getDate());
+		Log.d(TAG, "[dateInfo] 今日の曜日=" + dateInfo.getWeekStr() + "(" + dateInfo.getWeek() + ")");
 
 		endFlag = false;
 		clickedWeekDay = calendar.get(Calendar.WEEK_OF_MONTH)+1;
@@ -334,7 +345,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 
 	@Override
 	public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-		// TODO 自動生成されたメソッド・スタブ
 		if (adbList[paramInt].equals("編集")) {
 			Log.d(TAG, "EditModeButton");
 			setCurrentDb();
@@ -378,9 +388,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 				intent.putExtra("type", newType[clickedItemNumber]);
 				intent.putExtra("todo", newTodo[clickedItemNumber]);
 				intent.putExtra("time_table", newTime_table[clickedItemNumber]);
-				intent.putExtra("date", calendar.get(Calendar.YEAR)
-						+ "/" + (calendar.get(Calendar.MONTH)+1)
-						+ "/" + calendar.get(Calendar.DATE));
+				intent.putExtra("date", dateInfo.getCurrentDate());
 				intent.putExtra("id", id);
 				startActivity(intent);
 			}
@@ -478,7 +486,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			intent.putExtra("editMode", false);
 			intent.putExtra("weekDay", clickedWeekDay);
 			intent.putExtra("num", number);
-			intent.putExtra("date", calendar.get(Calendar.YEAR)+ "/" + (calendar.get(Calendar.MONTH)+1) + "/" + calendar.get(Calendar.DATE));
+			intent.putExtra("date", dateInfo.getCurrentDate());
 			startActivity(intent);
 		}
 		return false;
@@ -869,7 +877,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 
 	// weekは現在0("月曜日")を考慮した状態、後で追加する
 	private void createExpandList() {
-		// TODO 自動生成されたメソッド・スタブ
 
 		String[] parentArray = { "0限目", "1限目", "2限目", "3限目", "4限目", "5限目",
 				"6限目", "7限目" };
