@@ -70,6 +70,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 	private String[] id = new String[1];
 
+	private ArrayAdapter<String> typeTableAdapter;
 
 
 	// アクティビティの開始時にボタンを登録する
@@ -149,7 +150,7 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 		mDb = dbHelper.getWritableDatabase();
 		mDb.close();
 		mDb = sqlHelper.getReadableDatabase();
-		ArrayAdapter<String> typeTableAdapter = new ArrayAdapter<String>(this,
+		typeTableAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item);
 		//		typeTableAdapter.add("学科");
 		//		typeTableAdapter.add("実技");
@@ -248,7 +249,23 @@ public class TimeTableEditActivity extends Activity implements OnClickListener {
 
 			timeid = timeTableSpr.getSelectedItemPosition()+1; //時限IDのインデックス
 			week = weekSpr.getSelectedItemPosition(); // 曜日のインデックス
-			typeid = typeSpr.getSelectedItemPosition() +1; // 種類のインデックス
+//			typeid = typeSpr.getSelectedItemPosition() +1; // 種類のインデックス
+
+			if(typeSpr.getSelectedItemPosition() > 3){
+				//追加した種類を選んで予定を追加した場合の対策
+				TimeTableSqlHelper dbh = new TimeTableSqlHelper(this);
+				SQLiteDatabase db = dbh.getReadableDatabase();
+				Cursor cursor = db.rawQuery("SELECT typeid FROM type" +
+											" WHERE type = '" + typeTableAdapter.getItem(typeSpr.getSelectedItemPosition()) + "'" +
+											";", null);
+				typeid = cursor.getInt(0);
+				cursor.close();
+				db.close();
+			}else{
+				typeid = typeSpr.getSelectedItemPosition() +1;
+			}
+
+
 			Log.d(TAG,"チェック項目＆＆インデックス取得");
 			Log.d(TAG,"曜日番号を取得 ="+week+" 種類番号="+ typeid +"時限ID="+ timeid);
 			//		-----------------------------------------------------------------------

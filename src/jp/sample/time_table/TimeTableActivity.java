@@ -60,6 +60,7 @@ package jp.sample.time_table;
 //																  //
 /*----------------------------------------------------------------*/
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -112,9 +113,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 	private final static int REQUES_TTIME_TABLE_EDIT = 1;
 	private final static int REQUES_TTIME_TABLE_LIST = 2;
 
-	private Date dateInfo = null;
-
-	
 	public Calendar calendar = Calendar.getInstance();
 	public int year = calendar.get(Calendar.YEAR);
 	public int month = calendar.get(Calendar.MONTH)+1;
@@ -211,14 +209,6 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		// 日付操作用のクラスをインスタンス化
-		dateInfo = new Date();
-		
-		Log.d(TAG, "[dateInfo] dateInfo=" + dateInfo.toString());
-		Log.d(TAG, "[dateInfo] 現在の日付=" + dateInfo.getCurrentDate());
-		Log.d(TAG, "[dateInfo] 今日の日付=" + dateInfo.getDate());
-		Log.d(TAG, "[dateInfo] 今日の曜日=" + dateInfo.getWeekStr() + "(" + dateInfo.getWeek() + ")");
-
 		endFlag = false;
 		clickedWeekDay = calendar.get(Calendar.WEEK_OF_MONTH)+1;
 		//プリファレンスの準備
@@ -226,57 +216,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		editor = preference.edit();
 
 		if (preference.getBoolean("Launched", false)==false) {
-			//初回起動時の処理
-			Log.d(TAG,"初回起動時の処理");
-
-			//ユーザー登録処理
-			editView = new EditText(TimeTableActivity.this);
-			editView.setLines(1);
-			editView.setFilters(new InputFilter[]{
-					new MinuteFilter()
-			});
-			editView.setOnKeyListener(new View.OnKeyListener() {
-
-				@Override
-				public boolean onKey(View arg0, int keyCode, KeyEvent event) {
-					// TODO 自動生成されたメソッド・スタブ
-					if (event.getAction() == KeyEvent.ACTION_DOWN
-							&& keyCode == KeyEvent.KEYCODE_ENTER) {
-						//入力した文字をトースト出力する
-						Toast.makeText(TimeTableActivity.this,
-								editView.getText().toString()+"で入力を受付ました！",
-								Toast.LENGTH_LONG).show();
-						UID =editView.getText().toString();
-						Log.d(TAG,UID);
-						init(UID);
-						disD.dismiss();
-					}
-					return false;
-				}
-			});
-			AlertDialog.Builder adb = new AlertDialog.Builder(TimeTableActivity.this)
-			.setIcon(android.R.drawable.ic_dialog_info)
-			.setTitle("ユーザーIDを入力してください")
-			//setViewにてビューを設定します。
-			.setView(editView)
-			.setPositiveButton("登録", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-
-					//入力した文字をトースト出力する
-					Toast.makeText(TimeTableActivity.this,
-							editView.getText().toString()+"で入力を受付ました！",
-							Toast.LENGTH_LONG).show();
-					UID = editView.getText().toString();
-					Log.d(TAG,UID);
-					init(UID);
-				}
-			});
-			disD = adb.show();
-
-			//プリファレンスの書き変え
-			editor.putBoolean("Launched", true);
-			editor.commit();
-			creatorid =1;
+			userRegister();
 		} else {
 			//二回目以降の処理
 			//表示するデータを予め自分のものに設定しておく
@@ -343,8 +283,64 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 
 	}
 
+	private void userRegister() {
+		// TODO 自動生成されたメソッド・スタブ
+		//初回起動時の処理
+		Log.d(TAG,"初回起動時の処理");
+
+		//ユーザー登録処理
+		editView = new EditText(TimeTableActivity.this);
+		editView.setLines(1);
+		editView.setFilters(new InputFilter[]{
+				new MinuteFilter()
+		});
+		editView.setOnKeyListener(new View.OnKeyListener() {
+
+			@Override
+			public boolean onKey(View arg0, int keyCode, KeyEvent event) {
+				// TODO 自動生成されたメソッド・スタブ
+				if (event.getAction() == KeyEvent.ACTION_DOWN
+						&& keyCode == KeyEvent.KEYCODE_ENTER) {
+					//入力した文字をトースト出力する
+					Toast.makeText(TimeTableActivity.this,
+							editView.getText().toString()+"で入力を受付ました！",
+							Toast.LENGTH_LONG).show();
+					UID =editView.getText().toString();
+					Log.d(TAG,UID);
+					init(UID);
+					disD.dismiss();
+				}
+				return false;
+			}
+		});
+		AlertDialog.Builder adb = new AlertDialog.Builder(TimeTableActivity.this)
+		.setIcon(android.R.drawable.ic_dialog_info)
+		.setTitle("ユーザーIDを入力してください")
+		//setViewにてビューを設定します。
+		.setView(editView)
+		.setPositiveButton("登録", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+
+				//入力した文字をトースト出力する
+				Toast.makeText(TimeTableActivity.this,
+						editView.getText().toString()+"で入力を受付ました！",
+						Toast.LENGTH_LONG).show();
+				UID = editView.getText().toString();
+				Log.d(TAG,UID);
+				init(UID);
+			}
+		});
+		disD = adb.show();
+
+		//プリファレンスの書き変え
+		editor.putBoolean("Launched", true);
+		editor.commit();
+		creatorid =1;
+	}
+
 	@Override
 	public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+		// TODO 自動生成されたメソッド・スタブ
 		if (adbList[paramInt].equals("編集")) {
 			Log.d(TAG, "EditModeButton");
 			setCurrentDb();
@@ -388,7 +384,9 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 				intent.putExtra("type", newType[clickedItemNumber]);
 				intent.putExtra("todo", newTodo[clickedItemNumber]);
 				intent.putExtra("time_table", newTime_table[clickedItemNumber]);
-				intent.putExtra("date", dateInfo.getCurrentDate());
+				intent.putExtra("date", calendar.get(Calendar.YEAR)
+						+ "/" + (calendar.get(Calendar.MONTH)+1)
+						+ "/" + calendar.get(Calendar.DATE));
 				intent.putExtra("id", id);
 				startActivity(intent);
 			}
@@ -486,7 +484,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			intent.putExtra("editMode", false);
 			intent.putExtra("weekDay", clickedWeekDay);
 			intent.putExtra("num", number);
-			intent.putExtra("date", dateInfo.getCurrentDate());
+			intent.putExtra("date", calendar.get(Calendar.YEAR)+ "/" + (calendar.get(Calendar.MONTH)+1) + "/" + calendar.get(Calendar.DATE));
 			startActivity(intent);
 		}
 		return false;
@@ -698,6 +696,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		menu.add(Menu.NONE, Menu.FIRST+1, Menu.NONE, "ユーザーリスト");
 		//+2はオプション画面の予定地のようなので、なし。
 		menu.add(Menu.NONE, Menu.FIRST+3, Menu.NONE, "種類の編集");
+		menu.add(Menu.NONE, Menu.FIRST+4, Menu.NONE, "データの初期化");
 
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -772,9 +771,30 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 			Intent forVarietyIntent = new Intent(this, AddVarietyActivity.class);
 			startActivity(forVarietyIntent);
 			return true;
+
+		case Menu.FIRST+4:
+			new AlertDialog.Builder(this)
+			.setMessage("OKを選択するとが全てのデータがクリアされます\nよろしいですか？")
+			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO 自動生成されたメソッド・スタブ
+					File file = new File("/data/data/jp.sample.time_table/databases/time_table.db");
+					file.delete();
+					file = new File("/data/data/jp.sample.time_table/shared_prefs/Preference Name.xml");
+					file.delete();
+					Toast.makeText(TimeTableActivity.this, "データを削除しました。", Toast.LENGTH_LONG).show();
+					setCurrentDb();
+					createExpandList();
+					userRegister();
+				}
+			})
+			.setNegativeButton("Cancel", null)
+			.show();
+			return true;
 		}
 		return false;
-
 	}
 
 	/*-----ここから全てあいやのターン-----*/
@@ -829,11 +849,13 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 		Log.d(TAG,"week = "+ week);
 		String sql ="SELECT time_name, subject_name, type, place, userid" +
 				" FROM time, time_name, subject, type, creator" +
+				//結合
 				" WHERE time.timeid = time_name.timeid" +
 				" AND time.subjectid = subject.subjectid" +
 				" AND time.typeid = type.typeid" +
 				" AND time.week = " + week +
 				" AND time.creatorid = creator.creatorid"+
+				//条件
 				" AND time.creatorid = " +creatorid +
 				" ORDER BY time.timeid";
 		Log.d(TAG,sql);
@@ -884,6 +906,7 @@ android.content.DialogInterface.OnClickListener, OnTouchListener {
 
 	// weekは現在0("月曜日")を考慮した状態、後で追加する
 	private void createExpandList() {
+		// TODO 自動生成されたメソッド・スタブ
 
 		String[] parentArray = { "0限目", "1限目", "2限目", "3限目", "4限目", "5限目",
 				"6限目", "7限目" };
